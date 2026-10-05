@@ -40,8 +40,8 @@ $categories = ['ecommerce', 'no_website', 'agency', 'all'];
 $settings = getSettings();
 $db = Database::getConnection();
 $usdToInr = (float)($settings['usd_to_inr'] ?? 86.5);
-$dailyEmailLimit = (int)($settings['daily_email_limit'] ?? 500);
-$dailyLinkedInLimit = (int)($settings['daily_linkedin_limit'] ?? 20);
+$dailyEmailLimit = (int)($settings['daily_email_limit'] ?? 999999);
+$dailyLinkedInLimit = (int)($settings['daily_linkedin_limit'] ?? 999999);
 
 // Rotate country and category based on hour / minute
 $countryIdx = (int)date('i') % count($countries);
@@ -56,14 +56,16 @@ $emailsSentToday = (int)$stmt->fetchColumn();
 $stmt = $db->query("SELECT COUNT(*) FROM outreach_logs WHERE platform = 'LinkedIn' AND DATE(created_at) = DATE('now')");
 $linkedInSentToday = (int)$stmt->fetchColumn();
 
-cLog("🎯 Target: {$currentCountry} | Category: {$currentCategory} | Sent Today: (Email: {$emailsSentToday}/{$dailyEmailLimit}, LI: {$linkedInSentToday}/{$dailyLinkedInLimit})");
+cLog("🎯 Target: {$currentCountry} | Category: {$currentCategory} | Mode: ⚡ UNLIMITED REAL-TIME DISPATCH | Sent Today: (Email: {$emailsSentToday}, LI: {$linkedInSentToday})");
 
 // ----------------------------------------------------
-// 1. LIVE AGENCY AUDIT & PROBLEM-FIRST SMTP DISPATCH
+// 1. LIVE AGENCY AUDIT & INSTANT PROBLEM-FIRST DISPATCH
 // ----------------------------------------------------
-if ($emailsSentToday < $dailyEmailLimit && !empty($agencies)) {
-    $agencyIdx = (int)date('i') % count($agencies);
-    $targetAgency = $agencies[$agencyIdx];
+$agenciesToAuditCount = min(3, count($agencies));
+$startAgencyIdx = (int)date('i') % count($agencies);
+
+for ($a = 0; $a < $agenciesToAuditCount; $a++) {
+    $targetAgency = $agencies[($startAgencyIdx + $a) % count($agencies)];
     $agencyDomain = preg_replace('/^www\./i', '', parse_url($targetAgency['website'], PHP_URL_HOST));
 
     cLog("🔍 Auditing {$targetAgency['name']} ({$targetAgency['website']})...");

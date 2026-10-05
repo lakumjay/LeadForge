@@ -34,9 +34,9 @@ $defaultSettings = [
     'groq_api_key' => '',
     'sound_alerts_enabled' => true,
     'radar_refresh_interval_sec' => 30,
-    'daily_linkedin_limit' => 20,
-    'daily_email_limit' => 500,
-    'daily_upwork_limit' => 15,
+    'daily_linkedin_limit' => 999999,
+    'daily_email_limit' => 999999,
+    'daily_upwork_limit' => 999999,
     'auto_filter_scams' => true,
     'target_countries' => ['United States', 'United Kingdom', 'Canada', 'Australia', 'Germany', 'Netherlands'],
     // SMTP Credentials for REAL live email delivery
