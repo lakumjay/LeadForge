@@ -21,6 +21,8 @@ require_once __DIR__ . '/api/generate.php';
 require_once __DIR__ . '/api/agency.php';
 require_once __DIR__ . '/api/mass_scanner.php';
 require_once __DIR__ . '/api/linkedin_helper.php';
+require_once __DIR__ . '/api/sales_navigator.php';
+require_once __DIR__ . '/api/followup_engine.php';
 
 $logFile = DATA_PATH . '/daemon.log';
 $statusFile = DATA_PATH . '/daemon_status.json';
@@ -141,7 +143,30 @@ for ($a = 0; $a < $agenciesToAuditCount; $a++) {
 }
 
 // ----------------------------------------------------
-// 2. MASS MULTIPLIER ROTATING LEADS GENERATION
+// 2. GOOGLE LINKEDIN SALES NAVIGATOR FOUNDER OUTREACH
+// ----------------------------------------------------
+$founders = scanGoogleSalesNavigatorDorks($currentCountry, $currentCategory, 2);
+foreach ($founders as $fProspect) {
+    $fRes = processFounderProspect($fProspect, $db, $settings, $usdToInr);
+    if ($fRes['smtp_delivered']) {
+        $emailsSentToday++;
+        cLog("👔 [FOUNDER SMTP DELIVERED] Dispatched to {$fRes['founder']} ({$fRes['company']}) - [{$fRes['issue']}]");
+    }
+}
+
+// ----------------------------------------------------
+// 3. AUTOMATED 3-STAGE SMART FOLLOW-UP SEQUENCE
+// ----------------------------------------------------
+$followupResults = runAutomatedFollowups($db, $settings);
+foreach ($followupResults as $fu) {
+    if ($fu['success']) {
+        $emailsSentToday++;
+        cLog("🔁 [AUTO FOLLOW-UP SENT] {$fu['stage']} -> {$fu['recipient']}");
+    }
+}
+
+// ----------------------------------------------------
+// 4. MASS MULTIPLIER ROTATING LEADS GENERATION
 // ----------------------------------------------------
 $batchSize = rand(8, 15);
 $massLeads = generateMassLeadsList($currentCategory, $currentCountry, $cities[$currentCountry] ?? $cities['United States'], $localNiches, $ecomNiches, $agencyNiches, $batchSize, $usdToInr);
@@ -156,7 +181,7 @@ foreach ($massLeads as $lead) {
 cLog("✅ [CRM SYNC] Processed {$batchSize} mass leads for {$currentCountry} ({$currentCategory}).");
 
 // ----------------------------------------------------
-// 3. LINKEDIN AUTO-CONNECT PREPARATION
+// 5. LINKEDIN AUTO-CONNECT PREPARATION
 // ----------------------------------------------------
 if ($linkedInSentToday < $dailyLinkedInLimit && !empty($activeProspects)) {
     $stmt = $db->query("SELECT client_name FROM leads WHERE platform = 'LinkedIn'");
