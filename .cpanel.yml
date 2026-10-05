@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home3/snweba2e/public_html/leadsflow.snwebkarma.in
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R * $DEPLOYPATH/
+    - /bin/cp -R .htaccess $DEPLOYPATH/ 2>/dev/null || true
