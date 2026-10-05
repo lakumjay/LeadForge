@@ -1,0 +1,4 @@
+.DS_Store
+data/*.sqlite-wal
+data/*.sqlite-shm
+data/daemon.log

@@ -1,0 +1,18 @@
+{
+    "status": "running",
+    "is_running": true,
+    "started_at": "2026-10-05 12:13:38",
+    "last_heartbeat": "2026-10-05 12:20:04",
+    "uptime_hours": 0.1,
+    "cycle_count": 7,
+    "current_country": "Canada",
+    "current_category": "agency",
+    "today_email_sent": 27,
+    "daily_email_limit": 30,
+    "today_linkedin_sent": 35,
+    "daily_linkedin_limit": 20,
+    "total_leads_in_crm": 1376,
+    "total_pipeline_inr": 28008700,
+    "total_pipeline_usd": 323800,
+    "message": "24\/7 Autonomous Daemon is actively scanning & pitching leads across Canada."
+}

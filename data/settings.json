@@ -1,0 +1,41 @@
+{
+    "user_name": "Jay",
+    "title": "Senior Laravel & Full-Stack Architect",
+    "skills": [
+        "Laravel",
+        "PHP",
+        "MySQL",
+        "Livewire",
+        "Vue.js",
+        "REST API",
+        "Stripe",
+        "Bug Fixing"
+    ],
+    "hourly_rate": 15,
+    "monthly_goal_inr": 50000,
+    "usd_to_inr": 86.5,
+    "gemini_api_key": "Admin@123",
+    "groq_api_key": "",
+    "sound_alerts_enabled": true,
+    "radar_refresh_interval_sec": 30,
+    "daily_linkedin_limit": 20,
+    "daily_email_limit": 30,
+    "daily_upwork_limit": 15,
+    "auto_filter_scams": true,
+    "target_countries": [
+        "United States",
+        "United Kingdom",
+        "Canada",
+        "Australia",
+        "Germany",
+        "Netherlands"
+    ],
+    "smtp_enabled": true,
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "smtp_encryption": "tls",
+    "smtp_user": "lakumjay2000@gmail.com",
+    "smtp_pass": "bqhwsyctoonfrjmf",
+    "smtp_from_email": "lakumjay2000@gmail.com",
+    "smtp_from_name": "Jay | Web & SEO Specialist"
+}
