@@ -96,6 +96,7 @@ while (true) {
                 'title' => 'Page Load Speed & Conversion Tracking',
                 'detail' => 'Opportunity to speed up assets and configure GTM purchase tracking.'
             ];
+            $discoveredEmail = $audit['primary_email'] ?? ($targetAgency['direct_email'] ?? null);
 
             if (!empty($discoveredEmail)) {
                 $emailCheck = EmailVerifier::verify($discoveredEmail, false);
