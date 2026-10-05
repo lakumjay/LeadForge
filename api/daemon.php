@@ -34,3 +34,20 @@ if ($action === 'status') {
     ]);
     exit;
 }
+
+if ($action === 'run_cycle') {
+    require_once __DIR__ . '/../cron_runner.php';
+    exit;
+}
+
+if ($action === 'start_daemon') {
+    $workerPath = ROOT_PATH . '/autonomous_worker.php';
+    if (file_exists($workerPath)) {
+        @exec("nohup php " . escapeshellarg($workerPath) . " > /dev/null 2>&1 &");
+    }
+    echo json_encode([
+        'status' => 'success',
+        'message' => '24/7 Perpetual Autonomous Master Daemon launched in background.'
+    ]);
+    exit;
+}
