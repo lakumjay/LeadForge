@@ -40,7 +40,7 @@ $categories = ['ecommerce', 'no_website', 'agency', 'all'];
 $settings = getSettings();
 $db = Database::getConnection();
 $usdToInr = (float)($settings['usd_to_inr'] ?? 86.5);
-$dailyEmailLimit = (int)($settings['daily_email_limit'] ?? 30);
+$dailyEmailLimit = (int)($settings['daily_email_limit'] ?? 500);
 $dailyLinkedInLimit = (int)($settings['daily_linkedin_limit'] ?? 20);
 
 // Rotate country and category based on hour / minute
