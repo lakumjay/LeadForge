@@ -1669,12 +1669,12 @@ async function loadSafetyShield() {
             // Populate SMTP settings
             document.getElementById('settings-smtp-host').value = s.smtp_host || 'smtp.gmail.com';
             document.getElementById('settings-smtp-port').value = s.smtp_port || 587;
-            document.getElementById('settings-smtp-user').value = s.smtp_user || '';
-            if (s.smtp_pass_masked) {
-                document.getElementById('settings-smtp-pass').placeholder = s.smtp_pass_masked;
+            document.getElementById('settings-smtp-user').value = s.smtp_user || 'lakumjay2000@gmail.com';
+            if (s.smtp_pass_masked || s.smtp_pass) {
+                document.getElementById('settings-smtp-pass').placeholder = `Active (${s.smtp_pass_masked || '••••••••••••••••'})`;
             }
             document.getElementById('settings-smtp-from-name').value = s.smtp_from_name || 'Jay | Web & SEO Specialist';
-            document.getElementById('settings-smtp-from-email').value = s.smtp_from_email || (s.smtp_user || '');
+            document.getElementById('settings-smtp-from-email').value = s.smtp_from_email || (s.smtp_user || 'lakumjay2000@gmail.com');
         }
     } catch (e) {
         console.error(e);
