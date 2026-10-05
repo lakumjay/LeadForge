@@ -21,31 +21,23 @@ function scanGoogleSalesNavigatorDorks(string $country, string $niche, int $limi
     $roles = ['"Founder"', '"CEO"', '"Co-Founder"', '"Managing Director"', '"Owner"'];
     $selectedRole = $roles[array_rand($roles)];
     
-    // Seed verified business lists across US, UK, CA, AU with real founder profiles
     $curatedBusinesses = [
         'United States' => [
-            ['founder' => 'David Marcus', 'role' => 'Founder & CEO', 'company' => 'Aura Health & Skincare', 'website' => 'https://auraskin.com', 'email' => 'david@auraskin.com', 'niche' => 'Shopify E-Commerce'],
-            ['founder' => 'Sarah Jenkins', 'role' => 'Co-Founder', 'company' => 'Apex Performance Media', 'website' => 'https://apexmedia.io', 'email' => 'sarah@apexmedia.io', 'niche' => 'Google Ads & PPC Agency'],
-            ['founder' => 'Michael Chang', 'role' => 'Owner & Director', 'company' => 'Vanguard Luxury Home', 'website' => 'https://vanguardliving.com', 'email' => 'mchang@vanguardliving.com', 'niche' => 'High-Ticket E-Commerce'],
-            ['founder' => 'Robert Evans', 'role' => 'Managing Director', 'company' => 'Beacon Legal Group NY', 'website' => 'https://beaconlegalny.com', 'email' => 'robert@beaconlegalny.com', 'niche' => 'Legal & Professional Services'],
-            ['founder' => 'Elena Rostova', 'role' => 'CEO', 'company' => 'Velvet Bloom Fashion', 'website' => 'https://velvetbloom.com', 'email' => 'elena@velvetbloom.com', 'niche' => 'Apparel & Fashion Shopify'],
-            ['founder' => 'Brian Miller', 'role' => 'Founder', 'company' => 'Starlight Digital Growth', 'website' => 'https://starlightgrowth.com', 'email' => 'brian@starlightgrowth.com', 'niche' => 'SEO & Technical Marketing']
+            ['founder' => 'Eric Siu', 'role' => 'Founder & Chairman', 'company' => 'Single Grain', 'website' => 'https://www.singlegrain.com', 'niche' => 'Digital Marketing & SEO'],
+            ['founder' => 'Jake Baadsgaard', 'role' => 'Founder & CEO', 'company' => 'Disruptive Advertising', 'website' => 'https://disruptiveadvertising.com', 'niche' => 'Google Ads & PPC Agency'],
+            ['founder' => 'Ken Braun', 'role' => 'Founder & CEO', 'company' => 'Lounge Lizard Worldwide', 'website' => 'https://www.loungelizard.com', 'niche' => 'Web Design & Shopify'],
+            ['founder' => 'Lachlan Kirkwood', 'role' => 'Founder', 'company' => 'Building With Bubble', 'website' => 'https://buildingwithbubble.com', 'niche' => 'No-Code & Web Apps']
         ],
         'United Kingdom' => [
-            ['founder' => 'James Harrison', 'role' => 'Founder & CEO', 'company' => 'Nordic Nest UK', 'website' => 'https://nordicnest.co.uk', 'email' => 'james@nordicnest.co.uk', 'niche' => 'Home & Furniture E-Commerce'],
-            ['founder' => 'Oliver Wright', 'role' => 'Managing Director', 'company' => 'Velocity Media London', 'website' => 'https://velocitymedia.co.uk', 'email' => 'oliver@velocitymedia.co.uk', 'niche' => 'Digital Agency Partner'],
-            ['founder' => 'Charlotte Davies', 'role' => 'Co-Founder', 'company' => 'PureAura Supplements UK', 'website' => 'https://pureaurauk.com', 'email' => 'charlotte@pureaurauk.com', 'niche' => 'Health & Skincare Shopify'],
-            ['founder' => 'Alexander Smith', 'role' => 'Owner', 'company' => 'Crown Luxury Detailing', 'website' => 'https://crowndetailing.co.uk', 'email' => 'alex@crowndetailing.co.uk', 'niche' => 'Luxury Automotive Services']
+            ['founder' => 'Tom Craig', 'role' => 'Co-Founder & Director', 'company' => 'Impression Digital', 'website' => 'https://www.impressiondigital.com', 'niche' => 'Performance Marketing & SEO'],
+            ['founder' => 'Rick Tobin', 'role' => 'Managing Director', 'company' => 'Circus PPC', 'website' => 'https://circusppc.com', 'niche' => 'PPC & Google Ads Specialists'],
+            ['founder' => 'John Lawson', 'role' => 'Founder', 'company' => 'Fat Media UK', 'website' => 'https://fatmedia.co.uk', 'niche' => 'Full-Service Digital']
         ],
         'Canada' => [
-            ['founder' => 'Liam Tremblay', 'role' => 'CEO', 'company' => 'Terra Essence Botanicals', 'website' => 'https://terraessence.ca', 'email' => 'liam@terraessence.ca', 'niche' => 'Organic Cosmetics Shopify'],
-            ['founder' => 'Lucas Roy', 'role' => 'Founder & Director', 'company' => 'Horizon Creative Montreal', 'website' => 'https://horizoncreative.ca', 'email' => 'lucas@horizoncreative.ca', 'niche' => 'Digital & Web Agency'],
-            ['founder' => 'Sophie Gagnon', 'role' => 'Co-Founder', 'company' => 'Swift Supply Toronto', 'website' => 'https://swiftsupply.ca', 'email' => 'sophie@swiftsupply.ca', 'niche' => 'B2B Supplies & E-Com']
+            ['founder' => 'Michael Del Bimbo', 'role' => 'CEO', 'company' => 'Northern Commerce', 'website' => 'https://www.northern.co', 'niche' => 'E-Commerce & Digital Agency']
         ],
         'Australia' => [
-            ['founder' => 'Jack Thompson', 'role' => 'Managing Director', 'company' => 'ZenVibe Wellness Melbourne', 'website' => 'https://zenvibewellness.com.au', 'email' => 'jack@zenvibewellness.com.au', 'niche' => 'Fitness & Wellness E-Commerce'],
-            ['founder' => 'Thomas Walker', 'role' => 'Founder & CEO', 'company' => 'Altitude Digital Sydney', 'website' => 'https://altitudedigital.com.au', 'email' => 'thomas@altitudedigital.com.au', 'niche' => 'Google Ads & Performance Agency'],
-            ['founder' => 'Chloe Martin', 'role' => 'Co-Founder', 'company' => 'Urban Stride Shoes AU', 'website' => 'https://urbanstride.com.au', 'email' => 'chloe@urbanstride.com.au', 'niche' => 'Footwear & Fashion Shopify']
+            ['founder' => 'Lauren Oakes', 'role' => 'CEO', 'company' => 'Megaphone Marketing', 'website' => 'https://megaphonemarketing.com.au', 'niche' => 'E-Commerce & Growth Agency']
         ]
     ];
 
@@ -61,7 +53,6 @@ function processFounderProspect(array $prospect, PDO $db, array $settings, float
     $founderName = $prospect['founder'];
     $company = $prospect['company'];
     $website = $prospect['website'];
-    $candidateEmail = $prospect['email'];
     $domain = preg_replace('/^www\./i', '', parse_url($website, PHP_URL_HOST) ?? $website);
 
     // 1. Audit business website for live bugs & flaws
@@ -72,11 +63,16 @@ function processFounderProspect(array $prospect, PDO $db, array $settings, float
         'detail' => 'Opportunity to speed up assets and configure GTM purchase tracking.'
     ];
 
-    // 2. Resolve verified email
-    $targetEmail = $audit['primary_email'] ?? $candidateEmail;
-    $emailCheck = EmailVerifier::verify($targetEmail, false);
+    // 2. Strict Zero-Bounce Rule: Only use email discovered on live website
+    $targetEmail = $audit['primary_email'] ?? null;
+    $emailCheck = ['is_valid' => false, 'is_deliverable' => false];
+    
+    if (!empty($targetEmail)) {
+        $emailCheck = EmailVerifier::verify($targetEmail, false);
+    }
+    
     $smtpDelivered = false;
-    $smtpMessage = 'Saved to CRM';
+    $smtpMessage = 'Saved to CRM for LinkedIn / Direct Reachout';
 
     // 3. Generate Hyper-Personalized Pitch addressing Founder
     $pitch = generateLocalHumanProposal(
@@ -89,7 +85,7 @@ function processFounderProspect(array $prospect, PDO $db, array $settings, float
         $settings
     );
 
-    // 4. Dispatch Real SMTP Email
+    // 4. Dispatch Real SMTP Email ONLY if email was genuinely verified
     if ($emailCheck['is_valid'] && $emailCheck['is_deliverable'] && !empty($settings['smtp_user'])) {
         $subject = $pitch['subject'] ?? "quick observation regarding {$domain}";
         $smtpRes = SmtpMailer::send($emailCheck['email'], $subject, $pitch['proposal'], $settings);
@@ -100,6 +96,7 @@ function processFounderProspect(array $prospect, PDO $db, array $settings, float
     $dealUsd = 250;
     $dealInr = $dealUsd * $usdToInr;
     $leadStatus = $smtpDelivered ? 'contacted' : 'new';
+    $finalEmail = $emailCheck['email'] ?? 'LinkedIn / Contact Form';
 
     // 5. Save to CRM Database
     $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -107,7 +104,7 @@ function processFounderProspect(array $prospect, PDO $db, array $settings, float
         "Founder Outreach: {$founderName} ({$company})",
         'Google LinkedIn Dork Engine',
         $founderName,
-        $emailCheck['email'] ?? $targetEmail,
+        $finalEmail,
         $company,
         $website,
         $smtpDelivered ? 'Real SMTP Email' : 'LinkedIn / Web Contact',
@@ -128,7 +125,7 @@ function processFounderProspect(array $prospect, PDO $db, array $settings, float
         'lead_id' => $leadId,
         'founder' => $founderName,
         'company' => $company,
-        'email' => $emailCheck['email'] ?? $targetEmail,
+        'email' => $finalEmail,
         'issue' => $primaryIssue['title'],
         'smtp_delivered' => $smtpDelivered,
         'message' => $smtpMessage

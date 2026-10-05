@@ -148,8 +148,10 @@ class SmtpMailer {
             return ['success' => false, 'message' => "DATA rejected: {$response}"];
         }
 
-        // Headers + Clean Plain Text Body (Zero-Spam format)
-        $messageId = "<" . md5(uniqid((string)time())) . "@" . ($smtpHost ?: 'leadforge.local') . ">";
+        // Headers + Clean Plain Text Body (Zero-Spam format, 100% human-grade)
+        $uniqKey = bin2hex(random_bytes(12));
+        $fromDomain = explode('@', $fromEmail)[1] ?? 'gmail.com';
+        $messageId = "<{$uniqKey}@{$fromDomain}>";
         $date = date('r');
         
         $emailHeaders = [
@@ -161,8 +163,7 @@ class SmtpMailer {
             "Subject: {$subject}",
             "MIME-Version: 1.0",
             "Content-Type: text/plain; charset=UTF-8; format=flowed",
-            "Content-Transfer-Encoding: 8bit",
-            "X-Mailer: LeadForge AI/2.0"
+            "Content-Transfer-Encoding: 8bit"
         ];
 
         $rawPayload = implode("\r\n", $emailHeaders) . "\r\n\r\n" . $body . "\r\n.\r\n";
