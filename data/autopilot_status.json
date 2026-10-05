@@ -1,9 +1,13 @@
 {
     "is_running": true,
-    "last_run": "2026-10-05 13:06:59",
+    "last_run": "2026-10-05 13:09:00",
     "total_dispatched": 14,
     "today_dispatched": 14,
     "logs": [
+        "[13:09:00] \ud83d\udee1\ufe0f BOUNCE SHIELD: No verified email on @singlegrain.com. Skipped SMTP to prevent bounce. Added to CRM.",
+        "[13:09:00] \u2705 Found Audit Opportunity: Missing Google Analytics (GA4) & GTM Conversion Tracking (0.23s)",
+        "[13:08:59] \ud83d\udd0d Auditing live website: https:\/\/singlegrain.com (Web, SEO & Ads Tracking)...",
+        "[13:08:59] \ud83c\udfaf Target Selected: Growth Scale Agency 94 (Los Angeles, CA, United States)",
         "[13:07:59] \u23f3 Safe human delay active. Next auto-pitch in 30s...",
         "[13:06:59] \ud83d\udee1\ufe0f BOUNCE SHIELD: No verified email on @singlegrain.com. Skipped SMTP to prevent bounce. Added to CRM.",
         "[13:06:59] \u2705 Found Audit Opportunity: Missing Google Analytics (GA4) & GTM Conversion Tracking (0.25s)",
@@ -24,11 +28,7 @@
         "[13:00:59] \u2705 Found Audit Opportunity: Missing Google Analytics (GA4) & GTM Conversion Tracking (0.2s)",
         "[13:00:59] \ud83d\udd0d Auditing live website: https:\/\/singlegrain.com (Web, SEO & Ads Tracking)...",
         "[13:00:59] \ud83c\udfaf Target Selected: Growth Scale Agency 44 (Los Angeles, CA, United States)",
-        "[12:59:59] \u23f3 Safe human delay active. Next auto-pitch in 30s...",
-        "[12:58:59] \ud83d\udee1\ufe0f BOUNCE SHIELD: No verified email on @singlegrain.com. Skipped SMTP to prevent bounce. Added to CRM.",
-        "[12:58:59] \u2705 Found Audit Opportunity: Missing Google Analytics (GA4) & GTM Conversion Tracking (0.19s)",
-        "[12:58:59] \ud83d\udd0d Auditing live website: https:\/\/singlegrain.com (Web, SEO & Ads Tracking)...",
-        "[12:58:59] \ud83c\udfaf Target Selected: Growth Scale Agency 46 (Los Angeles, CA, United States)"
+        "[12:59:59] \u23f3 Safe human delay active. Next auto-pitch in 30s..."
     ],
-    "last_target": "Growth Scale Agency 14"
+    "last_target": "Growth Scale Agency 94"
 }

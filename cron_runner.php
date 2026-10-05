@@ -76,7 +76,7 @@ for ($a = 0; $a < $agenciesToAuditCount; $a++) {
         'detail' => 'Opportunity to speed up assets and configure GTM purchase tracking.'
     ];
 
-    $discoveredEmail = $audit['primary_email'] ?? null;
+    $discoveredEmail = $audit['primary_email'] ?? ($targetAgency['direct_email'] ?? null);
 
     if (!empty($discoveredEmail)) {
         $emailCheck = EmailVerifier::verify($discoveredEmail, false);

@@ -245,6 +245,30 @@ function performSiteAudit(string $url): array {
     $cleanHost = preg_replace('/^www\./i', '', parse_url($effectiveUrl, PHP_URL_HOST) ?? $url);
     $discoveredEmails = extractEmailsFromHtml($htmlBody, $cleanHost, $effectiveUrl);
 
+    // Deep Probing: If no email found on homepage, probe /contact, /contact-us, /about-us
+    if (empty($discoveredEmails)) {
+        $contactPaths = ['/contact', '/contact-us', '/about-us', '/about'];
+        foreach ($contactPaths as $cPath) {
+            $probeUrl = rtrim($effectiveUrl, '/') . $cPath;
+            $chProbe = curl_init();
+            curl_setopt($chProbe, CURLOPT_URL, $probeUrl);
+            curl_setopt($chProbe, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($chProbe, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($chProbe, CURLOPT_TIMEOUT, 4);
+            curl_setopt($chProbe, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($chProbe, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
+            $contactHtml = curl_exec($chProbe);
+            curl_close($chProbe);
+            if (!empty($contactHtml)) {
+                $contactEmails = extractEmailsFromHtml($contactHtml, $cleanHost, $probeUrl);
+                if (!empty($contactEmails)) {
+                    $discoveredEmails = array_values(array_unique(array_merge($discoveredEmails, $contactEmails)));
+                    break;
+                }
+            }
+        }
+    }
+
     // Generate Multi-Service Tailored Pitches
     $parsedHost = parse_url($effectiveUrl, PHP_URL_HOST) ?? $url;
     $primaryIssue = $issues[0];
