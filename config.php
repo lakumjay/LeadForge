@@ -40,13 +40,13 @@ $defaultSettings = [
     'auto_filter_scams' => true,
     'target_countries' => ['United States', 'United Kingdom', 'Canada', 'Australia', 'Germany', 'Netherlands'],
     // SMTP Credentials for REAL live email delivery
-    'smtp_enabled' => false,
+    'smtp_enabled' => true,
     'smtp_host' => 'smtp.gmail.com',
     'smtp_port' => 587,
     'smtp_encryption' => 'tls',
-    'smtp_user' => '',
-    'smtp_pass' => '',
-    'smtp_from_email' => '',
+    'smtp_user' => 'lakumjay2000@gmail.com',
+    'smtp_pass' => 'bqhwsyctoonfrjmf',
+    'smtp_from_email' => 'lakumjay2000@gmail.com',
     'smtp_from_name' => 'Jay'
 ];
 

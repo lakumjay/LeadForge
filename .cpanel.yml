@@ -1,14 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home3/snweba2e/public_html/leadsflow.snwebkarma.in/
+    - export DEPLOYPATH=/home3/snweba2e/public_html/leadsflow.snwebkarma.in
     - /bin/mkdir -p $DEPLOYPATH
-    - /bin/cp -R index.php $DEPLOYPATH
-    - /bin/cp -R config.php $DEPLOYPATH
-    - /bin/cp -R database.php $DEPLOYPATH
-    - /bin/cp -R autonomous_worker.php $DEPLOYPATH
-    - /bin/cp -R email_verifier.php $DEPLOYPATH
-    - /bin/cp -R smtp_mailer.php $DEPLOYPATH
-    - /bin/cp -R api $DEPLOYPATH
-    - /bin/cp -R assets $DEPLOYPATH
-    - /bin/cp -R data $DEPLOYPATH
+    - /bin/cp -R * $DEPLOYPATH/
+    - /bin/cp -R .htaccess $DEPLOYPATH/ 2>/dev/null || true
