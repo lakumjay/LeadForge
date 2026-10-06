@@ -418,6 +418,11 @@ if (!headers_sent()) {
                 <i data-lucide="zap" class="w-3.5 h-3.5"></i>
                 <span>📩 Connection Queue</span>
             </button>
+            <button onclick="switchMasterTab('instagram')" id="tab-nav-instagram" class="nav-master-tab px-3.5 py-1.5 text-xs rounded-xl font-bold text-fuchsia-300 bg-fuchsia-500/20 border border-fuchsia-500/40 hover:bg-fuchsia-500/30 flex items-center space-x-1.5 shrink-0 shadow-sm shadow-fuchsia-500/20">
+                <i data-lucide="instagram" class="w-3.5 h-3.5 text-fuchsia-400"></i>
+                <span>📸 Instagram Agency Hub</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400 animate-pulse"></span>
+            </button>
             <button onclick="switchMasterTab('warmup')" id="tab-nav-warmup" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
                 <i data-lucide="eye" class="w-3.5 h-3.5"></i>
                 <span>👁️ Profile Warm-Up</span>
@@ -457,10 +462,6 @@ if (!headers_sent()) {
             <button onclick="switchMasterTab('sow_closer')" id="tab-nav-sow_closer" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
                 <i data-lucide="briefcase" class="w-3.5 h-3.5 text-emerald-400"></i>
                 <span>💼 Deal Closer (SOW)</span>
-            </button>
-            <button onclick="switchMasterTab('instagram')" id="tab-nav-instagram" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
-                <i data-lucide="instagram" class="w-3.5 h-3.5 text-fuchsia-400"></i>
-                <span>📸 Instagram Agency Hub</span>
             </button>
         </div>
     </header>
@@ -3406,7 +3407,12 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            switchMasterTab('stream');
+            const hash = window.location.hash ? window.location.hash.replace('#', '') : '';
+            if (hash && ['stream', 'connect', 'warmup', 'comments', 'viral_posts', 'funnel', 'radar', 'profile_opt', 'carousel', 'lead_magnet', 'video_teardown', 'sow_closer', 'instagram'].includes(hash)) {
+                switchMasterTab(hash);
+            } else {
+                switchMasterTab('stream');
+            }
             loadTodaySummary();
             loadQueue('pending');
             // Auto-refresh today's stream every 15s
