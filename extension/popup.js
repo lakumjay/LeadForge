@@ -39,12 +39,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch(`${endpoint}/api/linkedin_ai_engine.php?action=get_today_summary`);
     const summary = await res.json();
-    if (summary.ok && summary.counts) {
-      statViews.innerText = summary.counts.warmups || state.dailyViewsCount || 0;
-      statComments.innerText = summary.counts.comments || state.dailyCommentsCount || 0;
+    if (summary.ok) {
+      const vCount = (summary.stats && summary.stats.warmups_count !== undefined) ? summary.stats.warmups_count : (summary.counts ? summary.counts.warmups : state.dailyViewsCount || 0);
+      const cCount = (summary.stats && summary.stats.comments_count !== undefined) ? summary.stats.comments_count : (summary.counts ? summary.counts.comments : state.dailyCommentsCount || 0);
+      
+      statViews.innerText = vCount;
+      statComments.innerText = cCount;
       chrome.storage.local.set({
-        dailyViewsCount: summary.counts.warmups || 0,
-        dailyCommentsCount: summary.counts.comments || 0
+        dailyViewsCount: vCount,
+        dailyCommentsCount: cCount
       });
     }
   } catch (e) {}
@@ -71,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       task_type: "profile_view",
       serverUrl: serverUrlInput.value.trim()
     }, () => {
-      setTimeout(refreshCounts, 4000);
+      setTimeout(refreshCounts, 3000);
     });
   });
 
@@ -85,7 +88,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       task_type: "post_comment",
       serverUrl: serverUrlInput.value.trim()
     }, () => {
-      setTimeout(refreshCounts, 5000);
+      setTimeout(refreshCounts, 4000);
     });
   });
 
@@ -105,9 +108,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       const ep = (serverUrlInput.value.trim() || "https://leadsflow.snwebkarma.in").replace(/\/+$/, '');
       const res = await fetch(`${ep}/api/linkedin_ai_engine.php?action=get_today_summary`);
       const summary = await res.json();
-      if (summary.ok && summary.counts) {
-        statViews.innerText = summary.counts.warmups || 0;
-        statComments.innerText = summary.counts.comments || 0;
+      if (summary.ok) {
+        const vCount = (summary.stats && summary.stats.warmups_count !== undefined) ? summary.stats.warmups_count : 0;
+        const cCount = (summary.stats && summary.stats.comments_count !== undefined) ? summary.stats.comments_count : 0;
+        statViews.innerText = vCount;
+        statComments.innerText = cCount;
       }
     } catch (e) {
       chrome.storage.local.get(["dailyViewsCount", "dailyCommentsCount"], (data) => {
