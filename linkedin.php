@@ -575,30 +575,39 @@ if ($pendingCount === 0) {
                     </p>
                 </div>
 
-                <div class="flex space-x-2">
-                    <button onclick="loadViralPost('speed_optimization')" class="px-2.5 py-1 rounded-lg text-xs bg-sky-500/20 text-sky-400 border border-sky-500/30 font-semibold">
+                <div class="flex flex-wrap gap-1.5">
+                    <button onclick="loadViralPost('speed_optimization')" id="btn-cat-speed" class="px-2.5 py-1 rounded-lg text-xs bg-sky-500/20 text-sky-400 border border-sky-500/30 font-semibold transition">
                         ⚡ Speed Case Study
                     </button>
-                    <button onclick="loadViralPost('backend_bottlenecks')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-400 hover:text-white font-semibold">
+                    <button onclick="loadViralPost('backend_bottlenecks')" id="btn-cat-backend" class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-400 hover:text-white font-semibold transition">
                         🛠️ Backend Fix
                     </button>
-                    <button onclick="loadViralPost('agency_scaling')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-400 hover:text-white font-semibold">
+                    <button onclick="loadViralPost('agency_scaling')" id="btn-cat-agency" class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-400 hover:text-white font-semibold transition">
                         🚀 Agency Overflow
+                    </button>
+                    <button onclick="loadViralPost('tracking_ga4')" id="btn-cat-tracking" class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-400 hover:text-white font-semibold transition">
+                        🎯 Google Ads Tracking
                     </button>
                 </div>
             </div>
 
             <!-- Viral Post Display -->
             <div class="bg-dark-950 border border-slate-800 rounded-xl p-4 space-y-3 relative">
-                <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-slate-800 gap-2">
                     <span class="text-xs font-bold text-white flex items-center space-x-1.5">
                         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                         <span id="viral-post-category">Speed Optimization Case Study</span>
                     </span>
-                    <button onclick="copyGeneratedText('viral-post-body')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-1.5 rounded-xl shadow flex items-center space-x-1.5 transition">
-                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                        <span>1-Click Copy Ready Post</span>
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="copyGeneratedText('viral-post-body')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs px-3 py-1.5 rounded-xl shadow flex items-center space-x-1.5 transition">
+                            <i data-lucide="copy" class="w-3.5 h-3.5 text-sky-400"></i>
+                            <span>1. Copy Post</span>
+                        </button>
+                        <button onclick="publishDirectlyToLinkedIn()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-1.5 rounded-xl shadow-lg shadow-emerald-600/30 flex items-center space-x-1.5 transition active:scale-95">
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            <span>2. Post Directly on LinkedIn Feed 🚀</span>
+                        </button>
+                    </div>
                 </div>
 
                 <textarea id="viral-post-body" rows="14" class="w-full bg-transparent text-xs text-slate-200 font-sans leading-relaxed border-none focus:outline-none resize-none font-mono">
@@ -930,6 +939,14 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
                     showToast('Viral post loaded!');
                 }
             } catch (e) {}
+        }
+
+        function publishDirectlyToLinkedIn() {
+            const el = document.getElementById('viral-post-body');
+            if (!el) return;
+            const text = el.value || el.innerText;
+            copyTextToClipboard(text, '🚀 Post copied! Opening LinkedIn Feed composer... Just press Paste (Cmd+V)');
+            window.open('https://www.linkedin.com/feed/?shareActive=true', '_blank');
         }
 
         function copyGeneratedText(elemId) {

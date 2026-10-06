@@ -168,6 +168,15 @@ function generateViralLinkedInPost(string $category, string $userName, string $t
             'cta' => "If you run an agency in the US, UK, Canada, or Australia and need on-demand development capacity on flexible fixed-rate sprints—send me a quick DM! 🚀",
             'hashtags' => "#DigitalAgency #AgencyScaling #WhiteLabelDev #WebDesign #SoftwareEngineering",
             'image_prompt' => "An executive modern agency workspace with multiple glass monitors showing glowing analytics and global time zone clocks, minimalist high-tech aesthetic."
+        ],
+        'tracking_ga4' => [
+            'headline' => '🎯 Why your client is losing 25% of Google Ads conversion data (and how to fix it in 24 hours):',
+            'hook' => "Since iOS 14.5 and browser ad blockers, standard client-side browser pixels fail to record 1 out of every 4 purchases.",
+            'body' => "Here's what happens:\n\n1. A customer clicks a Google/Meta Ad.\n2. Safari or an ad blocker kills the browser cookie.\n3. The conversion never registers in Google Ads.\n4. Result: Google Ads algorithm optimizes for the wrong audience, ad costs spike by 40%.\n\n🛠️ The Solution:\n• Setup Server-Side Google Tag Manager (sGTM) on a custom sub-domain.\n• Dispatch direct Server-to-Server Meta CAPI & Google Enhanced Conversions.\n• 100% of purchase data is captured directly from the server payload.\n\n📊 Result: 20-30% more tracked conversions and immediate drop in Cost-Per-Acquisition.",
+            'takeaway' => "💡 Browser tracking is dead. Server-side tracking is the new baseline for serious brands.",
+            'cta' => "Need server-side tracking implemented for your clients? Drop a message! 🚀",
+            'hashtags' => "#GoogleAds #GA4 #ServerSideTracking #MarketingAnalytics #ConversionRateOptimization",
+            'image_prompt' => "Technical network diagram showing Server-to-Server API data pipeline bypassing browser ad-blockers with glowing cyan nodes."
         ]
     ];
 
