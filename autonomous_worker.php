@@ -93,97 +93,109 @@ while (true) {
         // ACTION 1: REAL AGENCY WEBSITE AUDIT & REAL SMTP DISPATCH
         // ----------------------------------------------------
         if ($emailsSentToday < $dailyEmailLimit && !empty($agencies)) {
-            $targetAgency = $agencies[$agencyIdx % count($agencies)];
-            $agencyIdx++;
-
-            $agencyDomain = preg_replace('/^www\./i', '', parse_url($targetAgency['website'], PHP_URL_HOST));
-
-            // Duplicate Suppression Guard: Check if company or domain was already contacted in last 30 days
-            $dupCheck = $db->prepare("SELECT id FROM leads WHERE (company = ? OR url LIKE ? OR title LIKE ?) AND created_at >= datetime('now', '-30 days')");
-            $dupCheck->execute([$targetAgency['name'], "%{$agencyDomain}%", "%{$targetAgency['name']}%"]);
-            if ($dupCheck->fetch()) {
-                daemonLog("⏭️ [DUPLICATE GUARD] {$targetAgency['name']} ({$agencyDomain}) was already processed recently. Skipping to prevent repeated emails.");
-                continue;
+            $agenciesCount = count($agencies);
+            $foundAgency = null;
+            
+            // Find an agency not contacted in the last 30 days
+            for ($k = 0; $k < $agenciesCount; $k++) {
+                $candidateAgency = $agencies[($agencyIdx + $k) % $agenciesCount];
+                $candDomain = preg_replace('/^www\./i', '', parse_url($candidateAgency['website'], PHP_URL_HOST));
+                
+                $dupCheck = $db->prepare("SELECT id FROM leads WHERE (company = ? OR url LIKE ? OR title LIKE ?) AND created_at >= datetime('now', '-30 days')");
+                $dupCheck->execute([$candidateAgency['name'], "%{$candDomain}%", "%{$candidateAgency['name']}%"]);
+                if (!$dupCheck->fetch()) {
+                    $foundAgency = $candidateAgency;
+                    $agencyIdx = ($agencyIdx + $k + 1) % $agenciesCount;
+                    break;
+                }
             }
 
-            daemonLog("🔍 [LIVE AUDIT] Scanning {$targetAgency['name']} ({$targetAgency['website']})...");
+            if ($foundAgency) {
+                $targetAgency = $foundAgency;
+                $agencyDomain = preg_replace('/^www\./i', '', parse_url($targetAgency['website'], PHP_URL_HOST));
+                daemonLog("🔍 [LIVE AUDIT] Scanning {$targetAgency['name']} ({$targetAgency['website']})...");
 
-            $audit = performSiteAudit($targetAgency['website']);
-            $primaryIssue = $audit['issues'][0] ?? [
-                'type' => 'Optimization Opportunity',
-                'title' => 'Page Load Speed & Conversion Tracking',
-                'detail' => 'Opportunity to speed up assets and configure GTM purchase tracking.'
-            ];
-            $discoveredEmail = $audit['primary_email'] ?? ($targetAgency['direct_email'] ?? null);
+                $audit = performSiteAudit($targetAgency['website']);
+                $primaryIssue = $audit['issues'][0] ?? [
+                    'type' => 'Optimization Opportunity',
+                    'title' => 'Page Load Speed & Conversion Tracking',
+                    'detail' => 'Opportunity to speed up assets and configure GTM purchase tracking.'
+                ];
+                $discoveredEmail = $audit['primary_email'] ?? ($targetAgency['direct_email'] ?? null);
 
-            if (!empty($discoveredEmail)) {
-                $emailCheck = EmailVerifier::verify($discoveredEmail, false);
+                if (!empty($discoveredEmail)) {
+                    $emailCheck = EmailVerifier::verify($discoveredEmail, false);
 
-                if ($emailCheck['is_valid'] && $emailCheck['is_deliverable'] && !empty($settings['smtp_user'])) {
-                    $pitch = generateLocalHumanProposal(
-                        'email',
-                        $primaryIssue['title'],
-                        $primaryIssue['detail'],
-                        'Team',
-                        $targetAgency['name'],
-                        $targetAgency['website'],
-                        $settings
-                    );
-
-                    $subject = $pitch['subject'] ?? "quick observation regarding {$agencyDomain}";
-                    $smtpRes = SmtpMailer::send($emailCheck['email'], $subject, $pitch['proposal'], $settings);
-
-                    if ($smtpRes['success']) {
-                        $emailsSentToday++;
-                        $totalSmtpSent++;
-                        daemonLog("✉️ [VERIFIED REAL SMTP DELIVERED] Dispatched to {$targetAgency['name']} ({$emailCheck['email']})!");
-                        
-                        // Trigger Mac Notification
-                        if (PHP_OS_FAMILY === 'Darwin') {
-                            @exec("osascript -e 'display notification \"Real email sent to {$targetAgency['name']}!\" with title \"LeadForge AI Outbox\" sound name \"Glass\"' > /dev/null 2>&1 &");
-                        }
-
-                        // Save to CRM
-                        $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        $stmt->execute([
-                            "Opportunity: {$targetAgency['name']} ({$primaryIssue['title']})",
-                            '24/7 Autonomous Daemon',
-                            'Director',
-                            $emailCheck['email'],
+                    if ($emailCheck['is_valid'] && $emailCheck['is_deliverable'] && !empty($settings['smtp_user'])) {
+                        $pitch = generateLocalHumanProposal(
+                            'email',
+                            $primaryIssue['title'],
+                            $primaryIssue['detail'],
+                            'Team',
                             $targetAgency['name'],
                             $targetAgency['website'],
-                            'Real SMTP Email',
-                            'contacted',
-                            250,
-                            250 * $usdToInr,
-                            "Issue: {$primaryIssue['title']}\nAudit: {$primaryIssue['detail']}\nStatus: Delivered via Gmail TLS Socket",
-                            $pitch['proposal']
-                        ]);
-                        $leadId = (int)$db->lastInsertId();
+                            $settings
+                        );
 
-                        $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, ?, ?)")
-                           ->execute([$leadId, 'Email', 'Autonomous Agency Outreach']);
+                        $subject = $pitch['subject'] ?? "quick observation regarding {$agencyDomain}";
+                        $smtpRes = SmtpMailer::send($emailCheck['email'], $subject, $pitch['proposal'], $settings);
+
+                        if ($smtpRes['success']) {
+                            $emailsSentToday++;
+                            $totalSmtpSent++;
+                            daemonLog("✉️ [VERIFIED REAL SMTP DELIVERED] Dispatched to {$targetAgency['name']} ({$emailCheck['email']})!");
+                            
+                            // Trigger Mac Notification
+                            if (PHP_OS_FAMILY === 'Darwin') {
+                                @exec("osascript -e 'display notification \"Real email sent to {$targetAgency['name']}!\" with title \"LeadForge AI Outbox\" sound name \"Glass\"' > /dev/null 2>&1 &");
+                            }
+
+                            // Save to CRM
+                            $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                            $stmt->execute([
+                                "Opportunity: {$targetAgency['name']} ({$primaryIssue['title']})",
+                                '24/7 Autonomous Daemon',
+                                'Director',
+                                $emailCheck['email'],
+                                $targetAgency['name'],
+                                $targetAgency['website'],
+                                'Real SMTP Email',
+                                'contacted',
+                                250,
+                                250 * $usdToInr,
+                                "Issue: {$primaryIssue['title']}\nAudit: {$primaryIssue['detail']}\nStatus: Delivered via Gmail TLS Socket",
+                                $pitch['proposal']
+                            ]);
+                            $leadId = (int)$db->lastInsertId();
+
+                            $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, ?, ?)")
+                               ->execute([$leadId, 'Email', 'Autonomous Agency Outreach']);
+                            
+                            sleep(10);
+                        }
                     }
+                } else {
+                    daemonLog("🛡️ [ZERO-BOUNCE SHIELD] No verified email scraped on {$agencyDomain}. Blocked SMTP to eliminate bounce risk. Saved to CRM as Web lead.");
+                    
+                    // Save safely as Web lead to CRM with NO email sent
+                    $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    $stmt->execute([
+                        "Opportunity: {$targetAgency['name']} ({$primaryIssue['title']})",
+                        '24/7 Autonomous Daemon',
+                        'Director',
+                        'Contact Form / Website',
+                        $targetAgency['name'],
+                        $targetAgency['website'],
+                        'Website / Contact Form',
+                        'new',
+                        250,
+                        250 * $usdToInr,
+                        "Issue: {$primaryIssue['title']}\nAudit: {$primaryIssue['detail']}\nShield: Email not public on homepage. SMTP blocked to prevent bounce.",
+                        "Hi Director,\n\nI was reviewing {$targetAgency['name']} and noticed an optimization opportunity regarding {$primaryIssue['title']}."
+                    ]);
                 }
             } else {
-                daemonLog("🛡️ [ZERO-BOUNCE SHIELD] No verified email scraped on {$agencyDomain}. Blocked SMTP to eliminate bounce risk. Saved to CRM as Web lead.");
-                
-                // Save safely as Web lead to CRM with NO email sent
-                $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([
-                    "Opportunity: {$targetAgency['name']} ({$primaryIssue['title']})",
-                    '24/7 Autonomous Daemon',
-                    'Director',
-                    'Contact Form / Website',
-                    $targetAgency['name'],
-                    $targetAgency['website'],
-                    'Website / Contact Form',
-                    'new',
-                    250,
-                    250 * $usdToInr,
-                    "Issue: {$primaryIssue['title']}\nAudit: {$primaryIssue['detail']}\nShield: Email not public on homepage. SMTP blocked to prevent bounce.",
-                    "Hi Director,\n\nI was reviewing {$targetAgency['name']} and noticed an optimization opportunity regarding {$primaryIssue['title']}."
-                ]);
+                daemonLog("ℹ️ All agencies in current list have been processed recently. Rotating to next cycle.");
             }
         }
 
