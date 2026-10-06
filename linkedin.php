@@ -345,6 +345,10 @@ if ($pendingCount === 0) {
 
             <!-- Daily Sent & System Status -->
             <div class="flex items-center space-x-2">
+                <button onclick="openLinkedInSettingsModal()" class="bg-sky-600/20 hover:bg-sky-600/30 text-sky-400 border border-sky-500/30 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+                    <span>Cloud API Setup</span>
+                </button>
                 <div class="bg-dark-950 border border-slate-800 px-3 py-1.5 rounded-xl text-xs font-mono flex items-center space-x-1.5">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="header-status-dot"></span>
                     <span class="text-slate-400">Quota: </span>
@@ -373,6 +377,28 @@ if ($pendingCount === 0) {
             </button>
         </div>
     </header>
+
+    <?php if (isset($_GET['oauth']) && $_GET['oauth'] === 'success'): ?>
+    <div class="max-w-3xl mx-auto px-4 pt-3">
+        <div class="bg-emerald-950/70 border border-emerald-500/50 rounded-2xl p-4 flex items-center space-x-3 text-emerald-300 text-xs shadow-lg">
+            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>
+            <div>
+                <p class="font-bold text-white text-sm">🎉 Official LinkedIn 100% Connected!</p>
+                <p class="text-[11px] text-emerald-300">60-day official OAuth token generated. 24/7 background posting and AI comment engine active.</p>
+            </div>
+        </div>
+    </div>
+    <?php elseif (isset($_GET['oauth']) && $_GET['oauth'] === 'error'): ?>
+    <div class="max-w-3xl mx-auto px-4 pt-3">
+        <div class="bg-rose-950/70 border border-rose-500/50 rounded-2xl p-4 flex items-center space-x-3 text-rose-300 text-xs shadow-lg">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-rose-400 shrink-0"></i>
+            <div>
+                <p class="font-bold text-white text-sm">⚠️ LinkedIn Connection Notice</p>
+                <p class="text-[11px] text-rose-300"><?= htmlspecialchars($_GET['msg'] ?? 'Authorization cancelled or token failed') ?></p>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <!-- TAB 1: AUTO-PILOT CONNECTION & QUEUE -->
     <section id="view-connect" class="max-w-3xl mx-auto px-4 pt-3 space-y-4">
@@ -773,19 +799,32 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
                 </button>
             </div>
 
-            <div class="space-y-3">
-                <div class="bg-gradient-to-r from-sky-900/40 via-blue-900/30 to-slate-900 border border-sky-500/30 rounded-xl p-3.5 space-y-2">
+            <div class="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
+                <!-- Section 1: Official OAuth 2.0 -->
+                <div class="bg-gradient-to-r from-sky-900/40 via-blue-900/30 to-slate-900 border border-sky-500/30 rounded-xl p-3.5 space-y-2.5">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse"></span>
-                            <span class="text-xs font-bold text-white">Official 1-Click LinkedIn Authorization</span>
+                            <span class="text-xs font-bold text-white">Official 1-Click LinkedIn OAuth (Recommended)</span>
                         </div>
                         <span class="text-[10px] text-sky-400 font-mono">60-Day Token</span>
                     </div>
                     <p class="text-[11px] text-slate-300">
-                        Connects your LinkedIn account directly via official developer API with zero bot blocking.
+                        Connects directly to Official LinkedIn Developer REST API for 24/7 background posting with zero Cloudflare bot blocks.
                     </p>
-                    <a href="api/linkedin_oauth_callback.php?action=connect" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-sky-600/30 flex items-center justify-center space-x-2 transition active:scale-95">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-0.5">LinkedIn Client ID (App ID)</label>
+                            <input type="text" id="input-li-client-id" placeholder="7780gb3k51bhcv" class="w-full bg-dark-950 border border-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono focus:border-sky-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-semibold text-slate-400 mb-0.5">LinkedIn Client Secret</label>
+                            <input type="password" id="input-li-client-secret" placeholder="WPL_AP1..." class="w-full bg-dark-950 border border-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono focus:border-sky-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <a id="btn-oauth-connect-link" href="api/linkedin_oauth_callback.php?action=connect" target="_blank" onclick="prepareOAuthUrl(event)" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-sky-600/30 flex items-center justify-center space-x-2 transition active:scale-95">
                         <i data-lucide="shield-check" class="w-4 h-4"></i>
                         <span>🚀 1-Click Connect Official LinkedIn</span>
                     </a>
@@ -793,33 +832,38 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
 
                 <div class="relative flex py-1 items-center">
                     <div class="flex-grow border-t border-slate-800"></div>
-                    <span class="flex-shrink mx-2 text-[10px] text-slate-500 uppercase font-bold tracking-wider">or manual credentials</span>
+                    <span class="flex-shrink mx-2 text-[10px] text-slate-500 uppercase font-bold tracking-wider">Alternative: Session Cookie & Webhook</span>
                     <div class="flex-grow border-t border-slate-800"></div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">LinkedIn Access Token (OAuth 2.0 UGC Post Token)</label>
-                    <input type="password" id="input-li-token" placeholder="AQV..." class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs focus:border-sky-500 focus:outline-none">
-                    <p class="text-[10px] text-slate-500 mt-0.5">Optional. Allows official developer REST API publishing.</p>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">LinkedIn Session Cookie (<span class="font-mono text-sky-400">li_at</span>)</label>
+                    <input type="password" id="input-li-at" placeholder="AQED..." class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs font-mono focus:border-sky-500 focus:outline-none">
+                    <p class="text-[10px] text-slate-500 mt-0.5">Used as auxiliary backup connection for organic interactions.</p>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">LinkedIn Person URN (e.g. 123456789 or urn:li:person:...)</label>
-                    <input type="text" id="input-li-urn" placeholder="urn:li:person:abcdef123" class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs focus:border-sky-500 focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">LinkedIn Access Token (Manual OAuth Token)</label>
+                    <input type="password" id="input-li-token" placeholder="AQV..." class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs font-mono focus:border-sky-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">LinkedIn Person URN (e.g. urn:li:person:...)</label>
+                    <input type="text" id="input-li-urn" placeholder="urn:li:person:abcdef123" class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs font-mono focus:border-sky-500 focus:outline-none">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Cloud Webhook URL (Make.com, Zapier, Buffer, Ayrshare)</label>
-                    <input type="text" id="input-li-webhook" placeholder="https://hook.make.com/..." class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs focus:border-sky-500 focus:outline-none">
+                    <input type="text" id="input-li-webhook" placeholder="https://hook.make.com/..." class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs font-mono focus:border-sky-500 focus:outline-none">
                     <p class="text-[10px] text-slate-500 mt-0.5">Optional. Dispatches post payload directly to your custom webhook workflow.</p>
                 </div>
             </div>
 
-            <div class="flex items-center justify-end space-x-2 pt-3 border-t border-slate-800">
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800">
                 <button onclick="closeLinkedInSettingsModal()" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
-                <button onclick="saveLinkedInSettings()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition">
+                <button onclick="saveLinkedInSettings()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-5 py-2 rounded-xl flex items-center space-x-1.5 shadow-lg shadow-sky-600/30 transition">
                     <i data-lucide="check" class="w-3.5 h-3.5"></i>
-                    <span>Save Settings</span>
+                    <span>Save All Settings</span>
                 </button>
             </div>
         </div>
@@ -1303,6 +1347,8 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
                 .then(r => r.json())
                 .then(data => {
                     if (data.settings) {
+                        document.getElementById('input-li-client-id').value = data.settings.linkedin_client_id || '7780gb3k51bhcv';
+                        document.getElementById('input-li-client-secret').value = data.settings.linkedin_client_secret || '';
                         document.getElementById('input-li-at').value = data.settings.linkedin_li_at || '';
                         document.getElementById('input-li-token').value = data.settings.linkedin_access_token || '';
                         document.getElementById('input-li-urn').value = data.settings.linkedin_person_urn || '';
@@ -1317,29 +1363,50 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
             document.getElementById('modal-linkedin-settings').classList.add('hidden');
         }
 
-        async function saveLinkedInSettings() {
-            const liAt = document.getElementById('input-li-at').value;
-            const token = document.getElementById('input-li-token').value;
-            const urn = document.getElementById('input-li-urn').value;
-            const webhook = document.getElementById('input-li-webhook').value;
+        function prepareOAuthUrl(e) {
+            const clientId = document.getElementById('input-li-client-id').value.trim() || '7780gb3k51bhcv';
+            const clientSecret = document.getElementById('input-li-client-secret').value.trim();
+            const btn = document.getElementById('btn-oauth-connect-link');
+            
+            // Build connect URL with query params
+            let url = 'api/linkedin_oauth_callback.php?action=connect&client_id=' + encodeURIComponent(clientId);
+            if (clientSecret && !clientSecret.includes('••')) {
+                url += '&client_secret=' + encodeURIComponent(clientSecret);
+            }
+            btn.href = url;
+        }
 
-            showToast('Saving LinkedIn Session & Cloud settings...');
+        async function saveLinkedInSettings() {
+            const clientId = document.getElementById('input-li-client-id').value.trim();
+            const clientSecret = document.getElementById('input-li-client-secret').value.trim();
+            const liAt = document.getElementById('input-li-at').value.trim();
+            const token = document.getElementById('input-li-token').value.trim();
+            const urn = document.getElementById('input-li-urn').value.trim();
+            const webhook = document.getElementById('input-li-webhook').value.trim();
+
+            showToast('Saving LinkedIn Credentials & Cloud API settings...');
             try {
+                const payload = {
+                    action: 'save',
+                    linkedin_client_id: clientId,
+                    linkedin_li_at: liAt,
+                    linkedin_access_token: token,
+                    linkedin_person_urn: urn,
+                    linkedin_webhook_url: webhook,
+                    linkedin_autopost_enabled: true
+                };
+                if (clientSecret && !clientSecret.includes('••')) {
+                    payload.linkedin_client_secret = clientSecret;
+                }
+
                 const res = await fetch('api/settings.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'save',
-                        linkedin_li_at: liAt,
-                        linkedin_access_token: token,
-                        linkedin_person_urn: urn,
-                        linkedin_webhook_url: webhook,
-                        linkedin_autopost_enabled: true
-                    })
+                    body: JSON.stringify(payload)
                 });
                 const data = await res.json();
                 if (data.status === 'success') {
-                    showToast('✅ LinkedIn Session & API saved! Auto-Posting active.');
+                    showToast('✅ LinkedIn Credentials & Cloud API Saved!');
                     closeLinkedInSettingsModal();
                 } else {
                     showToast('Settings saved.');

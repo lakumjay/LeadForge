@@ -40,6 +40,13 @@ if ($method === 'GET') {
     } else {
         $safeSettings['has_linkedin_token'] = false;
     }
+    if (!empty($safeSettings['linkedin_client_secret'])) {
+        $safeSettings['linkedin_client_secret_masked'] = substr($safeSettings['linkedin_client_secret'], 0, 4) . '••••••••' . substr($safeSettings['linkedin_client_secret'], -4);
+        $safeSettings['linkedin_client_secret'] = $safeSettings['linkedin_client_secret_masked'];
+        $safeSettings['has_linkedin_secret'] = true;
+    } else {
+        $safeSettings['has_linkedin_secret'] = false;
+    }
     if (!empty($safeSettings['linkedin_li_at'])) {
         $safeSettings['linkedin_li_at'] = substr($safeSettings['linkedin_li_at'], 0, 6) . '••••••••' . substr($safeSettings['linkedin_li_at'], -4);
         $safeSettings['has_linkedin_cookie'] = true;
@@ -123,6 +130,13 @@ if ($method === 'POST') {
     if (isset($data['telegram_chat_id'])) $current['telegram_chat_id'] = trim($data['telegram_chat_id']);
 
     // LinkedIn API & Cloud Webhook Settings
+    if (isset($data['linkedin_client_id'])) $current['linkedin_client_id'] = trim($data['linkedin_client_id']);
+    if (isset($data['linkedin_client_secret'])) {
+        $subClientSec = trim($data['linkedin_client_secret']);
+        if ($subClientSec !== '' && strpos($subClientSec, '••') === false) {
+            $current['linkedin_client_secret'] = $subClientSec;
+        }
+    }
     if (isset($data['linkedin_access_token'])) {
         $subLiToken = trim($data['linkedin_access_token']);
         if ($subLiToken !== '' && strpos($subLiToken, '••') === false) {
@@ -147,6 +161,9 @@ if ($method === 'POST') {
         }
         if (!empty($safeResponse['smtp_pass'])) {
             $safeResponse['smtp_pass'] = '••••••••••••••••';
+        }
+        if (!empty($safeResponse['linkedin_client_secret'])) {
+            $safeResponse['linkedin_client_secret'] = substr($safeResponse['linkedin_client_secret'], 0, 4) . '••••••••' . substr($safeResponse['linkedin_client_secret'], -4);
         }
         if (!empty($safeResponse['linkedin_access_token'])) {
             $safeResponse['linkedin_access_token'] = substr($safeResponse['linkedin_access_token'], 0, 6) . '••••••••' . substr($safeResponse['linkedin_access_token'], -4);

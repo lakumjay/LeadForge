@@ -9,8 +9,24 @@ require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../database.php';
 
 $settings = getSettings();
-$clientId = trim($settings['linkedin_client_id'] ?? '');
-$clientSecret = trim($settings['linkedin_client_secret'] ?? '');
+$defaultClientId = '7780gb3k51bhcv';
+
+$clientId = trim($settings['linkedin_client_id'] ?? $_GET['client_id'] ?? '');
+if (empty($clientId)) {
+    $clientId = $defaultClientId;
+    $settings['linkedin_client_id'] = $clientId;
+}
+
+$clientSecret = trim($settings['linkedin_client_secret'] ?? $_GET['client_secret'] ?? '');
+if (!empty($_GET['client_id'])) {
+    $settings['linkedin_client_id'] = trim($_GET['client_id']);
+}
+if (!empty($_GET['client_secret'])) {
+    $settings['linkedin_client_secret'] = trim($_GET['client_secret']);
+}
+if (!empty($settings['linkedin_client_id']) || !empty($settings['linkedin_client_secret'])) {
+    updateSettings($settings);
+}
 
 // Determine redirect URI based on current host
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? 80) == 443;
