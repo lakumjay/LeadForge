@@ -1,34 +1,11 @@
 {
-    "is_running": true,
-    "last_run": "2026-10-05 13:09:00",
-    "total_dispatched": 14,
-    "today_dispatched": 14,
+    "status": "ready",
+    "is_running": false,
+    "last_run": null,
+    "total_dispatched": 0,
+    "today_dispatched": 0,
+    "last_target": null,
     "logs": [
-        "[13:09:00] \ud83d\udee1\ufe0f BOUNCE SHIELD: No verified email on @singlegrain.com. Skipped SMTP to prevent bounce. Added to CRM.",
-        "[13:09:00] \u2705 Found Audit Opportunity: Missing Google Analytics (GA4) & GTM Conversion Tracking (0.23s)",
-        "[13:08:59] \ud83d\udd0d Auditing live website: https:\/\/singlegrain.com (Web, SEO & Ads Tracking)...",
-        "[13:08:59] \ud83c\udfaf Target Selected: Growth Scale Agency 94 (Los Angeles, CA, United States)",
-        "[13:07:59] \u23f3 Safe human delay active. Next auto-pitch in 30s...",
-        "[13:06:59] \ud83d\udee1\ufe0f BOUNCE SHIELD: No verified email on @singlegrain.com. Skipped SMTP to prevent bounce. Added to CRM.",
-        "[13:06:59] \u2705 Found Audit Opportunity: Missing Google Analytics (GA4) & GTM Conversion Tracking (0.25s)",
-        "[13:06:59] \ud83d\udd0d Auditing live website: https:\/\/singlegrain.com (Web, SEO & Ads Tracking)...",
-        "[13:06:59] \ud83c\udfaf Target Selected: Growth Scale Agency 14 (Los Angeles, CA, United States)",
-        "[13:05:59] \u23f3 Safe human delay active. Next auto-pitch in 30s...",
-        "[13:04:59] \ud83d\udee1\ufe0f BOUNCE SHIELD: No verified email on @singlegrain.com. Skipped SMTP to prevent bounce. Added to CRM.",
-        "[13:04:59] \u2705 Found Audit Opportunity: Missing Google Analytics (GA4) & GTM Conversion Tracking (0.23s)",
-        "[13:04:59] \ud83d\udd0d Auditing live website: https:\/\/singlegrain.com (Web, SEO & Ads Tracking)...",
-        "[13:04:59] \ud83c\udfaf Target Selected: Growth Scale Agency 76 (Los Angeles, CA, United States)",
-        "[13:03:59] \u23f3 Safe human delay active. Next auto-pitch in 30s...",
-        "[13:02:59] \ud83d\udee1\ufe0f BOUNCE SHIELD: No verified email on @singlegrain.com. Skipped SMTP to prevent bounce. Added to CRM.",
-        "[13:02:59] \u2705 Found Audit Opportunity: Missing Google Analytics (GA4) & GTM Conversion Tracking (0.18s)",
-        "[13:02:59] \ud83d\udd0d Auditing live website: https:\/\/singlegrain.com (Web, SEO & Ads Tracking)...",
-        "[13:02:59] \ud83c\udfaf Target Selected: Growth Scale Agency 66 (Los Angeles, CA, United States)",
-        "[13:01:59] \u23f3 Safe human delay active. Next auto-pitch in 30s...",
-        "[13:00:59] \ud83d\udee1\ufe0f BOUNCE SHIELD: No verified email on @singlegrain.com. Skipped SMTP to prevent bounce. Added to CRM.",
-        "[13:00:59] \u2705 Found Audit Opportunity: Missing Google Analytics (GA4) & GTM Conversion Tracking (0.2s)",
-        "[13:00:59] \ud83d\udd0d Auditing live website: https:\/\/singlegrain.com (Web, SEO & Ads Tracking)...",
-        "[13:00:59] \ud83c\udfaf Target Selected: Growth Scale Agency 44 (Los Angeles, CA, United States)",
-        "[12:59:59] \u23f3 Safe human delay active. Next auto-pitch in 30s..."
-    ],
-    "last_target": "Growth Scale Agency 94"
+        "[08:30:00] ⚡ System Initialized: 24/7 Global Lead Engine active with Zero-Bounce & Anti-Duplicate Shield."
+    ]
 }

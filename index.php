@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LeadForge AI — Freelance Client Acquisition & ₹50k Goal Accelerator</title>
+    <!-- Favicon (Inline SVG to prevent 404) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -103,58 +105,58 @@
         </div>
 
         <!-- Navigation Tabs -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 overflow-x-auto border-t border-slate-800/60 scrollbar-none py-1">
-            <button onclick="switchTab('autopilot')" id="tab-btn-autopilot" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 transition">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1.5 overflow-x-auto border-t border-slate-800/60 scrollbar-none py-1.5 flex-nowrap whitespace-nowrap">
+            <button onclick="switchTab('autopilot')" id="tab-btn-autopilot" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 transition">
                 <i data-lucide="bot" class="w-4 h-4"></i>
-                <span class="font-bold">🤖 Hands-Free Auto-Pilot</span>
+                <span class="font-bold">🤖 Auto-Pilot</span>
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-1"></span>
             </button>
 
-            <button onclick="switchTab('radar')" id="tab-btn-radar" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+            <button onclick="switchTab('radar')" id="tab-btn-radar" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="radar" class="w-4 h-4"></i>
                 <span>⚡ Live Radar</span>
                 <span id="tab-radar-count" class="bg-emerald-500 text-black font-bold text-[10px] px-1.5 py-0.2 rounded-full ml-1">0</span>
             </button>
 
-            <button onclick="switchTab('stealth')" id="tab-btn-stealth" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+            <button onclick="switchTab('stealth')" id="tab-btn-stealth" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="crosshair" class="w-4 h-4 text-purple-400"></i>
-                <span>🎯 0-Comp Stealth & Launches</span>
+                <span>🎯 0-Comp Stealth</span>
                 <span class="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-1.5 py-0.2 rounded-full font-bold">New</span>
             </button>
 
-            <button onclick="switchTab('mass')" id="tab-btn-mass" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+            <button onclick="switchTab('mass')" id="tab-btn-mass" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i>
-                <span>🚀 Mass Scale Multiplier</span>
+                <span>🚀 Mass Multiplier</span>
                 <span class="text-[10px] bg-red-500/20 text-red-400 border border-red-500/30 px-1.5 py-0.2 rounded-full font-bold">1,000x</span>
             </button>
 
-            <button onclick="switchTab('auditor')" id="tab-btn-auditor" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+            <button onclick="switchTab('auditor')" id="tab-btn-auditor" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="bug" class="w-4 h-4"></i>
-                <span>🔍 Bug Hunter & Agencies</span>
+                <span>🔍 Bug Hunter</span>
             </button>
 
-            <button onclick="switchTab('upwork')" id="tab-btn-upwork" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+            <button onclick="switchTab('upwork')" id="tab-btn-upwork" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="file-code" class="w-4 h-4"></i>
-                <span>✍️ Upwork Proposal Studio</span>
+                <span>✍️ Proposal Studio</span>
             </button>
 
-            <button onclick="switchTab('outreach')" id="tab-btn-outreach" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+            <button onclick="switchTab('outreach')" id="tab-btn-outreach" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="send" class="w-4 h-4"></i>
-                <span>📩 Cold Outreach Studio</span>
+                <span>📩 Outreach & LinkedIn</span>
             </button>
 
-            <button onclick="switchTab('closer')" id="tab-btn-closer" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+            <button onclick="switchTab('closer')" id="tab-btn-closer" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="handshake" class="w-4 h-4"></i>
-                <span>🤝 AI Deal Closer</span>
+                <span>🤝 Deal Closer</span>
                 <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.2 rounded-full font-bold">Auto</span>
             </button>
 
-            <button onclick="switchTab('crm')" id="tab-btn-crm" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+            <button onclick="switchTab('crm')" id="tab-btn-crm" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                 <span>📊 ₹50k Goal CRM</span>
             </button>
 
-            <button onclick="switchTab('safety')" id="tab-btn-safety" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+            <button onclick="switchTab('safety')" id="tab-btn-safety" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="shield-check" class="w-4 h-4"></i>
                 <span>🛡️ Anti-Ban & Settings</span>
             </button>

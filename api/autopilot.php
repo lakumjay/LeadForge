@@ -94,7 +94,9 @@ function runAutopilotCycle(array &$statusData): void {
     require_once __DIR__ . '/agency.php';
     
     $targetAgency = null;
-    foreach ($agencies as $a) {
+    $shuffledAgencies = $agencies;
+    shuffle($shuffledAgencies);
+    foreach ($shuffledAgencies as $a) {
         $aDomain = preg_replace('/^www\./i', '', parse_url($a['website'], PHP_URL_HOST) ?? $a['website']);
         if (!isLeadAlreadyContacted($db, $a['direct_email'] ?? null, $aDomain, $a['name'])) {
             $targetAgency = $a;
