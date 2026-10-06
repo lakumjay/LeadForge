@@ -134,6 +134,14 @@ if ($autoPostResult && !empty($autoPostResult['ok'])) {
 }
 
 // ----------------------------------------------------
+// B4. AUTONOMOUS LINKEDIN AI COMMENT ENGINE
+// ----------------------------------------------------
+$autoCommentResult = autoPublishDailyLinkedInComment($db, $settings);
+if ($autoCommentResult && !empty($autoCommentResult['ok'])) {
+    cronLog("💬 [LINKEDIN AUTO-COMMENT] Auto-commented on {$autoCommentResult['author']}'s post ({$autoCommentResult['company']}): \"" . substr($autoCommentResult['comment'], 0, 80) . "...\"");
+}
+
+// ----------------------------------------------------
 // C. 3-STAGE SMART FOLLOW-UP SEQUENCE (48h, 5d, 9d)
 // ----------------------------------------------------
 if ($emailsSentToday < $dailyEmailLimit) {

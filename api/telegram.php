@@ -134,6 +134,20 @@ class TelegramNotifier {
 
         return self::send($msg);
     }
+
+    /**
+     * Instant LinkedIn AI Comment Dispatched Alert
+     */
+    public static function sendLinkedInCommentAlert(string $postAuthor, string $postTopic, string $comment, string $appBaseUrl): array {
+        $msg = "💬 <b>LINKEDIN AI AUTHORITY COMMENT POSTED!</b>\n\n";
+        $msg .= "👤 <b>Target Author:</b> " . htmlspecialchars($postAuthor) . "\n";
+        $msg .= "📌 <b>Topic:</b> " . htmlspecialchars($postTopic) . "\n";
+        $msg .= "💭 <b>Comment:</b> <i>\"" . htmlspecialchars(substr($comment, 0, 250)) . "...\"</i>\n\n";
+        $msg .= "🕒 <b>Time:</b> " . date('Y-m-d H:i:s') . " IST\n";
+        $msg .= "👉 <a href=\"" . rtrim($appBaseUrl, '/') . "/linkedin.php\">View Live Comments Stream</a>";
+
+        return self::send($msg);
+    }
 }
 
 // Standalone API handler for AJAX testing from Settings

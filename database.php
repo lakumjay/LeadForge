@@ -139,6 +139,21 @@ class Database {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )");
 
+        // Automated LinkedIn AI Comments Table (Authority, Pro Tips, Conversion Hooks)
+        $db->exec("CREATE TABLE IF NOT EXISTS linkedin_comments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            post_url TEXT,
+            post_author TEXT NOT NULL,
+            post_company TEXT,
+            post_topic TEXT,
+            comment_text TEXT NOT NULL,
+            comment_style TEXT DEFAULT 'authority',
+            status TEXT DEFAULT 'posted',
+            published_via TEXT DEFAULT 'Server Auto-Pilot Engine',
+            published_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+
         // Ultra-Fast Indexes for Instant Lead Querying & Filtering
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_status ON leads (status);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_platform ON leads (platform);");
@@ -153,6 +168,8 @@ class Database {
         $db->exec("CREATE INDEX IF NOT EXISTS idx_audit_cache_created ON audit_cache (created_at);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_posts_status ON linkedin_posts (status);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_posts_published ON linkedin_posts (published_at);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_comments_author ON linkedin_comments (post_author);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_comments_published ON linkedin_comments (published_at);");
     }
 }
 
