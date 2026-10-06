@@ -34,6 +34,12 @@ if ($method === 'GET') {
     } else {
         $safeSettings['has_telegram_token'] = false;
     }
+    if (!empty($safeSettings['linkedin_access_token'])) {
+        $safeSettings['linkedin_access_token'] = substr($safeSettings['linkedin_access_token'], 0, 6) . '••••••••' . substr($safeSettings['linkedin_access_token'], -4);
+        $safeSettings['has_linkedin_token'] = true;
+    } else {
+        $safeSettings['has_linkedin_token'] = false;
+    }
     echo json_encode(['status' => 'success', 'settings' => $safeSettings]);
     exit;
 }
@@ -110,6 +116,17 @@ if ($method === 'POST') {
     }
     if (isset($data['telegram_chat_id'])) $current['telegram_chat_id'] = trim($data['telegram_chat_id']);
 
+    // LinkedIn API & Cloud Webhook Settings
+    if (isset($data['linkedin_access_token'])) {
+        $subLiToken = trim($data['linkedin_access_token']);
+        if ($subLiToken !== '' && strpos($subLiToken, '••') === false) {
+            $current['linkedin_access_token'] = $subLiToken;
+        }
+    }
+    if (isset($data['linkedin_person_urn'])) $current['linkedin_person_urn'] = trim($data['linkedin_person_urn']);
+    if (isset($data['linkedin_webhook_url'])) $current['linkedin_webhook_url'] = trim($data['linkedin_webhook_url']);
+    if (isset($data['linkedin_autopost_enabled'])) $current['linkedin_autopost_enabled'] = (bool)$data['linkedin_autopost_enabled'];
+
     if (updateSettings($current)) {
         $safeResponse = $current;
         if (!empty($safeResponse['gemini_api_key'])) {
@@ -117,6 +134,9 @@ if ($method === 'POST') {
         }
         if (!empty($safeResponse['smtp_pass'])) {
             $safeResponse['smtp_pass'] = '••••••••••••••••';
+        }
+        if (!empty($safeResponse['linkedin_access_token'])) {
+            $safeResponse['linkedin_access_token'] = substr($safeResponse['linkedin_access_token'], 0, 6) . '••••••••' . substr($safeResponse['linkedin_access_token'], -4);
         }
         echo json_encode(['status' => 'success', 'message' => 'Settings saved successfully', 'settings' => $safeResponse]);
     } else {

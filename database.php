@@ -124,6 +124,21 @@ class Database {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )");
 
+        // Automated LinkedIn Viral Posts & Content Publishing Table
+        $db->exec("CREATE TABLE IF NOT EXISTS linkedin_posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category TEXT NOT NULL,
+            headline TEXT,
+            content TEXT NOT NULL,
+            image_prompt TEXT,
+            reach_score INTEGER DEFAULT 98,
+            status TEXT DEFAULT 'published',
+            published_via TEXT DEFAULT 'API/Webhook',
+            external_post_id TEXT,
+            published_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+
         // Ultra-Fast Indexes for Instant Lead Querying & Filtering
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_status ON leads (status);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_platform ON leads (platform);");
@@ -136,6 +151,8 @@ class Database {
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_queue_status ON linkedin_queue (status);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_queue_url ON linkedin_queue (linkedin_url);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_audit_cache_created ON audit_cache (created_at);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_posts_status ON linkedin_posts (status);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_posts_published ON linkedin_posts (published_at);");
     }
 }
 

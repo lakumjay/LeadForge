@@ -29,6 +29,7 @@ require_once __DIR__ . '/../api/mass_scanner.php';
 require_once __DIR__ . '/../api/sales_navigator.php';
 require_once __DIR__ . '/../api/followup_engine.php';
 require_once __DIR__ . '/../api/telegram.php';
+require_once __DIR__ . '/../api/linkedin_ai_engine.php';
 require_once __DIR__ . '/imap_listener.php';
 
 $logFile = DATA_PATH . '/cron.log';
@@ -122,6 +123,14 @@ if ($liSentToday < $liDailyLimit) {
         $liSentToday++;
         cronLog("💼 [LINKEDIN AUTO-DISPATCH] Dispatched connection note to {$liProspect['name']} ({$liProspect['company']})! Today: {$liSentToday}/{$liDailyLimit}");
     }
+}
+
+// ----------------------------------------------------
+// B3. AUTONOMOUS LINKEDIN VIRAL POST AUTO-PUBLISHER
+// ----------------------------------------------------
+$autoPostResult = autoPublishDailyLinkedInPost($db, $settings);
+if ($autoPostResult && !empty($autoPostResult['ok'])) {
+    cronLog("🚀 [LINKEDIN AUTO-POST] Auto-published daily viral post: \"{$autoPostResult['headline']}\" ({$autoPostResult['category']}) via {$autoPostResult['published_via']}");
 }
 
 // ----------------------------------------------------

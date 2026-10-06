@@ -119,6 +119,21 @@ class TelegramNotifier {
 
         return self::send($msg);
     }
+
+    /**
+     * Instant LinkedIn Post Auto-Published Alert
+     */
+    public static function sendLinkedInPostAlert(string $headline, string $category, string $status, string $appBaseUrl): array {
+        $msg = "🚀 <b>LINKEDIN VIRAL POST AUTO-PUBLISHED!</b>\n\n";
+        $msg .= "📌 <b>Category:</b> " . htmlspecialchars(ucwords(str_replace('_', ' ', $category))) . "\n";
+        $msg .= "🎯 <b>Headline:</b> " . htmlspecialchars($headline) . "\n";
+        $msg .= "⚡ <b>Status:</b> " . htmlspecialchars($status) . "\n";
+        $msg .= "🕒 <b>Time:</b> " . date('Y-m-d H:i:s') . " IST\n\n";
+        $feedUrl = 'https://www.linkedin.com/feed/';
+        $msg .= "👉 <a href=\"{$feedUrl}\">View on LinkedIn Feed</a> | <a href=\"" . rtrim($appBaseUrl, '/') . "/linkedin.php\">Open LeadForge Suite</a>";
+
+        return self::send($msg);
+    }
 }
 
 // Standalone API handler for AJAX testing from Settings
