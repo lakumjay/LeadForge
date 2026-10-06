@@ -73,7 +73,7 @@ if ($action === 'dispatch_profile_view') {
 // 3. VIRAL LINKEDIN POST & CONTENT GENERATOR
 // ------------------------------------------------------------------
 if ($action === 'generate_viral_post') {
-    $topicCategory = trim($data['category'] ?? 'speed_optimization'); // 'speed_optimization', 'backend_bottlenecks', 'agency_scaling', 'tracking_ga4'
+    $topicCategory = trim($data['category'] ?? ($_GET['category'] ?? 'speed_optimization'));
     $post = generateViralLinkedInPost($topicCategory, $userName, $title);
 
     echo json_encode([
