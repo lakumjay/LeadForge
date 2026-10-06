@@ -37,5 +37,7 @@
     "smtp_user": "lakumjay2000@gmail.com",
     "smtp_pass": "bqhwsyctoonfrjmf",
     "smtp_from_email": "lakumjay2000@gmail.com",
-    "smtp_from_name": "Jay | Web & SEO Specialist"
+    "smtp_from_name": "Jay | Web & SEO Specialist",
+    "linkedin_li_at": "AQEDAT3qlT0EwzbsAAABoQvB9d8AAAGhL855304Adxec4AjMw3b2pyJpM9kzEqL5eO2o1NZK0CAf443Q89Zh9jkKxvU_0EhT2YgNPhePl5cApgEhpkDYlYBwDQD36f09QeXuysZNZsKE4TDNR7-_jn1k",
+    "linkedin_autopost_enabled": true
 }
