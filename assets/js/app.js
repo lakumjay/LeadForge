@@ -104,7 +104,7 @@ function copyToClipboard(elementIdOrText) {
 // Tab Switcher
 function switchTab(tab) {
     currentTab = tab;
-    const tabs = ['autopilot', 'radar', 'mass', 'auditor', 'upwork', 'outreach', 'closer', 'crm', 'safety'];
+    const tabs = ['autopilot', 'radar', 'stealth', 'mass', 'auditor', 'upwork', 'outreach', 'closer', 'crm', 'safety'];
     tabs.forEach(t => {
         const view = document.getElementById(`view-${t}`);
         const btn = document.getElementById(`tab-btn-${t}`);
@@ -120,6 +120,10 @@ function switchTab(tab) {
 
     if (tab === 'autopilot') fetchAutopilotStatus();
     if (tab === 'radar') loadRadarJobs();
+    if (tab === 'stealth') {
+        loadProductHuntLaunches();
+        loadGitHubBounties();
+    }
     if (tab === 'mass' && currentMassLeads.length === 0) generateMassLeads();
     if (tab === 'auditor') loadAgencies();
     if (tab === 'outreach') loadLinkedInProspects();
@@ -1845,6 +1849,242 @@ async function sendTestEmail() {
         showToast('Test failed', 'error');
     }
     if (window.lucide) lucide.createIcons();
+}
+
+// ----------------------------------------------------
+// TAB: 0-COMPETITION STEALTH BYPASS & DAILY LAUNCHES
+// ----------------------------------------------------
+async function runUpworkDeAnonymizer() {
+    const title = document.getElementById('stealth-upwork-title')?.value.trim() || '';
+    const location = document.getElementById('stealth-upwork-location')?.value.trim() || 'United States';
+    const text = document.getElementById('stealth-upwork-text')?.value.trim() || '';
+    const resultBox = document.getElementById('stealth-upwork-result');
+    const btn = document.getElementById('btn-run-deanonymizer');
+
+    if (!title && !text) {
+        showToast('Please paste the Upwork job title or description', 'error');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>De-Anonymizing Client & Generating Pitch...</span>`;
+    resultBox.innerHTML = `
+        <div class="text-center py-12 text-slate-400 space-y-2">
+            <i data-lucide="loader" class="w-8 h-8 mx-auto animate-spin text-purple-400"></i>
+            <p class="text-xs">Extracting company clues, tech stack, and generating Founder LinkedIn search dorks...</p>
+        </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+
+    try {
+        const res = await fetch('api/stealth_tools.php?action=upwork_de_anonymize', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                job_title: title,
+                job_text: text,
+                client_location: location
+            })
+        });
+        const data = await res.json();
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="zap" class="w-4 h-4"></i><span>De-Anonymize & Generate Stealth Direct Pitch</span>`;
+
+        if (data.status === 'success') {
+            const techBadges = (data.tech_stack || []).map(t => `<span class="px-2 py-0.5 bg-slate-800 text-purple-300 border border-purple-500/30 rounded text-[11px] font-mono">${t}</span>`).join(' ');
+            
+            resultBox.innerHTML = `
+                <div class="space-y-3.5">
+                    <!-- Client Clue Badges -->
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                        <div>
+                            <span class="text-[10px] text-slate-500 uppercase tracking-wider block">Identified Client / Brand Clue:</span>
+                            <span class="text-sm font-bold text-white">${escapeHtml(data.company_name)}</span>
+                            ${data.detected_domain ? `<span class="text-xs text-purple-400 ml-1.5 font-mono">(${data.detected_domain})</span>` : ''}
+                        </div>
+                        <span class="text-xs bg-purple-500/20 text-purple-300 border border-purple-500/40 px-2 py-0.5 rounded-full font-bold">0% Upwork Fee</span>
+                    </div>
+
+                    <!-- Tech Stack Found -->
+                    <div class="space-y-1">
+                        <span class="text-[11px] text-slate-400 block">Detected Stack & Pain Point:</span>
+                        <div class="flex flex-wrap gap-1">${techBadges}</div>
+                    </div>
+
+                    <!-- Direct Founder Discovery Buttons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                        <a href="${data.google_search_url}" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 text-xs font-semibold py-2 px-3 rounded-xl flex items-center justify-center space-x-1.5 transition">
+                            <i data-lucide="search" class="w-3.5 h-3.5 text-sky-400"></i>
+                            <span>Google LinkedIn Dork</span>
+                        </a>
+                        <a href="${data.linkedin_search_url}" target="_blank" class="bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 text-xs font-semibold py-2 px-3 rounded-xl flex items-center justify-center space-x-1.5 transition">
+                            <i data-lucide="linkedin" class="w-3.5 h-3.5 text-blue-400"></i>
+                            <span>LinkedIn People Search</span>
+                        </a>
+                    </div>
+
+                    <!-- Pre-written Stealth Direct Pitch -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-purple-300 flex items-center space-x-1">
+                                <i data-lucide="send" class="w-3 h-3"></i>
+                                <span>Stealth Direct Pitch (No Upwork Bidding War)</span>
+                            </span>
+                            <div class="flex items-center space-x-1.5">
+                                <button onclick="copyToClipboard('stealth-generated-pitch')" class="text-xs bg-purple-600 hover:bg-purple-500 text-white font-medium px-2.5 py-1 rounded-lg transition">
+                                    Copy Pitch
+                                </button>
+                                <button onclick="saveStealthPitchToCrm('${escapeHtml(data.company_name)}', '${encodeURIComponent(data.stealth_pitch)}', 300)" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-2.5 py-1 rounded-lg transition">
+                                    Save to CRM
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="stealth-generated-pitch" rows="5" class="w-full bg-dark-900 border border-slate-700 text-slate-200 text-xs rounded-xl p-3 font-mono focus:outline-none">${data.stealth_pitch}</textarea>
+                    </div>
+                </div>
+            `;
+            showToast('🎯 Upwork Client De-Anonymized! Search dorks ready.', 'success');
+            playDingSound();
+        } else {
+            resultBox.innerHTML = `<div class="text-red-400 text-xs py-4 text-center">${data.message || 'De-anonymization failed.'}</div>`;
+        }
+    } catch (e) {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="zap" class="w-4 h-4"></i><span>De-Anonymize & Generate Stealth Direct Pitch</span>`;
+        resultBox.innerHTML = `<div class="text-red-400 text-xs py-4 text-center">Network error on de-anonymizer.</div>`;
+    }
+    if (window.lucide) lucide.createIcons();
+}
+
+async function loadProductHuntLaunches() {
+    const grid = document.getElementById('ph-launches-grid');
+    if (!grid) return;
+
+    grid.innerHTML = `
+        <div class="col-span-full text-center py-8 text-slate-400 space-y-2">
+            <i data-lucide="loader" class="w-6 h-6 mx-auto animate-spin text-orange-400"></i>
+            <p class="text-xs">Streaming freshly launched startups from Product Hunt & IndieHackers...</p>
+        </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+
+    try {
+        const res = await fetch('api/stealth_tools.php?action=product_hunt');
+        const data = await res.json();
+
+        if (data.status === 'success' && data.launches) {
+            grid.innerHTML = data.launches.map(l => `
+                <div class="bg-dark-950 border border-slate-800 hover:border-orange-500/40 rounded-xl p-4 flex flex-col justify-between space-y-3 transition">
+                    <div>
+                        <div class="flex items-center justify-between gap-1 mb-1.5">
+                            <span class="text-[10px] bg-orange-500/20 text-orange-300 border border-orange-500/30 px-2 py-0.5 rounded-full font-bold">
+                                ${l.source}
+                            </span>
+                            <span class="text-[10px] text-slate-500 font-mono">${l.posted_ago}</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-white leading-snug">${escapeHtml(l.name)}</h4>
+                        <p class="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">${escapeHtml(l.tagline)}</p>
+                        <div class="mt-2 text-[11px] text-emerald-400 font-mono font-bold">Deal Potential: $${l.deal_usd} (₹${Math.round(l.deal_inr)})</div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-1.5">
+                        <button onclick="copyToClipboard('${escapeHtml(l.pitch).replace(/'/g, "\\'")}')" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-semibold text-xs py-1.5 px-2 rounded-lg transition text-center flex items-center justify-center space-x-1">
+                            <i data-lucide="send" class="w-3 h-3"></i>
+                            <span>Pitch Maker</span>
+                        </button>
+                        <button onclick="saveStealthPitchToCrm('${escapeHtml(l.name)}', '${encodeURIComponent(l.pitch)}', ${l.deal_usd})" class="bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white text-xs py-1.5 px-2.5 rounded-lg border border-slate-700 transition" title="Save to CRM">
+                            <i data-lucide="bookmark" class="w-3 h-3"></i>
+                        </button>
+                        <a href="${l.url}" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-1.5 px-2 rounded-lg border border-slate-700 transition" title="Open Launch">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch (e) {
+        grid.innerHTML = `<div class="col-span-full text-red-400 text-xs text-center py-4">Error loading Product Hunt stream.</div>`;
+    }
+    if (window.lucide) lucide.createIcons();
+}
+
+async function loadGitHubBounties() {
+    const grid = document.getElementById('github-bounties-grid');
+    if (!grid) return;
+
+    grid.innerHTML = `
+        <div class="col-span-full text-center py-8 text-slate-400 space-y-2">
+            <i data-lucide="loader" class="w-6 h-6 mx-auto animate-spin text-sky-400"></i>
+            <p class="text-xs">Scanning open-source repositories for paid bounties & bugs...</p>
+        </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+
+    try {
+        const res = await fetch('api/stealth_tools.php?action=github_bounties');
+        const data = await res.json();
+
+        if (data.status === 'success' && data.bounties) {
+            grid.innerHTML = data.bounties.map(b => `
+                <div class="bg-dark-950 border border-slate-800 hover:border-sky-500/40 rounded-xl p-4 flex flex-col justify-between space-y-3 transition">
+                    <div>
+                        <div class="flex items-center justify-between gap-1 mb-1.5">
+                            <span class="text-[11px] font-mono text-sky-400 font-bold flex items-center space-x-1">
+                                <i data-lucide="folder-git" class="w-3 h-3"></i>
+                                <span>${escapeHtml(b.repo)}</span>
+                            </span>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
+                                ${b.bounty}
+                            </span>
+                        </div>
+                        <h4 class="text-xs font-bold text-white leading-snug">${escapeHtml(b.issue_title)}</h4>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">${escapeHtml(b.description)}</p>
+                        <div class="mt-2 text-[11px] text-purple-300 font-mono bg-purple-500/10 p-2 rounded-lg border border-purple-500/20">
+                            <span class="text-slate-400">Quick Fix Strategy:</span> ${escapeHtml(b.solution_angle)}
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                        <button onclick="copyToClipboard('Hi maintainers,\n\nI can submit a clean Pull Request fixing \"${escapeHtml(b.issue_title)}\".\n\nProposed Fix: ${escapeHtml(b.solution_angle)}\n\nI can push the PR within 2 hours. Let me know if you would like me to claim this issue!\n\nBest,\nJay')" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs py-1.5 px-3 rounded-lg transition flex items-center justify-center space-x-1">
+                            <i data-lucide="git-pull-request" class="w-3 h-3"></i>
+                            <span>Claim Bounty & Copy PR Pitch</span>
+                        </button>
+                        <a href="${b.url}" target="_blank" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-1.5 px-3 rounded-lg border border-slate-700 transition" title="Open GitHub Issue">
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            <span>Open</span>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch (e) {
+        grid.innerHTML = `<div class="col-span-full text-red-400 text-xs text-center py-4">Error loading GitHub bounties stream.</div>`;
+    }
+    if (window.lucide) lucide.createIcons();
+}
+
+async function saveStealthPitchToCrm(company, encodedPitch, dealUsd) {
+    const pitch = decodeURIComponent(encodedPitch);
+    try {
+        const res = await fetch('api/pipeline.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                action: 'add',
+                title: `Stealth Lead: ${company}`,
+                platform: 'LinkedIn / Direct Pitch',
+                status: 'new',
+                deal_value_usd: dealUsd || 250,
+                client_name: company,
+                notes: `Source: Stealth 0-Competition Bypass\nPitch:\n${pitch}`
+            })
+        });
+        showToast(`Saved ${company} ($${dealUsd}) to CRM!`, 'success');
+        playDingSound();
+        loadCrmLeads();
+    } catch (e) {
+        showToast('Failed to save to CRM', 'error');
+    }
 }
 
 function escapeHtml(str) {

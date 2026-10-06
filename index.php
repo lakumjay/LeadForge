@@ -116,6 +116,12 @@
                 <span id="tab-radar-count" class="bg-emerald-500 text-black font-bold text-[10px] px-1.5 py-0.2 rounded-full ml-1">0</span>
             </button>
 
+            <button onclick="switchTab('stealth')" id="tab-btn-stealth" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
+                <i data-lucide="crosshair" class="w-4 h-4 text-purple-400"></i>
+                <span>🎯 0-Comp Stealth & Launches</span>
+                <span class="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-1.5 py-0.2 rounded-full font-bold">New</span>
+            </button>
+
             <button onclick="switchTab('mass')" id="tab-btn-mass" class="nav-tab flex items-center space-x-2 px-4 py-2.5 text-xs sm:text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
                 <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i>
                 <span>🚀 Mass Scale Multiplier</span>
@@ -990,6 +996,128 @@
                             <!-- Populated via JS -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 1.2: 0-COMPETITION STEALTH BYPASS & DAILY LAUNCHES
+        ========================================== -->
+        <div id="view-stealth" class="hidden space-y-6">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-dark-900 via-dark-850 to-dark-900 border border-purple-500/40 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">🎯 0% Competition Mode</span>
+                            <span class="text-xs text-emerald-400 font-mono">⚡ 0-Platform Fee Direct Deal</span>
+                        </div>
+                        <h2 class="text-2xl font-black text-white">Stealth Client Acquisition &amp; Daily Launch Radar</h2>
+                        <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                            Bypass 50-freelancer bidding wars on Upwork by discovering the company founder directly, pitch freshly launched Product Hunt startups before others, and claim paid open-source bounties.
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="loadProductHuntLaunches()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-purple-600/20 flex items-center space-x-1.5 transition">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                            <span>Refresh Live Feeds</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODULE 1: UPWORK 0-COMPETITION CLIENT DE-ANONYMIZER -->
+            <div class="bg-dark-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex items-center space-x-3 pb-3 border-b border-slate-800">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center">
+                        <i data-lucide="crosshair" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Upwork Job De-Anonymizer &amp; Stealth Reachout</h3>
+                        <p class="text-xs text-slate-400">Paste any Upwork job post to extract company name, domain clues, generate Founder LinkedIn search dorks, and create a 0-fee direct pitch.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Upwork Job Title</label>
+                            <input type="text" id="stealth-upwork-title" placeholder="e.g. Need Laravel & Stripe webhook expert to fix checkout 500 error" class="w-full bg-dark-950 border border-slate-700 text-white rounded-xl px-3.5 py-2.5 text-xs focus:border-purple-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Client Country / Location</label>
+                            <input type="text" id="stealth-upwork-location" placeholder="e.g. United States, United Kingdom, Australia" value="United States" class="w-full bg-dark-950 border border-slate-700 text-white rounded-xl px-3.5 py-2.5 text-xs focus:border-purple-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Full Upwork Job Description / Details</label>
+                            <textarea id="stealth-upwork-text" rows="5" placeholder="Paste the client's full Upwork job post here (including any company hints, tools mentioned, or website references)..." class="w-full bg-dark-950 border border-slate-700 text-slate-200 text-xs rounded-xl p-3 focus:border-purple-500 focus:outline-none"></textarea>
+                        </div>
+                        <button onclick="runUpworkDeAnonymizer()" id="btn-run-deanonymizer" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg shadow-purple-600/30 flex items-center justify-center space-x-2 transition">
+                            <i data-lucide="zap" class="w-4 h-4"></i>
+                            <span>De-Anonymize &amp; Generate Stealth Direct Pitch</span>
+                        </button>
+                    </div>
+
+                    <!-- De-Anonymized Intelligence Result -->
+                    <div id="stealth-upwork-result" class="bg-dark-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
+                        <div class="text-center py-10 text-slate-500 space-y-2">
+                            <i data-lucide="search" class="w-8 h-8 mx-auto text-slate-600"></i>
+                            <p class="text-xs">Paste an Upwork job on the left and click "De-Anonymize" to extract founder intelligence.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODULE 2: PRODUCT HUNT & INDIEHACKERS DAILY LAUNCH RADAR -->
+            <div class="bg-dark-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center justify-center font-bold text-sm">
+                            PH
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h3 class="text-base font-bold text-white">Product Hunt &amp; Indie Daily Launches</h3>
+                                <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">Live Stream</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Newly launched startups today. Pitch their founders on post-launch backend scaling &amp; AI integrations.</p>
+                        </div>
+                    </div>
+                    <button onclick="loadProductHuntLaunches()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg border border-slate-700 flex items-center space-x-1.5 transition">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                        <span>Fetch Fresh Launches</span>
+                    </button>
+                </div>
+
+                <div id="ph-launches-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- MODULE 3: GITHUB PUBLIC ISSUES & PAID BOUNTY HUNTER -->
+            <div class="bg-dark-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-slate-800 text-slate-200 border border-slate-700 flex items-center justify-center">
+                            <i data-lucide="github" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <h3 class="text-base font-bold text-white">GitHub Public Issues &amp; Paid Bounty Hunter</h3>
+                                <span class="text-[10px] bg-sky-500/20 text-sky-400 border border-sky-500/30 px-2 py-0.5 rounded-full font-bold">Fast Cash Sprints</span>
+                            </div>
+                            <p class="text-xs text-slate-400">Live open bugs and sponsored bounties on high-traffic repositories. Claim with 1-click code patches.</p>
+                        </div>
+                    </div>
+                    <button onclick="loadGitHubBounties()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg border border-slate-700 flex items-center space-x-1.5 transition">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                        <span>Scan GitHub Bounties</span>
+                    </button>
+                </div>
+
+                <div id="github-bounties-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Populated via JS -->
                 </div>
             </div>
         </div>
