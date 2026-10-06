@@ -26,6 +26,16 @@ require_once __DIR__ . '/api/followup_engine.php';
 
 $logFile = DATA_PATH . '/daemon.log';
 $statusFile = DATA_PATH . '/daemon_status.json';
+$lockFile = DATA_PATH . '/cron.lock';
+
+// Non-blocking flock to prevent overlapping cron runs
+$lockFp = fopen($lockFile, 'c+');
+if (!$lockFp || !flock($lockFp, LOCK_EX | LOCK_NB)) {
+    echo "[" . date('Y-m-d H:i:s') . "] ⏭️ Another cron runner cycle is actively running. Skipping overlap.\n";
+    exit;
+}
+
+@set_time_limit(60);
 
 function cLog(string $msg): void {
     global $logFile;
@@ -287,6 +297,9 @@ $daemonStatus = [
     'total_pipeline_usd' => round($totalPipelineInr / $usdToInr, 2),
     'message' => "Server Cron is running 24/7 across {$currentCountry}."
 ];
-file_put_contents($statusFile, json_encode($daemonStatus, JSON_PRETTY_PRINT));
-
 cLog("🏁 [CRON FINISHED] Cycle completed successfully. Total CRM Leads: {$totalLeadsCount} | Total Pipeline: ₹" . number_format($totalPipelineInr, 2));
+
+if (isset($lockFp) && is_resource($lockFp)) {
+    flock($lockFp, LOCK_UN);
+    fclose($lockFp);
+}
