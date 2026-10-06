@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LeadForge AI — LinkedIn Auto-Pilot Engine",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "100% Autonomous Hands-Free LinkedIn Profile Views, Post Comments & Connection Automation for LeadForge AI",
   "permissions": [
     "tabs",
@@ -24,12 +24,17 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.linkedin.com/in/*", "*://*.linkedin.com/search/*"],
+      "matches": [
+        "*://*.linkedin.com/in/*",
+        "*://*.linkedin.com/search/*"
+      ],
       "js": ["content_profile.js"],
       "run_at": "document_idle"
     },
     {
-      "matches": ["*://*.linkedin.com/feed/*", "*://*.linkedin.com/posts/*"],
+      "matches": [
+        "*://*.linkedin.com/*"
+      ],
       "js": ["content_comment.js"],
       "run_at": "document_idle"
     }

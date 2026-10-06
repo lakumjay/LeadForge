@@ -37,7 +37,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 // Message Listener from Popup and Content Scripts
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
   if (req.action === "manual_trigger_task") {
-    processNextLeadForgeTask(req.serverUrl || DEFAULT_SERVER_URL).then(sendResponse);
+    processNextLeadForgeTask(req.serverUrl || DEFAULT_SERVER_URL, req.task_type || null).then(sendResponse);
     return true;
   }
   if (req.action === "profile_view_complete") {
@@ -69,12 +69,16 @@ chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
 
 let isTaskRunning = false;
 
-async function processNextLeadForgeTask(serverUrl) {
+async function processNextLeadForgeTask(serverUrl, taskType = null) {
   if (isTaskRunning) return { ok: false, error: "Task already in progress" };
   isTaskRunning = true;
 
   try {
-    const apiUrl = `${serverUrl.replace(/\/+$/, '')}/api/linkedin_ai_engine.php?action=get_extension_task`;
+    let apiUrl = `${serverUrl.replace(/\/+$/, '')}/api/linkedin_ai_engine.php?action=get_extension_task`;
+    if (taskType) {
+      apiUrl += `&task_type=${encodeURIComponent(taskType)}`;
+    }
+
     const res = await fetch(apiUrl, { cache: "no-store" });
     const task = await res.json();
 
@@ -99,28 +103,39 @@ async function processNextLeadForgeTask(serverUrl) {
         })
       }).catch(() => {});
 
-      // Fallback close after 20 seconds
+      // Fallback close after 18 seconds
       setTimeout(() => {
         if (tab && tab.id) {
           chrome.tabs.remove(tab.id).catch(() => {});
         }
         isTaskRunning = false;
-      }, 20000);
+      }, 18000);
 
       return { ok: true, task: "profile_view", target: task.name };
     }
 
     if (task.task_type === "post_comment" && task.post_url) {
-      const tab = await chrome.tabs.create({ url: task.post_url, active: false });
-      
       // Store pending comment info for content script
       await chrome.storage.local.set({
         pendingComment: {
-          tabId: tab.id,
           commentText: task.comment_text,
           author: task.author
         }
       });
+
+      const tab = await chrome.tabs.create({ url: task.post_url, active: false });
+
+      // Notify backend that comment was logged
+      fetch(`${serverUrl.replace(/\/+$/, '')}/api/linkedin_ai_engine.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "log_extension_comment_success",
+          author: task.author,
+          company: task.company,
+          comment: task.comment_text
+        })
+      }).catch(() => {});
 
       setTimeout(() => {
         if (tab && tab.id) {
@@ -135,7 +150,7 @@ async function processNextLeadForgeTask(serverUrl) {
   } catch (err) {
     console.error("LeadForge extension task error:", err);
   } finally {
-    setTimeout(() => { isTaskRunning = false; }, 5000);
+    setTimeout(() => { isTaskRunning = false; }, 4000);
   }
 
   return { ok: false };

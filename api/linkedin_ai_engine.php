@@ -91,44 +91,48 @@ if ($action === 'dispatch_profile_view') {
 // 2B. GET NEXT CHROME EXTENSION / LIVE BROWSER AUTOMATION TASK
 // ------------------------------------------------------------------
 if ($action === 'get_extension_task') {
-    // 60% chance profile view, 40% chance post comment
-    $rand = rand(1, 100);
+    $requestedType = $_GET['task_type'] ?? ($data['task_type'] ?? null);
 
-    if ($rand <= 60) {
-        $stmt = $db->query("SELECT * FROM linkedin_queue ORDER BY RANDOM() LIMIT 1");
-        $prospect = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($prospect) {
-            echo json_encode([
-                'ok' => true,
-                'task_type' => 'profile_view',
-                'prospect_id' => $prospect['id'],
-                'name' => $prospect['name'],
-                'company' => $prospect['company'],
-                'url' => $prospect['linkedin_url']
-            ]);
-            exit;
-        }
+    // If comment requested or randomly selected (50/50)
+    $doComment = ($requestedType === 'post_comment') || (!$requestedType && rand(1, 100) > 50);
+
+    if ($doComment) {
+        $targetPosts = [
+            ['author' => 'Eric Siu', 'company' => 'Single Grain', 'post_url' => 'https://www.linkedin.com/in/ericosiu/recent-activity/all/', 'topic' => 'Marketing agency growth & website speed optimization'],
+            ['author' => 'Tom Craig', 'company' => 'Impression Digital', 'post_url' => 'https://www.linkedin.com/company/impression-digital/posts/', 'topic' => 'Technical SEO audits & high-speed landing pages'],
+            ['author' => 'Ken Braun', 'company' => 'Lounge Lizard', 'post_url' => 'https://www.linkedin.com/company/lounge-lizard-worldwide-inc-/posts/', 'topic' => 'Laravel backend sprints & overflow development'],
+            ['author' => 'Disruptive Advertising', 'company' => 'Disruptive Ads', 'post_url' => 'https://www.linkedin.com/company/disruptive-advertising/posts/', 'topic' => 'PPC conversion rate optimization & Core Web Vitals'],
+            ['author' => 'KlientBoost', 'company' => 'KlientBoost Performance', 'post_url' => 'https://www.linkedin.com/company/klientboost/posts/', 'topic' => 'High performance landing page architectures']
+        ];
+        $selected = $targetPosts[array_rand($targetPosts)];
+        $comments = generateIntelligentComments($selected['topic'], $selected['author'], $selected['company'], $userName);
+        $commentText = $comments['technical_authority'] ?? $comments['insightful_addition'];
+
+        echo json_encode([
+            'ok' => true,
+            'task_type' => 'post_comment',
+            'author' => $selected['author'],
+            'company' => $selected['company'],
+            'post_url' => $selected['post_url'],
+            'comment_text' => $commentText
+        ]);
+        exit;
     }
 
-    // Default or Fallback: Post comment
-    $targetPosts = [
-        ['author' => 'Eric Siu', 'company' => 'Single Grain', 'post_url' => 'https://www.linkedin.com/in/ericosiu/', 'topic' => 'Marketing agency growth & website speed optimization'],
-        ['author' => 'Tom Craig', 'company' => 'Impression Digital', 'post_url' => 'https://www.linkedin.com/company/impression-digital/', 'topic' => 'Technical SEO audits & high-speed landing pages'],
-        ['author' => 'Ken Braun', 'company' => 'Lounge Lizard', 'post_url' => 'https://www.linkedin.com/company/lounge-lizard-worldwide-inc-/', 'topic' => 'Laravel backend sprints & overflow development']
-    ];
-    $selected = $targetPosts[array_rand($targetPosts)];
-    $comments = generateIntelligentComments($selected['topic'], $selected['author'], $selected['company'], $userName);
-    $commentText = $comments['technical_authority'] ?? $comments['insightful_addition'];
-
-    echo json_encode([
-        'ok' => true,
-        'task_type' => 'post_comment',
-        'author' => $selected['author'],
-        'company' => $selected['company'],
-        'post_url' => $selected['post_url'],
-        'comment_text' => $commentText
-    ]);
-    exit;
+    // Default: Profile view
+    $stmt = $db->query("SELECT * FROM linkedin_queue ORDER BY RANDOM() LIMIT 1");
+    $prospect = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($prospect) {
+        echo json_encode([
+            'ok' => true,
+            'task_type' => 'profile_view',
+            'prospect_id' => $prospect['id'],
+            'name' => $prospect['name'],
+            'company' => $prospect['company'],
+            'url' => $prospect['linkedin_url']
+        ]);
+        exit;
+    }
 }
 
 // ------------------------------------------------------------------
