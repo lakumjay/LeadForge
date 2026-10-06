@@ -223,6 +223,55 @@ function generateSalesNavigatorBooleanDorks(string $country = 'United States', s
     ];
 }
 
+/**
+ * Free Google Boolean Dork Extractor for Instagram Agencies & E-Com Brands
+ */
+function generateInstagramAgencyDorks(string $country = 'United States', string $category = 'agencies'): array {
+    $countryKeywords = [
+        'United States' => '"USA" OR "United States" OR "New York" OR "Los Angeles" OR "Miami" OR "Austin"',
+        'United Kingdom' => '"UK" OR "United Kingdom" OR "London" OR "Manchester"',
+        'Australia' => '"Australia" OR "Sydney" OR "Melbourne"',
+        'Canada' => '"Canada" OR "Toronto" OR "Vancouver"',
+        'India' => '"India" OR "Mumbai" OR "Bangalore" OR "Delhi"',
+        'United Arab Emirates' => '"Dubai" OR "UAE" OR "Abu Dhabi"',
+        'Global' => '"USA" OR "UK" OR "Australia" OR "Canada" OR "Dubai"'
+    ];
+
+    $locQuery = $countryKeywords[$country] ?? $countryKeywords['United States'];
+
+    $categoryQuery = match(strtolower($category)) {
+        'ecommerce' => '("clothing brand" OR "skincare" OR "ecommerce store" OR "shopify brand" OR "d2c brand")',
+        'local_business' => '("dental clinic" OR "dentist" OR "real estate agency" OR "realtor" OR "law firm" OR "aesthetic clinic")',
+        'startups' => '("tech startup" OR "ai tool" OR "saas platform" OR "mobile app")',
+        default => '("digital marketing agency" OR "web design agency" OR "creative agency" OR "social media agency" OR "shopify agency")'
+    };
+
+    $emailFootprint = '("@gmail.com" OR "@yahoo.com" OR "contact@" OR "hello@" OR "email:" OR "inquiries:")';
+
+    $dork = "site:instagram.com {$categoryQuery} AND {$emailFootprint} AND ({$locQuery}) -inurl:p/ -inurl:explore";
+    $googleUrl = "https://www.google.com/search?q=" . urlencode($dork);
+
+    $curatedInstagramAgencies = [
+        ['handle' => '@singlegrain', 'name' => 'Single Grain Marketing', 'email' => 'contact@singlegrain.com', 'category' => 'Marketing Agency', 'location' => 'Los Angeles, USA', 'pitch' => 'Technical SEO & GA4 Server Tracking Partner'],
+        ['handle' => '@disruptiveads', 'name' => 'Disruptive Advertising', 'email' => 'hello@disruptiveadvertising.com', 'category' => 'PPC & Ads Agency', 'location' => 'Utah, USA', 'pitch' => 'PPC Landing Page Speed & Conversion Overhaul'],
+        ['handle' => '@loungelizarddesign', 'name' => 'Lounge Lizard Worldwide', 'email' => 'info@loungelizard.com', 'category' => 'Web & UI Agency', 'location' => 'New York, USA', 'pitch' => 'Sub-Second Laravel & Shopify Backend Sprints'],
+        ['handle' => '@impression_talk', 'name' => 'Impression Digital', 'email' => 'info@impressiondigital.com', 'category' => 'Growth Agency', 'location' => 'Nottingham, UK', 'pitch' => 'High-Traffic API Refactoring & Microservices'],
+        ['handle' => '@megaphonemarketing', 'name' => 'Megaphone Marketing', 'email' => 'info@megaphonemarketing.com.au', 'category' => 'E-Com Agency', 'location' => 'Melbourne, AU', 'pitch' => 'Overnight Time-Zone Dev Sprint Partner'],
+        ['handle' => '@klientboost', 'name' => 'KlientBoost CRO', 'email' => 'dan@klientboost.com', 'category' => 'CRO & Performance', 'location' => 'Costa Mesa, USA', 'pitch' => 'Core Web Vitals 99+ Speed Optimization'],
+        ['handle' => '@fandangoseo', 'name' => 'Fandango Digital', 'email' => 'hello@fandangodigital.co.uk', 'category' => 'SEO & Web Agency', 'location' => 'Chichester, UK', 'pitch' => 'Technical Audit & Backend Bug Fixing'],
+        ['handle' => '@schbang', 'name' => 'Schbang Digital Tech', 'email' => 'info@schbang.com', 'category' => 'Full-Service Digital', 'location' => 'Mumbai, India', 'pitch' => 'Enterprise Laravel & Vue.js Web Solutions']
+    ];
+
+    return [
+        'ok' => true,
+        'country' => $country,
+        'category' => $category,
+        'dork_string' => $dork,
+        'google_url' => $googleUrl,
+        'curated_agencies' => $curatedInstagramAgencies
+    ];
+}
+
 if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'sales_navigator.php') {
     if (!headers_sent()) {
         header('Content-Type: application/json; charset=utf-8');
@@ -238,4 +287,12 @@ if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'sales_navigator.php') {
         echo json_encode(generateSalesNavigatorBooleanDorks($country, $role, $niche));
         exit;
     }
+
+    if ($action === 'instagram_dork') {
+        $country = $data['country'] ?? 'United States';
+        $category = $data['category'] ?? 'agencies';
+        echo json_encode(generateInstagramAgencyDorks($country, $category));
+        exit;
+    }
 }
+

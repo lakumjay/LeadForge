@@ -1213,7 +1213,15 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
             </div>
 
             <!-- Filter Controls -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Target Platform</label>
+                    <select id="dork-platform" onchange="updateSalesNavDork()" class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-2.5 py-1.5 text-xs focus:border-sky-500 focus:outline-none">
+                        <option value="linkedin">💼 LinkedIn Sales Nav</option>
+                        <option value="instagram">📸 Instagram Agency Emails</option>
+                    </select>
+                </div>
+
                 <div>
                     <label class="block text-[10px] font-semibold text-slate-400 mb-1">Target Country</label>
                     <select id="dork-country" onchange="updateSalesNavDork()" class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-2.5 py-1.5 text-xs focus:border-sky-500 focus:outline-none">
@@ -1228,7 +1236,7 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                     </select>
                 </div>
 
-                <div>
+                <div id="wrap-dork-role">
                     <label class="block text-[10px] font-semibold text-slate-400 mb-1">Decision Maker Role</label>
                     <select id="dork-role" onchange="updateSalesNavDork()" class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-2.5 py-1.5 text-xs focus:border-sky-500 focus:outline-none">
                         <option value="founder">Founders, CEOs & Owners</option>
@@ -1239,12 +1247,13 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Industry / Niche</label>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Industry / Category</label>
                     <select id="dork-niche" onchange="updateSalesNavDork()" class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-2.5 py-1.5 text-xs focus:border-sky-500 focus:outline-none">
-                        <option value="agency">Digital & Performance Agencies</option>
+                        <option value="agency">Digital & Web Agencies (Overflow)</option>
+                        <option value="ecommerce">E-Commerce & Shopify Brands</option>
+                        <option value="local_business">Dental, Medical & Real Estate</option>
                         <option value="saas">SaaS & Tech Startups</option>
-                        <option value="ecommerce">Shopify Plus & E-Commerce Brands</option>
-                        <option value="laravel">Laravel & Custom Web App Firms</option>
+                        <option value="laravel">Laravel & Custom Web Firms</option>
                     </select>
                 </div>
             </div>
@@ -1252,7 +1261,7 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
             <!-- Generated Boolean Dork Preview -->
             <div class="bg-dark-950 border border-slate-800 rounded-xl p-3 space-y-1.5 font-mono text-[11px]">
                 <div class="flex items-center justify-between text-slate-400">
-                    <span class="text-[10px] uppercase font-bold text-sky-400">Google X-Ray Boolean Query:</span>
+                    <span id="dork-query-title" class="text-[10px] uppercase font-bold text-sky-400">Google X-Ray Boolean Query:</span>
                     <button onclick="copyGeneratedText('dork-query-text')" class="text-slate-400 hover:text-white flex items-center space-x-1">
                         <i data-lucide="copy" class="w-3 h-3"></i>
                         <span>Copy Query</span>
@@ -1263,6 +1272,7 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
 
             <!-- Action Buttons -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+
                 <a id="btn-open-google-dork" href="https://www.google.com" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs py-2 px-3 rounded-xl shadow-lg flex items-center justify-center space-x-1.5 transition">
                     <i data-lucide="globe" class="w-3.5 h-3.5"></i>
                     <span>Open in Google Chrome 🔍</span>
@@ -2492,9 +2502,8 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
             if (!isAutoPilotActive) return;
 
             if (dailySentCount >= dailyMax) {
-                stopAutoPilot();
-                showToast(`🟢 Daily Safe Quota (${dailySentCount}/${dailyMax}) reached. Auto-switching to Profile View Warm-Up!`);
-                switchMasterTab('warmup');
+                document.getElementById('autopilot-status-text').innerText = `🟢 Daily connection quota (${dailySentCount}/${dailyMax}) reached! Auto-Pilot is now actively warming up target profiles...`;
+                dispatchWarmupAutoPilot();
                 return;
             }
 
@@ -2515,9 +2524,8 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                     loadQueue(currentFilter);
 
                     if (data.quota_reached) {
-                        stopAutoPilot();
-                        showToast(`🟢 Daily Limit (${dailySentCount}/${dailyMax}) reached! Switched to Profile Warm-Up.`);
-                        switchMasterTab('warmup');
+                        document.getElementById('autopilot-status-text').innerText = `🟢 Daily connection quota (${dailySentCount}/${dailyMax}) complete! Running Profile View Warm-Up touches...`;
+                        dispatchWarmupAutoPilot();
                         return;
                     }
 
@@ -2530,18 +2538,42 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                     }, randomDelay * 1000);
                 } else {
                     if (data.quota_reached) {
-                        stopAutoPilot();
-                        showToast(data.message);
-                        switchMasterTab('warmup');
+                        document.getElementById('autopilot-status-text').innerText = `🟢 Daily connections complete. Actively warming up profiles...`;
+                        dispatchWarmupAutoPilot();
                     } else {
-                        setTimeout(() => dispatchNextAutoProspect(), 10000);
+                        setTimeout(() => dispatchNextAutoProspect(), 15000);
                     }
                 }
             } catch (e) {
                 console.error(e);
-                setTimeout(() => dispatchNextAutoProspect(), 15000);
+                setTimeout(() => dispatchNextAutoProspect(), 20000);
             }
         }
+
+        async function dispatchWarmupAutoPilot() {
+            if (!isAutoPilotActive) return;
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'dispatch_profile_view' })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    showToast(`👁️ Warm-Up visit dispatched: ${data.target.name} (${data.target.company})`);
+                    loadTodaySummary();
+                }
+            } catch (e) {}
+
+            const randomDelay = Math.floor(Math.random() * 30) + 40;
+            remainingSeconds = randomDelay;
+            startCountdownTimer(randomDelay);
+
+            autoPilotTimer = setTimeout(() => {
+                if (isAutoPilotActive) dispatchWarmupAutoPilot();
+            }, randomDelay * 1000);
+        }
+
 
         function startCountdownTimer(totalSec) {
             clearInterval(autoPilotCountdown);
@@ -2952,15 +2984,25 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
         let currentFunnelStage = 'all';
 
         async function updateSalesNavDork() {
+            const platform = document.getElementById('dork-platform') ? document.getElementById('dork-platform').value : 'linkedin';
             const country = document.getElementById('dork-country') ? document.getElementById('dork-country').value : 'United States';
             const role = document.getElementById('dork-role') ? document.getElementById('dork-role').value : 'founder';
             const niche = document.getElementById('dork-niche') ? document.getElementById('dork-niche').value : 'agency';
 
+            const wrapRole = document.getElementById('wrap-dork-role');
+            if (wrapRole) wrapRole.classList.toggle('hidden', platform === 'instagram');
+
+            const titleElem = document.getElementById('dork-query-title');
+            if (titleElem) titleElem.innerText = platform === 'instagram' ? 'Google Instagram Bio Email Dork Query:' : 'Google LinkedIn Boolean Query:';
+
             try {
+                const actionName = platform === 'instagram' ? 'generate_instagram_dork' : 'generate_sales_nav_dork';
+                const payload = platform === 'instagram' ? { action: actionName, country: country, category: niche } : { action: actionName, country: country, role: role, niche: niche };
+
                 const res = await fetch('api/linkedin_ai_engine.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'generate_sales_nav_dork', country: country, role: role, niche: niche })
+                    body: JSON.stringify(payload)
                 });
                 const data = await res.json();
                 if (data.ok) {
@@ -2969,10 +3011,20 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                     const gBtn = document.getElementById('btn-open-google-dork');
                     if (gBtn) gBtn.href = data.google_url;
                     const lBtn = document.getElementById('btn-open-linkedin-dork');
-                    if (lBtn) lBtn.href = data.linkedin_url;
+                    if (lBtn) {
+                        if (platform === 'instagram') {
+                            lBtn.href = `https://www.instagram.com/explore/tags/${niche}/`;
+                            lBtn.innerHTML = '<i data-lucide="instagram" class="w-3.5 h-3.5"></i><span>Instagram Explore 📸</span>';
+                        } else {
+                            lBtn.href = data.linkedin_url || 'https://www.linkedin.com';
+                            lBtn.innerHTML = '<i data-lucide="external-link" class="w-3.5 h-3.5"></i><span>LinkedIn Search 💼</span>';
+                        }
+                    }
+                    lucide.createIcons();
                 }
             } catch (e) {}
         }
+
 
         async function importSalesNavLeads() {
             const country = document.getElementById('dork-country') ? document.getElementById('dork-country').value : 'United States';

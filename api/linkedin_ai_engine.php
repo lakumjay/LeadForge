@@ -369,6 +369,18 @@ if ($action === 'generate_sales_nav_dork') {
 }
 
 // ------------------------------------------------------------------
+// 13B. GENERATE INSTAGRAM AGENCY & BRAND BOOLEAN DORKS
+// ------------------------------------------------------------------
+if ($action === 'generate_instagram_dork') {
+    require_once __DIR__ . '/sales_navigator.php';
+    $country = trim($data['country'] ?? 'United States');
+    $category = trim($data['category'] ?? 'agencies');
+    echo json_encode(generateInstagramAgencyDorks($country, $category));
+    exit;
+}
+
+
+// ------------------------------------------------------------------
 // 14. IMPORT SALES NAV LEADS INTO 4-STAGE PIPELINE
 // ------------------------------------------------------------------
 if ($action === 'import_sales_nav_leads') {
