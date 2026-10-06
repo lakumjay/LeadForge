@@ -1,4 +1,6 @@
+# Runtime and dynamic data
+data/*.log
+data/*_cache.json
+data/daemon_status.json
+data/autopilot_status.json
 .DS_Store
-data/*.sqlite-wal
-data/*.sqlite-shm
-data/daemon.log
