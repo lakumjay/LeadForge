@@ -97,6 +97,11 @@
                     <span class="hidden sm:inline">Sound</span>
                 </button>
 
+                <a href="linkedin.php" class="flex items-center space-x-1.5 bg-sky-600/20 hover:bg-sky-600/30 text-sky-400 border border-sky-500/40 px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm">
+                    <i data-lucide="linkedin" class="w-3.5 h-3.5 text-sky-400"></i>
+                    <span>LinkedIn Hub</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                </a>
                 <button onclick="switchTab('crm')" class="flex items-center space-x-2 bg-gradient-to-r from-emerald-600 to-brand-600 hover:from-emerald-500 hover:to-brand-500 text-white font-medium text-xs px-3.5 py-2 rounded-lg shadow-md shadow-brand-600/20 transition">
                     <i data-lucide="trending-up" class="w-4 h-4"></i>
                     <span>Goal: <span id="nav-goal-progress" class="font-bold text-white">0%</span></span>
@@ -106,6 +111,12 @@
 
         <!-- Navigation Tabs -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1.5 overflow-x-auto border-t border-slate-800/60 scrollbar-none py-1.5 flex-nowrap whitespace-nowrap">
+            <a href="linkedin.php" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-bold rounded-lg text-sky-300 bg-sky-500/20 border border-sky-500/40 hover:bg-sky-500/30 transition shadow-md shadow-sky-500/10">
+                <i data-lucide="linkedin" class="w-4 h-4 text-sky-400"></i>
+                <span class="font-bold">💼 LinkedIn 24/7 Hub</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5"></span>
+            </a>
+
             <button onclick="switchTab('autopilot')" id="tab-btn-autopilot" class="nav-tab shrink-0 flex items-center space-x-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-lg text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 transition">
                 <i data-lucide="bot" class="w-4 h-4"></i>
                 <span class="font-bold">🤖 Auto-Pilot</span>
