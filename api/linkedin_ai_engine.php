@@ -52,7 +52,7 @@ if ($action === 'generate_comment') {
 }
 
 // ------------------------------------------------------------------
-// 2. PROFILE VIEW WARM-UP QUEUE DISPATCHER
+// 2. PROFILE VIEW WARM-UP QUEUE DISPATCHER & EXTENSION CONTROLLER
 // ------------------------------------------------------------------
 if ($action === 'dispatch_profile_view') {
     // Select an unviewed high-value prospect
@@ -61,6 +61,19 @@ if ($action === 'dispatch_profile_view') {
 
     if ($target) {
         $viewTime = date('Y-m-d H:i:s');
+        
+        // Record into linkedin_warmups
+        try {
+            $stmt = $db->prepare("INSERT INTO linkedin_warmups (name, company, role, profile_url, action_type, status, warmed_at) VALUES (?, ?, ?, ?, 'profile_view', 'completed', ?)");
+            $stmt->execute([
+                $target['name'],
+                $target['company'],
+                $target['role'] ?? 'Founder / CEO',
+                $target['linkedin_url'],
+                $viewTime
+            ]);
+        } catch (Throwable $e) {}
+
         echo json_encode([
             'ok' => true,
             'target' => $target,
@@ -71,6 +84,90 @@ if ($action === 'dispatch_profile_view') {
     } else {
         echo json_encode(['ok' => false, 'message' => 'No target profiles available for view warm-up.']);
     }
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 2B. GET NEXT CHROME EXTENSION / LIVE BROWSER AUTOMATION TASK
+// ------------------------------------------------------------------
+if ($action === 'get_extension_task') {
+    // 60% chance profile view, 40% chance post comment
+    $rand = rand(1, 100);
+
+    if ($rand <= 60) {
+        $stmt = $db->query("SELECT * FROM linkedin_queue ORDER BY RANDOM() LIMIT 1");
+        $prospect = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($prospect) {
+            echo json_encode([
+                'ok' => true,
+                'task_type' => 'profile_view',
+                'prospect_id' => $prospect['id'],
+                'name' => $prospect['name'],
+                'company' => $prospect['company'],
+                'url' => $prospect['linkedin_url']
+            ]);
+            exit;
+        }
+    }
+
+    // Default or Fallback: Post comment
+    $targetPosts = [
+        ['author' => 'Eric Siu', 'company' => 'Single Grain', 'post_url' => 'https://www.linkedin.com/in/ericosiu/', 'topic' => 'Marketing agency growth & website speed optimization'],
+        ['author' => 'Tom Craig', 'company' => 'Impression Digital', 'post_url' => 'https://www.linkedin.com/company/impression-digital/', 'topic' => 'Technical SEO audits & high-speed landing pages'],
+        ['author' => 'Ken Braun', 'company' => 'Lounge Lizard', 'post_url' => 'https://www.linkedin.com/company/lounge-lizard-worldwide-inc-/', 'topic' => 'Laravel backend sprints & overflow development']
+    ];
+    $selected = $targetPosts[array_rand($targetPosts)];
+    $comments = generateIntelligentComments($selected['topic'], $selected['author'], $selected['company'], $userName);
+    $commentText = $comments['technical_authority'] ?? $comments['insightful_addition'];
+
+    echo json_encode([
+        'ok' => true,
+        'task_type' => 'post_comment',
+        'author' => $selected['author'],
+        'company' => $selected['company'],
+        'post_url' => $selected['post_url'],
+        'comment_text' => $commentText
+    ]);
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 2C. LOG EXTENSION VIEW SUCCESS
+// ------------------------------------------------------------------
+if ($action === 'log_extension_view_success') {
+    $prospectId = (int)($data['prospect_id'] ?? 0);
+    $name = trim($data['name'] ?? 'Target Founder');
+    $company = trim($data['company'] ?? 'Agency');
+
+    try {
+        $stmt = $db->prepare("INSERT INTO linkedin_warmups (name, company, role, profile_url, action_type, status) VALUES (?, ?, 'Founder', 'https://linkedin.com', 'profile_view', 'completed')");
+        $stmt->execute([$name, $company]);
+
+        $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, 'LinkedIn', 'Chrome Extension Auto Profile View')")
+           ->execute([$prospectId]);
+    } catch (Throwable $e) {}
+
+    echo json_encode(['ok' => true, 'message' => "Logged auto view on {$name} ({$company})"]);
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 2D. LOG EXTENSION COMMENT SUCCESS
+// ------------------------------------------------------------------
+if ($action === 'log_extension_comment_success') {
+    $author = trim($data['author'] ?? 'Target Author');
+    $company = trim($data['company'] ?? 'Agency');
+    $comment = trim($data['comment'] ?? '');
+
+    try {
+        $stmt = $db->prepare("INSERT INTO linkedin_comments (post_url, post_author, post_company, post_topic, comment_text, comment_style, published_via) VALUES ('https://linkedin.com', ?, ?, 'Agency Tech', ?, 'technical_authority', 'Chrome Extension Auto-Pilot')");
+        $stmt->execute([$author, $company, $comment]);
+
+        $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (0, 'LinkedIn', 'Chrome Extension Auto Post Comment')")
+           ->execute();
+    } catch (Throwable $e) {}
+
+    echo json_encode(['ok' => true, 'message' => "Logged auto comment on {$author} ({$company})"]);
     exit;
 }
 

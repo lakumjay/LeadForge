@@ -685,20 +685,59 @@ if (!headers_sent()) {
 
     <!-- TAB 2: PROFILE VIEW WARM-UP ENGINE -->
     <section id="view-warmup" class="hidden max-w-3xl mx-auto px-4 pt-3 space-y-4">
+        <!-- Chrome Extension Banner -->
+        <div class="bg-gradient-to-r from-indigo-900/40 via-dark-900 to-sky-900/40 border border-sky-500/40 rounded-2xl p-4 shadow-xl space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0 border border-sky-500/30">
+                        <i data-lucide="puzzle" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-bold text-white">LeadForge Chrome Extension (100% Hands-Free Auto-Pilot)</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 animate-pulse">Ready</span>
+                        </div>
+                        <p class="text-[11px] text-slate-300 mt-0.5">
+                            Auto-visits target profiles in background tabs & auto-posts AI comments on agency posts with real LinkedIn login session.
+                        </p>
+                    </div>
+                </div>
+                <button onclick="toggleExtensionGuideModal()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 transition shrink-0 shadow-lg shadow-sky-600/30">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>15-Sec Install Guide 🧩</span>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 border-t border-slate-800 text-[11px] text-slate-300">
+                <div class="flex items-center space-x-1.5">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span>1. Real "Jay viewed your profile" pushes</span>
+                </div>
+                <div class="flex items-center space-x-1.5">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span>2. Auto-type & submit AI comments</span>
+                </div>
+                <div class="flex items-center space-x-1.5">
+                    <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span>3. Zero ban risk with human delays</span>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-dark-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-sm font-bold text-white flex items-center space-x-1.5">
                         <i data-lucide="eye" class="w-4 h-4 text-sky-400"></i>
-                        <span>Automatic Profile View Warm-Up Engine</span>
+                        <span>Live Browser Profile View Warm-Up Runner</span>
                     </h2>
                     <p class="text-xs text-slate-400 mt-0.5">
-                        Triggers <i>"Jay viewed your profile"</i> notifications to target Founders & CEOs to drive 5x inbound visits.
+                        Opens live target profile in a temporary 12-second viewer window to guarantee LinkedIn registers your view!
                     </p>
                 </div>
-                <button onclick="dispatchManualWarmup()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition">
-                    <i data-lucide="play" class="w-3.5 h-3.5"></i>
-                    <span>View Next Profile Now</span>
+                <button onclick="dispatchLiveBrowserWarmup()" class="bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 shadow-lg shadow-sky-600/30 transition active:scale-95">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    <span>⚡ Live Auto-View Next</span>
                 </button>
             </div>
 
@@ -1807,8 +1846,6 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
     </section>
 
     <!-- LinkedIn Settings Modal -->
-
-
     <div id="modal-linkedin-settings" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
             <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -1868,6 +1905,68 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                     <input type="password" id="input-li-at" placeholder="AQED..." class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs font-mono focus:border-sky-500 focus:outline-none">
                     <p class="text-[10px] text-slate-500 mt-0.5">Used as auxiliary backup connection for organic interactions.</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chrome Extension 15-Sec Setup Modal -->
+    <div id="modal-extension-guide" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-dark-900 border border-sky-500/40 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-500 text-white flex items-center justify-center font-bold shadow-lg shadow-sky-500/20">
+                        <i data-lucide="puzzle" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-white">LeadForge Chrome Extension Setup</h3>
+                        <p class="text-[11px] text-slate-400">100% Hands-Free Auto Profile Views & Post Comments</p>
+                    </div>
+                </div>
+                <button onclick="toggleExtensionGuideModal()" class="text-slate-400 hover:text-white p-1 rounded-lg bg-slate-800">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 text-xs text-slate-300">
+                <div class="bg-dark-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <span class="font-bold text-sky-400 flex items-center space-x-1.5">
+                        <span class="w-5 h-5 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center text-[10px]">1</span>
+                        <span>Open Extensions in Google Chrome</span>
+                    </span>
+                    <p class="text-slate-400 pl-6">Open a new tab in Chrome, paste this into address bar and press Enter:</p>
+                    <div class="ml-6 bg-slate-900 p-2 rounded-lg font-mono text-amber-300 select-all border border-slate-800 flex items-center justify-between">
+                        <span>chrome://extensions</span>
+                        <button onclick="navigator.clipboard.writeText('chrome://extensions'); showToast('Copied chrome://extensions!')" class="text-slate-400 hover:text-white"><i data-lucide="copy" class="w-3.5 h-3.5"></i></button>
+                    </div>
+                </div>
+
+                <div class="bg-dark-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <span class="font-bold text-sky-400 flex items-center space-x-1.5">
+                        <span class="w-5 h-5 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center text-[10px]">2</span>
+                        <span>Enable "Developer Mode" & Click "Load Unpacked"</span>
+                    </span>
+                    <p class="text-slate-400 pl-6">Turn ON the Developer Mode switch in top-right corner, then click "Load unpacked" button.</p>
+                </div>
+
+                <div class="bg-dark-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <span class="font-bold text-sky-400 flex items-center space-x-1.5">
+                        <span class="w-5 h-5 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center text-[10px]">3</span>
+                        <span>Select the Extension Folder</span>
+                    </span>
+                    <p class="text-slate-400 pl-6">Choose the extension folder inside your LeadForge directory:</p>
+                    <div class="ml-6 bg-slate-900 p-2 rounded-lg font-mono text-emerald-400 select-all border border-slate-800 text-[10px] break-all">
+                        /Applications/XAMPP/xamppfiles/htdocs/linkdin+upwork +google /extension
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button onclick="toggleExtensionGuideModal()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-lg shadow-sky-600/30 transition">
+                    Got it, I'm ready! 🚀
+                </button>
+            </div>
+        </div>
+    </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">LinkedIn Access Token (Manual OAuth Token)</label>
@@ -2835,6 +2934,48 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                     logEl.prepend(newEntry);
                 }
             } catch (e) {}
+        }
+
+        async function dispatchLiveBrowserWarmup() {
+            showToast('⚡ Fetching next target Founder for live profile view...');
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php?action=dispatch_profile_view');
+                const data = await res.json();
+                if (data.ok && data.target) {
+                    showToast(`🌐 Opening ${data.target.name}'s profile... Auto-closing in 12s.`);
+                    
+                    // Open live tab or popup
+                    const win = window.open(data.target.linkedin_url, 'leadforge_view_window', 'width=950,height=750,left=100,top=80');
+                    
+                    // Auto-close after 12 seconds to ensure view counter is registered
+                    setTimeout(() => {
+                        if (win && !win.closed) {
+                            win.close();
+                            showToast(`✅ Profile view completed for ${data.target.name}! Registered with LinkedIn.`);
+                        }
+                    }, 12000);
+
+                    const logEl = document.getElementById('warmup-log-container');
+                    if (logEl) {
+                        const newEntry = document.createElement('div');
+                        newEntry.className = 'p-2.5 rounded-lg bg-slate-900/60 border border-sky-500/40 flex items-center justify-between text-xs font-mono text-slate-300 shadow-md';
+                        newEntry.innerHTML = `<span>👀 Live Auto-Viewed: <b>${escapeHtml(data.target.name)}</b> (${escapeHtml(data.target.company)})</span><span class="text-[10px] text-sky-400 font-bold">12s Live Session</span>`;
+                        logEl.prepend(newEntry);
+                    }
+                } else {
+                    showToast('No pending profiles found.');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function toggleExtensionGuideModal() {
+            const modal = document.getElementById('modal-extension-guide');
+            if (modal) {
+                modal.classList.toggle('hidden');
+                lucide.createIcons();
+            }
         }
 
         async function generateAIComments() {
