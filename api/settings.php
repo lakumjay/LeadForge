@@ -15,10 +15,18 @@ if ($method === 'GET') {
     $settings = getSettings();
     $safeSettings = $settings;
     if (!empty($safeSettings['gemini_api_key'])) {
-        $safeSettings['gemini_api_key_masked'] = substr($safeSettings['gemini_api_key'], 0, 4) . '...' . substr($safeSettings['gemini_api_key'], -4);
+        $safeSettings['gemini_api_key_masked'] = substr($safeSettings['gemini_api_key'], 0, 4) . '••••••••' . substr($safeSettings['gemini_api_key'], -4);
+        $safeSettings['gemini_api_key'] = $safeSettings['gemini_api_key_masked'];
+        $safeSettings['has_gemini_key'] = true;
+    } else {
+        $safeSettings['has_gemini_key'] = false;
     }
     if (!empty($safeSettings['smtp_pass'])) {
         $safeSettings['smtp_pass_masked'] = '••••••••••••••••';
+        $safeSettings['smtp_pass'] = '••••••••••••••••';
+        $safeSettings['has_smtp_pass'] = true;
+    } else {
+        $safeSettings['has_smtp_pass'] = false;
     }
     echo json_encode(['status' => 'success', 'settings' => $safeSettings]);
     exit;
@@ -66,14 +74,21 @@ if ($method === 'POST') {
     if (isset($data['daily_linkedin_limit'])) $current['daily_linkedin_limit'] = (int)$data['daily_linkedin_limit'];
     if (isset($data['daily_email_limit'])) $current['daily_email_limit'] = (int)$data['daily_email_limit'];
     if (isset($data['daily_upwork_limit'])) $current['daily_upwork_limit'] = (int)$data['daily_upwork_limit'];
-    if (isset($data['gemini_api_key']) && $data['gemini_api_key'] !== '') {
-        $current['gemini_api_key'] = trim($data['gemini_api_key']);
+    
+    if (isset($data['gemini_api_key'])) {
+        $submittedKey = trim($data['gemini_api_key']);
+        if ($submittedKey !== '' && strpos($submittedKey, '••') === false) {
+            $current['gemini_api_key'] = $submittedKey;
+        }
     }
 
     // SMTP Settings
     if (isset($data['smtp_user'])) $current['smtp_user'] = trim($data['smtp_user']);
-    if (isset($data['smtp_pass']) && $data['smtp_pass'] !== '') {
-        $current['smtp_pass'] = trim($data['smtp_pass']);
+    if (isset($data['smtp_pass'])) {
+        $submittedPass = trim($data['smtp_pass']);
+        if ($submittedPass !== '' && strpos($submittedPass, '••') === false) {
+            $current['smtp_pass'] = $submittedPass;
+        }
     }
     if (isset($data['smtp_host'])) $current['smtp_host'] = trim($data['smtp_host']);
     if (isset($data['smtp_port'])) $current['smtp_port'] = (int)$data['smtp_port'];
@@ -81,7 +96,14 @@ if ($method === 'POST') {
     if (isset($data['smtp_from_email'])) $current['smtp_from_email'] = trim($data['smtp_from_email']);
 
     if (updateSettings($current)) {
-        echo json_encode(['status' => 'success', 'message' => 'Settings saved successfully', 'settings' => $current]);
+        $safeResponse = $current;
+        if (!empty($safeResponse['gemini_api_key'])) {
+            $safeResponse['gemini_api_key'] = substr($safeResponse['gemini_api_key'], 0, 4) . '••••••••' . substr($safeResponse['gemini_api_key'], -4);
+        }
+        if (!empty($safeResponse['smtp_pass'])) {
+            $safeResponse['smtp_pass'] = '••••••••••••••••';
+        }
+        echo json_encode(['status' => 'success', 'message' => 'Settings saved successfully', 'settings' => $safeResponse]);
     } else {
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => 'Failed to save settings file']);

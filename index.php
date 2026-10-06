@@ -961,7 +961,7 @@
                 </div>
                 <div class="flex justify-between items-center text-xs text-slate-400 mt-2 font-mono">
                     <span>Progress: <span id="crm-goal-percent" class="text-emerald-400 font-bold">0%</span></span>
-                    <span>Remaining Gap: ₹<span id="crm-gap-inr">50,000</span> ($<span id="crm-gap-usd">600</span>)</span>
+                    <span>Remaining Gap: ₹<span id="crm-gap-inr">50,000</span> ($<span id="crm-gap-usd">578</span>)</span>
                 </div>
             </div>
 
@@ -1381,11 +1381,11 @@
 
             <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div class="flex items-center space-x-4">
-                    <a id="modal-pitch-link" href="#" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
+                    <a id="modal-pitch-link" href="javascript:void(0)" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1 hidden">
                         <span>Open Client Website</span>
                         <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                     </a>
-                    <a id="modal-pitch-linkedin" href="#" target="_blank" class="text-xs text-sky-400 hover:underline flex items-center space-x-1">
+                    <a id="modal-pitch-linkedin" href="javascript:void(0)" target="_blank" class="text-xs text-sky-400 hover:underline flex items-center space-x-1">
                         <span>Find Decision Maker on LinkedIn</span>
                         <i data-lucide="search" class="w-3.5 h-3.5"></i>
                     </a>

@@ -322,7 +322,11 @@ function processAndDispatchSingleLead(array $lead, PDO $db, array $settings, flo
 
     // Attempt real SMTP dispatch ONLY if verified authentic deliverable
     if ($isDeliverable && !empty($finalEmail) && !empty($settings['smtp_user']) && !empty($settings['smtp_pass'])) {
-        $smtpRes = SmtpMailer::send($finalEmail, $subject, $pitch, $settings);
+        $emailBody = $pitch;
+        if (strpos($emailBody, 'opt out') === false && strpos($emailBody, 'unsubscribe') === false) {
+            $emailBody .= "\n\n---\nPS: If you're not the right person or would rather not hear from me, simply reply 'opt out'.";
+        }
+        $smtpRes = SmtpMailer::send($finalEmail, $subject, $emailBody, $settings);
         $smtpDelivered = $smtpRes['success'];
         $smtpMessage = $smtpRes['message'];
     }

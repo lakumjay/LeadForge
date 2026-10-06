@@ -1,15 +1,15 @@
 {
     "status": "running",
     "is_running": true,
-    "last_heartbeat": "2026-10-05 15:22:07",
-    "current_country": "United Kingdom",
-    "current_category": "all",
-    "today_email_sent": 30,
+    "last_heartbeat": "2026-10-06 05:56:25",
+    "current_country": "India",
+    "current_category": "ecommerce",
+    "today_email_sent": 3,
     "daily_email_limit": 999999,
-    "today_linkedin_sent": 60,
+    "today_linkedin_sent": 0,
     "daily_linkedin_limit": 999999,
-    "total_leads_in_crm": 2196,
-    "total_pipeline_inr": 44417750,
-    "total_pipeline_usd": 513500,
-    "message": "Server Cron is running 24\/7 across United Kingdom."
+    "total_leads_in_crm": 2233,
+    "total_pipeline_inr": 45066500,
+    "total_pipeline_usd": 521000,
+    "message": "Server Cron is running 24\/7 across India."
 }

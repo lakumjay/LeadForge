@@ -203,6 +203,10 @@ function generateLocalHumanProposal(
         ];
     }
 
+    if ($type === 'email' || $type === 'audit_pitch') {
+        $body .= "\n\n---\nPS: If you're not the right person or would rather not hear from me, simply reply 'opt out'.";
+    }
+
     return [
         'subject' => $subject,
         'golden_hook' => $subject,
