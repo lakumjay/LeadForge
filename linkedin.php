@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/database.php';
-require_once __DIR__ . '/api/sales_navigator.php';
 
 $db = Database::getConnection();
 $settings = getSettings();
@@ -294,9 +293,12 @@ function seedCuratedLinkedInProspects(PDO $db): int {
 
 // Ensure at least 15 prospects exist in queue on initial page view
 $stmt = $db->query("SELECT COUNT(*) FROM linkedin_queue WHERE status = 'pending'");
-$pendingCount = (int)$stmt->fetchColumn();
 if ($pendingCount === 0) {
     seedCuratedLinkedInProspects($db);
+}
+
+if (!headers_sent()) {
+    header('Content-Type: text/html; charset=utf-8');
 }
 ?>
 <!DOCTYPE html>
