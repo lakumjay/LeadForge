@@ -158,8 +158,20 @@ if ($nurtureResult && !empty($nurtureResult['ok'])) {
 }
 
 // ----------------------------------------------------
+// B7. AUTONOMOUS INSTAGRAM DIGITAL AGENCY OUTREACH (24/7 AUTO-PILOT)
+// ----------------------------------------------------
+if ($emailsSentToday < $dailyEmailLimit) {
+    $autoIgResult = autoDispatchDailyInstagramAgency($db, $settings, $usdToInr);
+    if ($autoIgResult && !empty($autoIgResult['ok'])) {
+        $emailsSentToday++;
+        cronLog("📸 [INSTAGRAM AUTO-OUTREACH] Dispatched partnership email to {$autoIgResult['name']} ({$autoIgResult['handle']} - {$autoIgResult['email']})!");
+    }
+}
+
+// ----------------------------------------------------
 // C. 3-STAGE SMART FOLLOW-UP SEQUENCE (48h, 5d, 9d)
 // ----------------------------------------------------
+
 if ($emailsSentToday < $dailyEmailLimit) {
     $followups = runAutomatedFollowups($db, $settings);
     foreach ($followups as $fu) {
@@ -286,9 +298,85 @@ function saveManualLead(PDO $db, array $agency, array $issue, float $usdToInr, s
     cronLog("📌 [MANUAL QUEUE] Saved {$agency['name']} to CRM for 1-click LinkedIn outreach.");
 }
 
+/**
+ * Autonomous 24/7 Instagram Digital Agency Outreach
+ */
+function autoDispatchDailyInstagramAgency(PDO $db, array $settings, float $usdToInr): ?array {
+    if (empty($settings['smtp_user']) || empty($settings['smtp_pass'])) {
+        return null;
+    }
+
+    require_once __DIR__ . '/../api/sales_navigator.php';
+    $dorkData = generateInstagramAgencyDorks('United States', 'agencies');
+    $agencies = $dorkData['curated_agencies'] ?? [];
+
+    $userName = $settings['user_name'] ?? 'Jay';
+    $title = $settings['title'] ?? 'Senior Laravel & Full-Stack Architect';
+
+    foreach ($agencies as $ag) {
+        $email = strtolower(trim($ag['email']));
+        $domain = strtolower(substr(strrchr($email, "@") ?: '', 1));
+        $name = $ag['name'];
+        $handle = $ag['handle'];
+        $pitchFocus = $ag['pitch'];
+        $location = $ag['location'];
+
+        // Strict duplicate checks
+        if (isLeadAlreadyContacted($db, $email, $domain, $name) || isEmailOrDomainSentRecently($email, $domain, 24)) {
+            continue;
+        }
+
+        $subject = "quick partnership question for {$name} team ({$handle})";
+        $body = "Hi {$name} Team,\n\n"
+            . "Came across {$handle} on Instagram and really love the campaigns and design work your team is putting out.\n\n"
+            . "I run a specialized technical team providing on-demand, overnight white-label backend sprints (Laravel, PHP, Vue, and Core Web Vitals speed optimization) for digital agencies.\n\n"
+            . "Whenever your internal development team is at capacity or needs extra overflow bandwidth to deliver client backlogs without hiring full-time staff, we handle 48-hour sprints with clean daily Git commits.\n\n"
+            . "Would your operations team be open to keeping our dev availability on file as a flexible overflow partner?\n\n"
+            . "Best regards,\n"
+            . "{$userName}\n"
+            . "{$title}";
+
+        $res = SmtpMailer::send($email, $subject, $body, $settings, false);
+
+        if ($res['success']) {
+            recordSentEmailToLedger($email, $domain, $subject);
+
+            $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([
+                "Instagram Agency Outreach: {$name} ({$handle})",
+                'cPanel Server 24/7 Outreach Cron (cron/outreach.php)',
+                'Operations / Founder',
+                $email,
+                $name,
+                "https://instagram.com/" . ltrim($handle, '@'),
+                'Instagram Agency Email',
+                'contacted',
+                500,
+                500 * $usdToInr,
+                "Handle: {$handle}\nLocation: {$location}\nFocus: {$pitchFocus}\nDispatched via 24/7 cPanel Cloud Cron.",
+                $body
+            ]);
+            $leadId = (int)$db->lastInsertId();
+
+            $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, 'Instagram Agency Email', ?)")
+               ->execute([$leadId, "24/7 Cron Dispatched Outreach to {$name} ({$email})"]);
+
+            return [
+                'ok' => true,
+                'name' => $name,
+                'handle' => $handle,
+                'email' => $email
+            ];
+        }
+    }
+
+    return null;
+}
+
 // ----------------------------------------------------
 // E. UPDATE SERVER HEARTBEAT
 // ----------------------------------------------------
+
 $stmt = $db->query("SELECT COUNT(*) FROM leads");
 $totalLeadsCount = (int)$stmt->fetchColumn();
 
