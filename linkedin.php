@@ -774,10 +774,18 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
             </div>
 
             <div class="space-y-3">
+                <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-3">
+                    <label class="block text-xs font-bold text-emerald-400 mb-1">🍪 LinkedIn Session Cookie (li_at) — Recommended (1-Time Paste)</label>
+                    <input type="password" id="input-li-at" placeholder="AQED..." class="w-full bg-dark-950 border border-emerald-500/40 text-white rounded-xl px-3 py-2 text-xs focus:border-emerald-400 focus:outline-none font-mono">
+                    <p class="text-[10px] text-slate-300 mt-1">
+                        <b>How to get:</b> Log into LinkedIn on Chrome ➔ Press <code>F12</code> ➔ Application ➔ Cookies ➔ Copy <code>li_at</code> value. Never expires!
+                    </p>
+                </div>
+
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">LinkedIn Access Token (OAuth 2.0 / UGC Post Token)</label>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">LinkedIn Access Token (OAuth 2.0 UGC Post Token)</label>
                     <input type="password" id="input-li-token" placeholder="AQV..." class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-3 py-2 text-xs focus:border-sky-500 focus:outline-none">
-                    <p class="text-[10px] text-slate-500 mt-0.5">Optional. Allows direct official REST API publishing.</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">Optional. Allows official developer REST API publishing.</p>
                 </div>
 
                 <div>
@@ -1280,6 +1288,7 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
                 .then(r => r.json())
                 .then(data => {
                     if (data.settings) {
+                        document.getElementById('input-li-at').value = data.settings.linkedin_li_at || '';
                         document.getElementById('input-li-token').value = data.settings.linkedin_access_token || '';
                         document.getElementById('input-li-urn').value = data.settings.linkedin_person_urn || '';
                         document.getElementById('input-li-webhook').value = data.settings.linkedin_webhook_url || '';
@@ -1294,17 +1303,19 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
         }
 
         async function saveLinkedInSettings() {
+            const liAt = document.getElementById('input-li-at').value;
             const token = document.getElementById('input-li-token').value;
             const urn = document.getElementById('input-li-urn').value;
             const webhook = document.getElementById('input-li-webhook').value;
 
-            showToast('Saving LinkedIn API settings...');
+            showToast('Saving LinkedIn Session & Cloud settings...');
             try {
                 const res = await fetch('api/settings.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         action: 'save',
+                        linkedin_li_at: liAt,
                         linkedin_access_token: token,
                         linkedin_person_urn: urn,
                         linkedin_webhook_url: webhook,
@@ -1313,7 +1324,7 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
                 });
                 const data = await res.json();
                 if (data.status === 'success') {
-                    showToast('✅ LinkedIn API settings saved successfully!');
+                    showToast('✅ LinkedIn Session & API saved! Auto-Posting active.');
                     closeLinkedInSettingsModal();
                 } else {
                     showToast('Settings saved.');

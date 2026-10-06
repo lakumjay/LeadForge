@@ -294,7 +294,17 @@ function publishLinkedInPostRecord(PDO $db, array $settings, string $category, s
         }
     }
 
-    // 2. Cloud Webhook Dispatch (Make / Zapier / Buffer / Ayrshare)
+    // 2. Direct LinkedIn Voyager Session Cookie Dispatch (li_at)
+    if (!empty($settings['linkedin_li_at'])) {
+        $cookieRes = dispatchPostViaLinkedInSessionCookie($content, $settings['linkedin_li_at'], $settings['linkedin_jsessionid'] ?? null);
+        if ($cookieRes['ok']) {
+            $publishedVia = 'LinkedIn Session Cookie Engine (li_at)';
+            $externalPostId = $cookieRes['post_id'] ?? null;
+            $apiMessage = 'Live post uploaded directly to your LinkedIn Feed via Session Cookie!';
+        }
+    }
+
+    // 3. Cloud Webhook Dispatch (Make / Zapier / Buffer / Ayrshare)
     if (!empty($settings['linkedin_webhook_url'])) {
         $webhookRes = dispatchPostToWebhook($settings['linkedin_webhook_url'], [
             'event' => 'linkedin_viral_post',
@@ -384,6 +394,54 @@ function dispatchPostToLinkedInOfficialAPI(string $content, string $accessToken,
     }
 
     return ['ok' => false, 'error' => "LinkedIn API returned HTTP {$httpCode}: {$response}"];
+}
+
+/**
+ * Direct LinkedIn Voyager Post Dispatcher via li_at Session Cookie
+ */
+function dispatchPostViaLinkedInSessionCookie(string $content, string $liAt, ?string $jsessionid = null): array {
+    $csrfToken = !empty($jsessionid) ? trim($jsessionid, '"') : 'ajax:' . mt_rand(1000000000000000, 9999999999999999);
+    if (strpos($csrfToken, 'ajax:') !== 0) {
+        $csrfToken = 'ajax:' . $csrfToken;
+    }
+
+    $cookieHeader = "li_at={$liAt}; JSESSIONID=\"{$csrfToken}\"";
+
+    $payload = [
+        'visibleToConnectionOnly' => false,
+        'externalAudience' => null,
+        'commentary' => [
+            'text' => $content
+        ],
+        'origin' => 'FEED',
+        'visibility' => 'PUBLIC'
+    ];
+
+    $ch = curl_init('https://www.linkedin.com/voyager/api/contentcreation/normShares');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Cookie: {$cookieHeader}",
+        "csrf-token: {$csrfToken}",
+        "x-restli-protocol-version: 2.0.0",
+        "Content-Type: application/json; charset=UTF-8",
+        "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "Accept: application/vnd.linkedin.normalized+json+2.1"
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode >= 200 && $httpCode < 300) {
+        $data = json_decode($response ?: '', true);
+        return ['ok' => true, 'post_id' => $data['value']['urn'] ?? 'voyager_published'];
+    }
+
+    return ['ok' => false, 'error' => "Voyager API returned HTTP {$httpCode}: {$response}"];
 }
 
 /**

@@ -40,6 +40,12 @@ if ($method === 'GET') {
     } else {
         $safeSettings['has_linkedin_token'] = false;
     }
+    if (!empty($safeSettings['linkedin_li_at'])) {
+        $safeSettings['linkedin_li_at'] = substr($safeSettings['linkedin_li_at'], 0, 6) . '••••••••' . substr($safeSettings['linkedin_li_at'], -4);
+        $safeSettings['has_linkedin_cookie'] = true;
+    } else {
+        $safeSettings['has_linkedin_cookie'] = false;
+    }
     echo json_encode(['status' => 'success', 'settings' => $safeSettings]);
     exit;
 }
@@ -126,6 +132,13 @@ if ($method === 'POST') {
     if (isset($data['linkedin_person_urn'])) $current['linkedin_person_urn'] = trim($data['linkedin_person_urn']);
     if (isset($data['linkedin_webhook_url'])) $current['linkedin_webhook_url'] = trim($data['linkedin_webhook_url']);
     if (isset($data['linkedin_autopost_enabled'])) $current['linkedin_autopost_enabled'] = (bool)$data['linkedin_autopost_enabled'];
+    if (isset($data['linkedin_li_at'])) {
+        $subLiAt = trim($data['linkedin_li_at']);
+        if ($subLiAt !== '' && strpos($subLiAt, '••') === false) {
+            $current['linkedin_li_at'] = $subLiAt;
+        }
+    }
+    if (isset($data['linkedin_jsessionid'])) $current['linkedin_jsessionid'] = trim($data['linkedin_jsessionid']);
 
     if (updateSettings($current)) {
         $safeResponse = $current;
@@ -137,6 +150,9 @@ if ($method === 'POST') {
         }
         if (!empty($safeResponse['linkedin_access_token'])) {
             $safeResponse['linkedin_access_token'] = substr($safeResponse['linkedin_access_token'], 0, 6) . '••••••••' . substr($safeResponse['linkedin_access_token'], -4);
+        }
+        if (!empty($safeResponse['linkedin_li_at'])) {
+            $safeResponse['linkedin_li_at'] = substr($safeResponse['linkedin_li_at'], 0, 6) . '••••••••' . substr($safeResponse['linkedin_li_at'], -4);
         }
         echo json_encode(['status' => 'success', 'message' => 'Settings saved successfully', 'settings' => $safeResponse]);
     } else {
