@@ -202,6 +202,34 @@ function seedCuratedLinkedInProspects(PDO $db): int {
             'note' => "Hi Tom, noticed Impression's recent work in the UK. I provide on-demand white-label Laravel/PHP development for digital agencies needing flexible sprint capacity. Great to connect!"
         ],
         [
+            'name' => 'Johnathan Dane',
+            'company' => 'KlientBoost',
+            'role' => 'Founder & CEO',
+            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Johnathan%20Dane%20KlientBoost',
+            'note' => "Hi Johnathan, love KlientBoost's performance design. I build high-converting custom landing pages on Laravel/Vue and resolve Core Web Vitals bottlenecks for agencies. Great to connect!"
+        ],
+        [
+            'name' => 'Kasim Aslam',
+            'company' => 'Solutions 8',
+            'role' => 'Founder & CEO',
+            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Kasim%20Aslam%20Solutions%208',
+            'note' => "Hi Kasim, huge fan of Solutions 8's Google Ads insights. I build custom server-side tracking, GTM webhooks, and fast API tools for agency clients. Thought I'd connect!"
+        ],
+        [
+            'name' => 'Jason Swenk',
+            'company' => 'Agency Mastery',
+            'role' => 'Founder & Agency Advisor',
+            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Jason%20Swenk',
+            'note' => "Hi Jason, love your agency growth frameworks. I provide on-demand white-label Laravel backend capacity to help scaling agencies clear developer backlogs. Would love to connect!"
+        ],
+        [
+            'name' => 'Ross Simmonds',
+            'company' => 'Foundation Marketing',
+            'role' => 'Founder & CEO',
+            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Ross%20Simmonds%20Foundation',
+            'note' => "Hi Ross, love Foundation's B2B content distribution models. I build custom web scrapers, data pipelines, and fast Laravel portals for agencies. Hope to connect!"
+        ],
+        [
             'name' => 'Rick Tobin',
             'company' => 'Circus PPC',
             'role' => 'Managing Director',
@@ -277,6 +305,27 @@ function seedCuratedLinkedInProspects(PDO $db): int {
             'role' => 'Co-Founder',
             'url' => 'https://www.linkedin.com/search/results/people/?keywords=Marcus%20Tan%20Construct%20Digital',
             'note' => "Hi Marcus, saw Construct Digital's B2B tech work. I help digital agencies with on-demand Laravel backend capacity and fast API integrations. Great to connect!"
+        ],
+        [
+            'name' => 'Andrew Gazdecki',
+            'company' => 'Acquire.com',
+            'role' => 'Founder & CEO',
+            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Andrew%20Gazdecki%20Acquire',
+            'note' => "Hi Andrew, huge fan of Acquire.com's marketplace. I specialize in full-stack Laravel/PHP engineering and database optimization for startups. Great to connect!"
+        ],
+        [
+            'name' => 'Dan Martell',
+            'company' => 'SaaS Academy',
+            'role' => 'Founder & CEO',
+            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Dan%20Martell%20SaaS%20Academy',
+            'note' => "Hi Dan, love your 'Buy Back Your Time' playbook. I help SaaS founders and agencies buy back time by taking over their backend dev backlogs. Hope to connect!"
+        ],
+        [
+            'name' => 'Liam Martin',
+            'company' => 'Time Doctor',
+            'role' => 'Co-Founder',
+            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Liam%20Martin%20Time%20Doctor',
+            'note' => "Hi Liam, huge respect for your remote work leadership. I'm a senior full-stack Laravel engineer working asynchronously with US/EU agencies. Great to connect!"
         ]
     ];
 

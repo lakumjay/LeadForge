@@ -751,7 +751,17 @@ function publishLinkedInCommentRecord(PDO $db, array $settings, string $postUrl,
  * Daily Autonomous Comment Dispatcher for Background Cron
  */
 function autoPublishDailyLinkedInComment(PDO $db, array $settings): ?array {
-    // Curated targeted agency founder posts
+    $today = date('Y-m-d');
+    $stmt = $db->prepare("SELECT COUNT(*) FROM linkedin_comments WHERE DATE(published_at) = ? OR DATE(created_at) = ?");
+    $stmt->execute([$today, $today]);
+    $commentsToday = (int)$stmt->fetchColumn();
+
+    $dailyCommentLimit = (int)($settings['daily_comment_limit'] ?? 25);
+    if ($commentsToday >= $dailyCommentLimit) {
+        return null;
+    }
+
+    // Curated targeted global agency founder & CTO posts
     $targets = [
         [
             'url' => 'https://www.linkedin.com/feed/',
@@ -770,6 +780,30 @@ function autoPublishDailyLinkedInComment(PDO $db, array $settings): ?array {
             'author' => 'Jake Baadsgaard',
             'company' => 'Disruptive Advertising',
             'topic' => 'Server-Side GA4 Tracking & Conversion Rate Optimization'
+        ],
+        [
+            'url' => 'https://www.linkedin.com/feed/',
+            'author' => 'Johnathan Dane',
+            'company' => 'KlientBoost',
+            'topic' => 'Conversion-rate optimized landing pages & Core Web Vitals fixes'
+        ],
+        [
+            'url' => 'https://www.linkedin.com/feed/',
+            'author' => 'Kasim Aslam',
+            'company' => 'Solutions 8',
+            'topic' => 'Server-side conversion tracking & automated API webhooks'
+        ],
+        [
+            'url' => 'https://www.linkedin.com/feed/',
+            'author' => 'Jason Swenk',
+            'company' => 'Agency Mastery',
+            'topic' => 'White-label developer capacity for scaling digital agencies'
+        ],
+        [
+            'url' => 'https://www.linkedin.com/feed/',
+            'author' => 'Ross Simmonds',
+            'company' => 'Foundation Marketing',
+            'topic' => 'Custom web scrapers, data pipelines & fast Laravel portals'
         ],
         [
             'url' => 'https://www.linkedin.com/feed/',
@@ -807,8 +841,9 @@ function autoPerformDailyLinkedInWarmup(PDO $db, array $settings): ?array {
     $stmt->execute([$today, $today]);
     $warmupsCount = (int)$stmt->fetchColumn();
 
-    if ($warmupsCount >= 25) {
-        return ['ok' => false, 'message' => 'Daily profile warm-up limit reached (25/day).'];
+    $dailyWarmupLimit = (int)($settings['daily_warmup_limit'] ?? 50);
+    if ($warmupsCount >= $dailyWarmupLimit) {
+        return ['ok' => false, 'message' => "Daily profile warm-up limit reached ({$dailyWarmupLimit}/day)."];
     }
 
     // Pick from pending queue or curated agencies
@@ -821,10 +856,16 @@ function autoPerformDailyLinkedInWarmup(PDO $db, array $settings): ?array {
             ['name' => 'Jake Baadsgaard', 'company' => 'Disruptive Advertising', 'role' => 'Founder & CEO', 'url' => 'https://www.linkedin.com/in/jakebaadsgaard/'],
             ['name' => 'Eric Siu', 'company' => 'Single Grain', 'role' => 'Founder & Chairman', 'url' => 'https://www.linkedin.com/in/ericsiu/'],
             ['name' => 'Tom Craig', 'company' => 'Impression Digital', 'role' => 'Co-Founder & Director', 'url' => 'https://www.linkedin.com/in/tom-craig/'],
+            ['name' => 'Johnathan Dane', 'company' => 'KlientBoost', 'role' => 'Founder & CEO', 'url' => 'https://www.linkedin.com/in/johnathandane/'],
+            ['name' => 'Kasim Aslam', 'company' => 'Solutions 8', 'role' => 'Founder & CEO', 'url' => 'https://www.linkedin.com/in/kasimaslam/'],
+            ['name' => 'Jason Swenk', 'company' => 'Agency Mastery', 'role' => 'Founder & CEO', 'url' => 'https://www.linkedin.com/in/jasonswenk/'],
+            ['name' => 'Ross Simmonds', 'company' => 'Foundation Marketing', 'role' => 'Founder & CEO', 'url' => 'https://www.linkedin.com/in/rosssimmonds/'],
             ['name' => 'Rick Tobin', 'company' => 'Circus PPC', 'role' => 'Managing Director', 'url' => 'https://www.linkedin.com/in/rick-tobin/'],
             ['name' => 'Michael Del Bimbo', 'company' => 'Northern Commerce', 'role' => 'CEO', 'url' => 'https://www.linkedin.com/in/michaeldelbimbo/'],
             ['name' => 'Lauren Oakes', 'company' => 'Megaphone Marketing', 'role' => 'CEO', 'url' => 'https://www.linkedin.com/in/laurenoakes/'],
-            ['name' => 'Alex Miller', 'company' => 'Vortex Digital Agency', 'role' => 'Founder & CEO', 'url' => 'https://www.linkedin.com/in/alexmiller/']
+            ['name' => 'Alex Miller', 'company' => 'Vortex Digital Agency', 'role' => 'Founder & CEO', 'url' => 'https://www.linkedin.com/in/alexmiller/'],
+            ['name' => 'Andrew Gazdecki', 'company' => 'Acquire.com', 'role' => 'Founder & CEO', 'url' => 'https://www.linkedin.com/in/agazdecki/'],
+            ['name' => 'Dan Martell', 'company' => 'SaaS Academy', 'role' => 'Founder & CEO', 'url' => 'https://www.linkedin.com/in/danmartell/']
         ];
         $target = $curated[array_rand($curated)];
     } else {
