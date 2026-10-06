@@ -175,24 +175,52 @@ while (true) {
                         }
                     }
                 } else {
-                    daemonLog("🛡️ [ZERO-BOUNCE SHIELD] No verified email scraped on {$agencyDomain}. Blocked SMTP to eliminate bounce risk. Saved to CRM as Web lead.");
+                    $socials = $audit['social_profiles'] ?? [];
+                    $targetPlatform = 'Website / Contact Form';
+                    $targetIdentifier = 'Contact Form / Web';
                     
-                    // Save safely as Web lead to CRM with NO email sent
+                    if (!empty($socials['linkedin'])) {
+                        $targetPlatform = 'LinkedIn DM / InMail';
+                        $targetIdentifier = $socials['linkedin'];
+                    } elseif (!empty($socials['instagram'])) {
+                        $targetPlatform = 'Instagram DM';
+                        $targetIdentifier = $socials['instagram'];
+                    } elseif (!empty($socials['contact_page'])) {
+                        $targetPlatform = 'Website Contact Form';
+                        $targetIdentifier = $socials['contact_page'];
+                    }
+
+                    $socialNotesList = [];
+                    if (!empty($socials['linkedin'])) $socialNotesList[] = "LinkedIn: {$socials['linkedin']}";
+                    if (!empty($socials['instagram'])) $socialNotesList[] = "Instagram: {$socials['instagram']}";
+                    if (!empty($socials['twitter'])) $socialNotesList[] = "Twitter/X: {$socials['twitter']}";
+                    if (!empty($socials['contact_page'])) $socialNotesList[] = "Contact Form: {$socials['contact_page']}";
+                    $socialsStr = !empty($socialNotesList) ? implode("\n", $socialNotesList) : "Website: {$targetAgency['website']}";
+
+                    daemonLog("🎯 [MULTI-CHANNEL EXTRACTED] {$targetAgency['name']} -> {$targetPlatform} ({$targetIdentifier}). Saved to CRM.");
+
+                    $dmPitch = "Hi {$targetAgency['name']} Team,\n\nI was checking {$agencyDomain} and spotted a quick performance opportunity regarding {$primaryIssue['title']}.\n\nI specialize in fast turnaround web fixes, Laravel backend and speed optimizations for agencies.\n\nWould you like a quick 2-minute Loom/breakdown?\n\nBest,\nJay";
+                    
+                    // Save safely as Multi-Channel / Social lead to CRM
                     $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                     $stmt->execute([
                         "Opportunity: {$targetAgency['name']} ({$primaryIssue['title']})",
                         '24/7 Autonomous Daemon',
-                        'Director',
-                        'Contact Form / Website',
+                        'Director / Founder',
+                        $targetIdentifier,
                         $targetAgency['name'],
                         $targetAgency['website'],
-                        'Website / Contact Form',
+                        $targetPlatform,
                         'new',
                         250,
                         250 * $usdToInr,
-                        "Issue: {$primaryIssue['title']}\nAudit: {$primaryIssue['detail']}\nShield: Email not public on homepage. SMTP blocked to prevent bounce.",
-                        "Hi Director,\n\nI was reviewing {$targetAgency['name']} and noticed an optimization opportunity regarding {$primaryIssue['title']}."
+                        "Issue: {$primaryIssue['title']}\nAudit: {$primaryIssue['detail']}\nFound Channels:\n{$socialsStr}",
+                        $dmPitch
                     ]);
+                    $leadId = (int)$db->lastInsertId();
+
+                    $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, ?, ?)")
+                       ->execute([$leadId, $targetPlatform, 'Multi-Channel Profile Discovery']);
                 }
             } else {
                 daemonLog("ℹ️ All agencies in current list have been processed recently. Rotating to next cycle.");

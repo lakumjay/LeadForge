@@ -37,6 +37,25 @@ if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'audit.php') {
 }
 
 function performSiteAudit(string $url): array {
+    $domainKey = strtolower(preg_replace('/^www\./i', '', parse_url($url, PHP_URL_HOST) ?? $url));
+    
+    // 1. Instant 24-Hour Cache Check (Loads in 0.001s)
+    if (!empty($domainKey)) {
+        try {
+            $db = Database::getConnection();
+            $cacheStmt = $db->prepare("SELECT audit_data FROM audit_cache WHERE domain = ? AND created_at >= datetime('now', '-1 day')");
+            $cacheStmt->execute([$domainKey]);
+            $cachedRow = $cacheStmt->fetch(PDO::FETCH_ASSOC);
+            if ($cachedRow && !empty($cachedRow['audit_data'])) {
+                $cachedResult = json_decode($cachedRow['audit_data'], true);
+                if (!empty($cachedResult) && isset($cachedResult['is_online'])) {
+                    $cachedResult['from_cache'] = true;
+                    return $cachedResult;
+                }
+            }
+        } catch (Throwable $e) {}
+    }
+
     $startTime = microtime(true);
     
     $ch = curl_init();
@@ -44,11 +63,11 @@ function performSiteAudit(string $url): array {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, true);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_MAXREDIRS, 4);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 4);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
 
     $response = curl_exec($ch);
     $totalTime = microtime(true) - $startTime;
@@ -243,39 +262,66 @@ function performSiteAudit(string $url): array {
 
     // Extract Real Emails from Website HTML
     $cleanHost = preg_replace('/^www\./i', '', parse_url($effectiveUrl, PHP_URL_HOST) ?? $url);
+    
+    // 5. Extract Social Profiles (LinkedIn, Instagram, Twitter, Facebook, Contact Page)
+    $socialProfiles = extractSocialProfilesFromHtml($htmlBody, $effectiveUrl);
+
+    // 6. Extract Emails from Homepage
     $discoveredEmails = extractEmailsFromHtml($htmlBody, $cleanHost, $effectiveUrl);
 
-    // Deep Probing: If no email found on homepage, probe /contact, /contact-us, /about-us
+    // 7. Parallel Multi-cURL Probing for Contact Pages if no email was on homepage (0.3s)
     if (empty($discoveredEmails)) {
         $contactPaths = ['/contact', '/contact-us', '/about-us', '/about'];
+        $mh = curl_multi_init();
+        $curlHandles = [];
+
         foreach ($contactPaths as $cPath) {
             $probeUrl = rtrim($effectiveUrl, '/') . $cPath;
             $chProbe = curl_init();
             curl_setopt($chProbe, CURLOPT_URL, $probeUrl);
             curl_setopt($chProbe, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($chProbe, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($chProbe, CURLOPT_TIMEOUT, 4);
+            curl_setopt($chProbe, CURLOPT_MAXREDIRS, 2);
+            curl_setopt($chProbe, CURLOPT_TIMEOUT, 2);
             curl_setopt($chProbe, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($chProbe, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
-            $contactHtml = curl_exec($chProbe);
-            curl_close($chProbe);
-            if (!empty($contactHtml)) {
-                $contactEmails = extractEmailsFromHtml($contactHtml, $cleanHost, $probeUrl);
-                if (!empty($contactEmails)) {
-                    $discoveredEmails = array_values(array_unique(array_merge($discoveredEmails, $contactEmails)));
-                    break;
+            curl_multi_add_handle($mh, $chProbe);
+            $curlHandles[$probeUrl] = $chProbe;
+        }
+
+        $running = null;
+        do {
+            curl_multi_exec($mh, $running);
+            curl_multi_select($mh, 0.2);
+        } while ($running > 0);
+
+        foreach ($curlHandles as $pUrl => $handle) {
+            $cHtml = curl_multi_getcontent($handle);
+            if (!empty($cHtml)) {
+                $cEmails = extractEmailsFromHtml($cHtml, $cleanHost, $pUrl);
+                if (!empty($cEmails)) {
+                    $discoveredEmails = array_values(array_unique(array_merge($discoveredEmails, $cEmails)));
+                }
+                // Also update social profiles if discovered on contact page
+                $cSocial = extractSocialProfilesFromHtml($cHtml, $pUrl);
+                foreach ($cSocial as $sKey => $sVal) {
+                    if (empty($socialProfiles[$sKey]) && !empty($sVal)) {
+                        $socialProfiles[$sKey] = $sVal;
+                    }
                 }
             }
+            curl_multi_remove_handle($mh, $handle);
+            curl_close($handle);
         }
+        curl_multi_close($mh);
     }
 
     // Generate Multi-Service Tailored Pitches
     $parsedHost = parse_url($effectiveUrl, PHP_URL_HOST) ?? $url;
     $primaryIssue = $issues[0];
-    
     $multiPitches = generateMultiServicePitches($parsedHost, $primaryIssue, $techStack);
 
-    return [
+    $auditResult = [
         'url' => $effectiveUrl,
         'domain' => $parsedHost,
         'clean_domain' => $cleanHost,
@@ -288,9 +334,75 @@ function performSiteAudit(string $url): array {
         'issues' => $issues,
         'discovered_emails' => $discoveredEmails,
         'primary_email' => $discoveredEmails[0] ?? null,
+        'social_profiles' => $socialProfiles,
         'pitches' => $multiPitches,
         'pitch_preview' => $multiPitches['primary']
     ];
+
+    // 8. Save Result to 24-Hour SQLite Cache
+    if (!empty($domainKey)) {
+        try {
+            $db = Database::getConnection();
+            $saveStmt = $db->prepare("INSERT OR REPLACE INTO audit_cache (domain, audit_data, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)");
+            $saveStmt->execute([$domainKey, json_encode($auditResult)]);
+        } catch (Throwable $e) {}
+    }
+
+    return $auditResult;
+}
+
+/**
+ * Multi-Channel Social Profile Extractor (LinkedIn, Instagram, Twitter, Facebook, Contact Form)
+ */
+function extractSocialProfilesFromHtml(string $html, string $effectiveUrl): array {
+    $profiles = [
+        'linkedin' => null,
+        'instagram' => null,
+        'twitter' => null,
+        'facebook' => null,
+        'contact_page' => null
+    ];
+
+    // 1. LinkedIn (Company or personal profile)
+    if (preg_match('/https?:\/\/(?:www\.)?linkedin\.com\/(?:company|in)\/[a-zA-Z0-9_\-\.\/]+/i', $html, $matches)) {
+        $profiles['linkedin'] = rtrim($matches[0], '/"\'');
+    }
+
+    // 2. Instagram Profile
+    if (preg_match('/https?:\/\/(?:www\.)?instagram\.com\/([a-zA-Z0-9_\.]+)\/?/i', $html, $matches)) {
+        $igHandle = strtolower(trim($matches[1]));
+        if (!in_array($igHandle, ['p', 'explore', 'reels', 'stories', 'about', 'legal', 'accounts', 'developer'])) {
+            $profiles['instagram'] = "https://instagram.com/" . $igHandle;
+        }
+    }
+
+    // 3. Twitter / X Profile
+    if (preg_match('/https?:\/\/(?:www\.)?(?:twitter\.com|x\.com)\/([a-zA-Z0-9_]+)\/?/i', $html, $matches)) {
+        $xHandle = strtolower(trim($matches[1]));
+        if (!in_array($xHandle, ['intent', 'share', 'home', 'privacy', 'tos'])) {
+            $profiles['twitter'] = "https://x.com/" . $xHandle;
+        }
+    }
+
+    // 4. Facebook Profile
+    if (preg_match('/https?:\/\/(?:www\.)?facebook\.com\/([a-zA-Z0-9_\-\.]+)\/?/i', $html, $matches)) {
+        $fbHandle = strtolower(trim($matches[1]));
+        if (!in_array($fbHandle, ['sharer', 'share', 'dialog', 'policies', 'groups'])) {
+            $profiles['facebook'] = "https://facebook.com/" . $fbHandle;
+        }
+    }
+
+    // 5. Contact page link in HTML
+    if (preg_match('/href=["\']([^"\']*(?:contact|about)[^"\']*)["\']/i', $html, $matches)) {
+        $contactHref = $matches[1];
+        if (strpos($contactHref, 'http') === 0) {
+            $profiles['contact_page'] = $contactHref;
+        } else {
+            $profiles['contact_page'] = rtrim($effectiveUrl, '/') . '/' . ltrim($contactHref, '/');
+        }
+    }
+
+    return $profiles;
 }
 
 function extractEmailsFromHtml(string $html, string $cleanDomain, string $baseUrl): array {

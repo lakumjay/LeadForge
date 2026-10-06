@@ -91,5 +91,12 @@ class Database {
             full_proposal TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )");
+
+        // 24-Hour Instant Audit Cache Table for 10x Speed
+        $db->exec("CREATE TABLE IF NOT EXISTS audit_cache (
+            domain TEXT PRIMARY KEY,
+            audit_data TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
     }
 }

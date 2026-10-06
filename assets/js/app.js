@@ -907,6 +907,46 @@ function renderAuditReport(report) {
                 <div class="space-y-2">${issuesHtml}</div>
             </div>
 
+            <!-- Discovered Channels (Email / LinkedIn / Instagram / Contact) -->
+            <div class="bg-slate-900/60 border border-slate-800 p-3.5 rounded-xl space-y-2">
+                <span class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-1.5">
+                    <i data-lucide="share-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span>Discovered Multi-Channel Direct Touchpoints:</span>
+                </span>
+                <div class="flex flex-wrap gap-2 pt-1">
+                    ${report.discovered_emails && report.discovered_emails.length > 0 ? report.discovered_emails.map(e => `
+                        <a href="mailto:${e}" class="inline-flex items-center space-x-1 px-2.5 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-lg text-xs font-semibold hover:bg-emerald-500/30 transition">
+                            <i data-lucide="mail" class="w-3 h-3"></i>
+                            <span>${e}</span>
+                        </a>
+                    `).join('') : '<span class="text-slate-500 text-xs italic">No public email found (Zero-Bounce Active). Using Social / Form channels below:</span>'}
+                    ${report.social_profiles?.linkedin ? `
+                        <a href="${report.social_profiles.linkedin}" target="_blank" class="inline-flex items-center space-x-1 px-2.5 py-1 bg-sky-500/20 text-sky-300 border border-sky-500/40 rounded-lg text-xs font-semibold hover:bg-sky-500/30 transition">
+                            <i data-lucide="linkedin" class="w-3 h-3"></i>
+                            <span>LinkedIn Profile</span>
+                        </a>
+                    ` : ''}
+                    ${report.social_profiles?.instagram ? `
+                        <a href="${report.social_profiles.instagram}" target="_blank" class="inline-flex items-center space-x-1 px-2.5 py-1 bg-pink-500/20 text-pink-300 border border-pink-500/40 rounded-lg text-xs font-semibold hover:bg-pink-500/30 transition">
+                            <i data-lucide="instagram" class="w-3 h-3"></i>
+                            <span>Instagram DM</span>
+                        </a>
+                    ` : ''}
+                    ${report.social_profiles?.contact_page ? `
+                        <a href="${report.social_profiles.contact_page}" target="_blank" class="inline-flex items-center space-x-1 px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-semibold hover:bg-amber-500/30 transition">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                            <span>Contact Form URL</span>
+                        </a>
+                    ` : ''}
+                    ${report.social_profiles?.twitter ? `
+                        <a href="${report.social_profiles.twitter}" target="_blank" class="inline-flex items-center space-x-1 px-2.5 py-1 bg-blue-500/20 text-blue-300 border border-blue-500/40 rounded-lg text-xs font-semibold hover:bg-blue-500/30 transition">
+                            <i data-lucide="twitter" class="w-3 h-3"></i>
+                            <span>Twitter / X</span>
+                        </a>
+                    ` : ''}
+                </div>
+            </div>
+
             <!-- 1-Click Value Pitch Generated -->
             <div class="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl space-y-2">
                 <div class="flex items-center justify-between">
