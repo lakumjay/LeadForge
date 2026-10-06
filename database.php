@@ -76,6 +76,19 @@ class Database {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )");
 
+        // Mobile & Chrome LinkedIn Assist Queue Table
+        $db->exec("CREATE TABLE IF NOT EXISTS linkedin_queue (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            company TEXT NOT NULL,
+            name TEXT NOT NULL,
+            role TEXT DEFAULT 'Founder / CEO',
+            linkedin_url TEXT UNIQUE,
+            note TEXT NOT NULL,
+            status TEXT DEFAULT 'pending',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            sent_at DATETIME
+        )");
+
         // Cached Jobs Radar
         $db->exec("CREATE TABLE IF NOT EXISTS radar_jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -120,6 +133,8 @@ class Database {
         $db->exec("CREATE INDEX IF NOT EXISTS idx_outreach_platform_date ON outreach_logs (platform, created_at);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_sent_history_email ON sent_history (recipient_email);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_sent_history_domain ON sent_history (recipient_domain);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_queue_status ON linkedin_queue (status);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_queue_url ON linkedin_queue (linkedin_url);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_audit_cache_created ON audit_cache (created_at);");
     }
 }

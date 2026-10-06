@@ -1739,6 +1739,14 @@ async function loadSafetyShield() {
             }
             document.getElementById('settings-smtp-from-name').value = s.smtp_from_name || 'Jay | Web & SEO Specialist';
             document.getElementById('settings-smtp-from-email').value = s.smtp_from_email || (s.smtp_user || 'lakumjay2000@gmail.com');
+
+            // Populate Telegram settings
+            if (s.telegram_bot_token) {
+                document.getElementById('settings-telegram-token').value = s.telegram_bot_token;
+            }
+            if (s.telegram_chat_id) {
+                document.getElementById('settings-telegram-chat').value = s.telegram_chat_id;
+            }
         }
     } catch (e) {
         console.error(e);
@@ -1758,6 +1766,9 @@ async function saveSettings() {
     const smtpFromName = document.getElementById('settings-smtp-from-name').value.trim();
     const smtpFromEmail = document.getElementById('settings-smtp-from-email').value.trim();
 
+    const telegramToken = document.getElementById('settings-telegram-token').value.trim();
+    const telegramChat = document.getElementById('settings-telegram-chat').value.trim();
+
     try {
         const payload = {
             user_name: name,
@@ -1768,7 +1779,9 @@ async function saveSettings() {
             smtp_port: smtpPort,
             smtp_user: smtpUser,
             smtp_from_name: smtpFromName,
-            smtp_from_email: smtpFromEmail
+            smtp_from_email: smtpFromEmail,
+            telegram_bot_token: telegramToken,
+            telegram_chat_id: telegramChat
         };
 
         if (smtpPass) {
@@ -1782,7 +1795,7 @@ async function saveSettings() {
         });
         const data = await res.json();
         if (data.status === 'success') {
-            showToast('Profile & SMTP Configuration Saved!', 'success');
+            showToast('Profile, SMTP & Telegram Settings Saved!', 'success');
             loadCrmLeads();
             loadSafetyShield();
             playDingSound();
@@ -1791,6 +1804,45 @@ async function saveSettings() {
         }
     } catch (e) {
         showToast('Failed to save settings', 'error');
+    }
+}
+
+async function sendTestTelegramAlert() {
+    const token = document.getElementById('settings-telegram-token').value.trim();
+    const chat = document.getElementById('settings-telegram-chat').value.trim();
+
+    if (!token || !chat) {
+        showToast('Please enter both Telegram Bot Token and Chat ID first', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('btn-test-telegram');
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i><span>Sending Push Alert...</span>`;
+    if (window.lucide) lucide.createIcons();
+
+    try {
+        const res = await fetch('api/telegram.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'test', telegram_bot_token: token, telegram_chat_id: chat })
+        });
+        const data = await res.json();
+
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="send" class="w-3.5 h-3.5"></i><span>Test Telegram Alert</span>`;
+        if (window.lucide) lucide.createIcons();
+
+        if (data.ok) {
+            showToast('✅ Telegram Alert Delivered to your Phone!', 'success');
+            playDingSound();
+        } else {
+            showToast('❌ Telegram Error: ' + (data.message || 'Failed to send'), 'error');
+        }
+    } catch (e) {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="send" class="w-3.5 h-3.5"></i><span>Test Telegram Alert</span>`;
+        showToast('Telegram connection error', 'error');
     }
 }
 

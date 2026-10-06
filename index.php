@@ -1289,6 +1289,36 @@
                     <div id="smtp-test-result" class="hidden text-xs p-3 rounded-lg border font-mono"></div>
                 </div>
 
+                <!-- Telegram Bot Instant Push Alerts Section -->
+                <div class="bg-dark-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-white flex items-center space-x-1.5">
+                            <i data-lucide="send" class="w-3.5 h-3.5 text-sky-400"></i>
+                            <span>Telegram Bot Instant Phone Alerts (Replies &amp; 9 AM LinkedIn Queue):</span>
+                        </span>
+                        <span class="text-[11px] text-sky-400 font-mono">Mobile Push Active</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Telegram Bot Token</label>
+                            <input type="text" id="settings-telegram-token" placeholder="123456789:ABCdefGhIJKlmNoPQRstuVWXyz" class="w-full bg-dark-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:border-sky-500 focus:outline-none font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Telegram Chat ID</label>
+                            <input type="text" id="settings-telegram-chat" placeholder="e.g. 987654321" class="w-full bg-dark-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:border-sky-500 focus:outline-none font-mono">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <p class="text-[11px] text-slate-400">Create a bot via @BotFather on Telegram, send <code>/start</code>, and get your Chat ID via @userinfobot.</p>
+                        <button onclick="sendTestTelegramAlert()" id="btn-test-telegram" class="bg-slate-800 hover:bg-slate-700 text-sky-400 border border-sky-500/30 px-4 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>Test Telegram Alert</span>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="pt-4 border-t border-slate-800 flex justify-end space-x-3">
                     <button onclick="saveSettings()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-8 py-3 rounded-xl transition shadow-lg shadow-emerald-600/20 flex items-center space-x-2">
                         <i data-lucide="save" class="w-4 h-4"></i>

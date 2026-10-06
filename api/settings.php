@@ -28,6 +28,12 @@ if ($method === 'GET') {
     } else {
         $safeSettings['has_smtp_pass'] = false;
     }
+    if (!empty($safeSettings['telegram_bot_token'])) {
+        $safeSettings['telegram_bot_token'] = substr($safeSettings['telegram_bot_token'], 0, 4) . '••••••••' . substr($safeSettings['telegram_bot_token'], -4);
+        $safeSettings['has_telegram_token'] = true;
+    } else {
+        $safeSettings['has_telegram_token'] = false;
+    }
     echo json_encode(['status' => 'success', 'settings' => $safeSettings]);
     exit;
 }
@@ -94,6 +100,15 @@ if ($method === 'POST') {
     if (isset($data['smtp_port'])) $current['smtp_port'] = (int)$data['smtp_port'];
     if (isset($data['smtp_from_name'])) $current['smtp_from_name'] = trim($data['smtp_from_name']);
     if (isset($data['smtp_from_email'])) $current['smtp_from_email'] = trim($data['smtp_from_email']);
+
+    // Telegram Bot Settings
+    if (isset($data['telegram_bot_token'])) {
+        $subToken = trim($data['telegram_bot_token']);
+        if ($subToken !== '' && strpos($subToken, '••') === false) {
+            $current['telegram_bot_token'] = $subToken;
+        }
+    }
+    if (isset($data['telegram_chat_id'])) $current['telegram_chat_id'] = trim($data['telegram_chat_id']);
 
     if (updateSettings($current)) {
         $safeResponse = $current;

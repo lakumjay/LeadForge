@@ -1,6 +1,10 @@
 # Runtime and dynamic data
 data/*.log
+data/*.lock
 data/*_cache.json
 data/daemon_status.json
 data/autopilot_status.json
+data/leadforge.sqlite*
+data/cron.lock
+data/outreach.lock
 .DS_Store
