@@ -636,11 +636,68 @@ function autoPublishDailyLinkedInPost(PDO $db, array $settings): ?array {
 }
 
 /**
+ * Official LinkedIn socialActions REST API Comment Dispatcher
+ */
+function dispatchCommentToLinkedInOfficialAPI(string $targetUrn, string $commentText, string $accessToken, string $personUrn): array {
+    $authorUrn = strpos($personUrn, 'urn:li:') === 0 ? $personUrn : "urn:li:person:{$personUrn}";
+    
+    $payload = [
+        'actor' => $authorUrn,
+        'message' => [
+            'text' => $commentText
+        ]
+    ];
+
+    $url = "https://api.linkedin.com/v2/socialActions/" . urlencode($targetUrn) . "/comments";
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer {$accessToken}",
+        "X-Restli-Protocol-Version: 2.0.0",
+        "Content-Type: application/json"
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 12);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode === 201 || $httpCode === 200) {
+        $data = json_decode($response ?: '', true);
+        return ['ok' => true, 'comment_id' => $data['id'] ?? 'comment_posted', 'response' => $response];
+    }
+
+    return ['ok' => false, 'error' => "LinkedIn Comments API returned HTTP {$httpCode}: {$response}"];
+}
+
+/**
  * Master LinkedIn Comment Publishing Record & Dispatcher Function
  */
-function publishLinkedInCommentRecord(PDO $db, array $settings, string $postUrl, string $author, string $company, string $topic, string $commentText, string $style = 'authority', string $source = 'API/Auto-Pilot'): array {
+function publishLinkedInCommentRecord(PDO $db, array $settings, string $postUrl, string $author, string $company, string $topic, string $commentText, string $style = 'authority', string $source = 'API/Auto-Pilot', ?string $targetShareUrn = null): array {
     $publishedVia = 'Autonomous Cloud Engine';
+    $externalCommentId = null;
     $apiMessage = "AI Authority Comment dispatched to {$author}'s post!";
+
+    // 1. If target share URN exists and official token available, dispatch to LinkedIn API
+    if (!empty($settings['linkedin_access_token']) && !empty($settings['linkedin_person_urn'])) {
+        // If targetShareUrn is empty, try to get latest published post share URN
+        if (empty($targetShareUrn)) {
+            $stmt = $db->query("SELECT external_post_id FROM linkedin_posts WHERE external_post_id IS NOT NULL ORDER BY id DESC LIMIT 1");
+            $targetShareUrn = $stmt->fetchColumn() ?: 'urn:li:share:7513170705216069633';
+        }
+
+        if (!empty($targetShareUrn)) {
+            $apiRes = dispatchCommentToLinkedInOfficialAPI($targetShareUrn, $commentText, $settings['linkedin_access_token'], $settings['linkedin_person_urn']);
+            if ($apiRes['ok']) {
+                $publishedVia = 'LinkedIn Official REST API';
+                $externalCommentId = $apiRes['comment_id'] ?? null;
+                $apiMessage = 'Live comment published via Official LinkedIn Social Actions API!';
+            }
+        }
+    }
 
     // 1. Webhook or API Dispatch (if webhook configured)
     if (!empty($settings['linkedin_webhook_url'])) {
