@@ -1951,17 +1951,25 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                 <div class="bg-dark-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
                     <span class="font-bold text-sky-400 flex items-center space-x-1.5">
                         <span class="w-5 h-5 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center text-[10px]">3</span>
-                        <span>Select the Extension Folder</span>
+                        <span>Download Extension ZIP or Select Folder</span>
                     </span>
-                    <p class="text-slate-400 pl-6">Choose the extension folder inside your LeadForge directory:</p>
-                    <div class="ml-6 bg-slate-900 p-2 rounded-lg font-mono text-emerald-400 select-all border border-slate-800 text-[10px] break-all">
-                        /Applications/XAMPP/xamppfiles/htdocs/linkdin+upwork +google /extension
+                    <p class="text-slate-400 pl-6">Click below to download the ZIP, unzip it anywhere on your computer, then select it in "Load unpacked":</p>
+                    <div class="ml-6 pt-1">
+                        <a href="api/download_extension.php" download="leadforge_chrome_extension.zip" class="w-full bg-gradient-to-r from-emerald-600 to-brand-600 hover:from-emerald-500 hover:to-brand-500 text-white font-bold text-xs py-2 px-3.5 rounded-xl shadow-md flex items-center justify-center space-x-2 transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>📥 1-Click Download Extension (.ZIP)</span>
+                        </a>
                     </div>
+                    <p class="text-[10px] text-slate-500 pl-6 mt-1 font-mono">Or select local path: /Applications/XAMPP/xamppfiles/htdocs/linkdin+upwork +google /extension</p>
                 </div>
             </div>
 
-            <div class="pt-2">
-                <button onclick="toggleExtensionGuideModal()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-lg shadow-sky-600/30 transition">
+            <div class="pt-2 flex space-x-2">
+                <a href="api/download_extension.php" download="leadforge_chrome_extension.zip" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 rounded-xl text-center flex items-center justify-center space-x-1.5 transition">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Download ZIP</span>
+                </a>
+                <button onclick="toggleExtensionGuideModal()" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-lg shadow-sky-600/30 transition">
                     Got it, I'm ready! 🚀
                 </button>
             </div>
