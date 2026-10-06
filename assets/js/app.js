@@ -2105,22 +2105,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 60000);
 
-    // Auto-Pilot continuous execution loop (every 40 seconds)
+    // Passive Auto-Pilot Status Polling (Every 30 seconds)
     setInterval(() => {
-        if (isAutopilotRunning) {
-            fetch('api/autopilot.php?action=trigger_cycle')
-                .then(r => r.json())
-                .then(d => {
-                    if (d.status === 'success' && d.data) {
-                        updateAutopilotUI(d.data);
-                        loadCrmLeads();
-                    }
-                })
-                .catch(err => console.error('Auto-pilot cycle err:', err));
-        } else if (currentTab === 'autopilot') {
+        if (currentTab === 'autopilot') {
             fetchAutopilotStatus();
         }
-    }, 40000);
+    }, 30000);
 
     if (window.lucide) lucide.createIcons();
 });

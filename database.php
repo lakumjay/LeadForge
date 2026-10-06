@@ -1,6 +1,6 @@
 <?php
 /**
- * LeadForge AI - Database Manager (SQLite + Auto Table Creation)
+ * LeadForge AI - Database Manager & Strict Anti-Duplicate Ledger
  */
 
 declare(strict_types=1);
@@ -67,6 +67,15 @@ class Database {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )");
 
+        // Permanent Sent History Ledger Table
+        $db->exec("CREATE TABLE IF NOT EXISTS sent_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            recipient_email TEXT,
+            recipient_domain TEXT,
+            subject TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+
         // Cached Jobs Radar
         $db->exec("CREATE TABLE IF NOT EXISTS radar_jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -109,16 +118,110 @@ class Database {
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_created ON leads (created_at);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_email ON leads (client_email);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_outreach_platform_date ON outreach_logs (platform, created_at);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_sent_history_email ON sent_history (recipient_email);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_sent_history_domain ON sent_history (recipient_domain);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_audit_cache_created ON audit_cache (created_at);");
     }
 }
 
 /**
- * Global Strict Anti-Duplicate Email & Domain Shield
- * Guarantees zero duplicate emails are ever dispatched to the same recipient/company
+ * Permanent Multi-Tier Anti-Duplicate Email & Domain Shield
+ */
+function isEmailOrDomainAlreadySent(?string $email, ?string $domain): bool {
+    $cleanEmail = !empty($email) ? strtolower(trim($email)) : '';
+    
+    $cleanDomain = '';
+    if (!empty($domain)) {
+        $cleanDomain = strtolower(trim($domain));
+        if (strpos($cleanDomain, 'http') === 0) {
+            $cleanDomain = parse_url($cleanDomain, PHP_URL_HOST) ?? $cleanDomain;
+        }
+        $cleanDomain = preg_replace('/^www\./i', '', $cleanDomain);
+    }
+    if (empty($cleanDomain) && !empty($cleanEmail) && strpos($cleanEmail, '@') !== false) {
+        $cleanDomain = substr(strrchr($cleanEmail, "@"), 1);
+    }
+
+    // 1. Check Immutable File-Based Ledger (data/sent_ledger.json)
+    $ledgerFile = DATA_PATH . '/sent_ledger.json';
+    if (file_exists($ledgerFile)) {
+        $ledger = json_decode(file_get_contents($ledgerFile), true) ?: [];
+        if (!empty($cleanEmail) && in_array($cleanEmail, $ledger['emails'] ?? [])) {
+            return true;
+        }
+        if (!empty($cleanDomain) && in_array($cleanDomain, $ledger['domains'] ?? [])) {
+            return true;
+        }
+    }
+
+    // 2. Check Database Sent History
+    try {
+        $db = Database::getConnection();
+        if (!empty($cleanEmail)) {
+            $stmt = $db->prepare("SELECT id FROM sent_history WHERE LOWER(recipient_email) = ? LIMIT 1");
+            $stmt->execute([$cleanEmail]);
+            if ($stmt->fetch()) return true;
+        }
+        if (!empty($cleanDomain)) {
+            $stmt = $db->prepare("SELECT id FROM sent_history WHERE LOWER(recipient_domain) = ? LIMIT 1");
+            $stmt->execute([$cleanDomain]);
+            if ($stmt->fetch()) return true;
+        }
+    } catch (Throwable $e) {}
+
+    return false;
+}
+
+/**
+ * Record sent email to both persistent file ledger & database table
+ */
+function recordSentEmailToLedger(string $email, ?string $domain, string $subject = ''): void {
+    $cleanEmail = strtolower(trim($email));
+    
+    $cleanDomain = '';
+    if (!empty($domain)) {
+        $cleanDomain = strtolower(trim($domain));
+        if (strpos($cleanDomain, 'http') === 0) {
+            $cleanDomain = parse_url($cleanDomain, PHP_URL_HOST) ?? $cleanDomain;
+        }
+        $cleanDomain = preg_replace('/^www\./i', '', $cleanDomain);
+    }
+    if (empty($cleanDomain) && strpos($cleanEmail, '@') !== false) {
+        $cleanDomain = substr(strrchr($cleanEmail, "@"), 1);
+    }
+
+    // 1. Save to JSON ledger
+    $ledgerFile = DATA_PATH . '/sent_ledger.json';
+    $ledger = file_exists($ledgerFile) ? (json_decode(file_get_contents($ledgerFile), true) ?: []) : ['emails' => [], 'domains' => []];
+    $ledger['emails'] = $ledger['emails'] ?? [];
+    $ledger['domains'] = $ledger['domains'] ?? [];
+
+    if (!empty($cleanEmail) && !in_array($cleanEmail, $ledger['emails'])) {
+        $ledger['emails'][] = $cleanEmail;
+    }
+    if (!empty($cleanDomain) && !in_array($cleanDomain, $ledger['domains'])) {
+        $ledger['domains'][] = $cleanDomain;
+    }
+    file_put_contents($ledgerFile, json_encode($ledger, JSON_PRETTY_PRINT));
+
+    // 2. Save to SQLite sent_history table
+    try {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("INSERT INTO sent_history (recipient_email, recipient_domain, subject) VALUES (?, ?, ?)");
+        $stmt->execute([$cleanEmail, $cleanDomain, $subject]);
+    } catch (Throwable $e) {}
+}
+
+/**
+ * Global Strict Anti-Duplicate Check
  */
 function isLeadAlreadyContacted(PDO $db, ?string $email, ?string $domain, ?string $company): bool {
-    // 1. Check exact email
+    // 1. Check permanent sent ledger first
+    if (isEmailOrDomainAlreadySent($email, $domain)) {
+        return true;
+    }
+
+    // 2. Check exact email in leads table
     if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $cleanEmail = strtolower(trim($email));
         $stmt = $db->prepare("SELECT id FROM leads WHERE LOWER(client_email) = ? LIMIT 1");
@@ -126,11 +229,13 @@ function isLeadAlreadyContacted(PDO $db, ?string $email, ?string $domain, ?strin
         if ($stmt->fetch()) return true;
     }
 
-    // 2. Check clean domain (e.g. singlegrain.com, loungelizard.com)
+    // 3. Check clean domain in leads table
     $cleanDomain = '';
     if (!empty($domain)) {
-        $cleanDomain = strtolower(preg_replace('/^www\./i', '', trim($domain)));
-        $cleanDomain = parse_url($cleanDomain, PHP_URL_HOST) ?? $cleanDomain;
+        $cleanDomain = strtolower(trim($domain));
+        if (strpos($cleanDomain, 'http') === 0) {
+            $cleanDomain = parse_url($cleanDomain, PHP_URL_HOST) ?? $cleanDomain;
+        }
         $cleanDomain = preg_replace('/^www\./i', '', $cleanDomain);
     }
 
@@ -140,7 +245,7 @@ function isLeadAlreadyContacted(PDO $db, ?string $email, ?string $domain, ?strin
         if ($stmt->fetch()) return true;
     }
 
-    // 3. Check exact company name
+    // 4. Check exact company name
     if (!empty($company) && strlen(trim($company)) > 3) {
         $cleanComp = strtolower(trim($company));
         $stmt = $db->prepare("SELECT id FROM leads WHERE LOWER(company) = ? OR LOWER(title) LIKE ? LIMIT 1");

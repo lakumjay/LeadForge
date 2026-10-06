@@ -24,7 +24,19 @@ class SmtpMailer {
         $fromEmail = trim($settings['smtp_from_email'] ?? '') ?: $smtpUser;
         $fromName = trim($settings['smtp_from_name'] ?? 'Jay');
 
-        // Check if SMTP credentials are provided
+        // Unbypassable Sent Ledger Duplicate Guard
+        $isTest = (stripos($subject, 'Test Delivery') !== false || stripos($subject, 'SMTP Test') !== false || stripos($subject, 'Verification') !== false);
+        $destDomain = strtolower(substr(strrchr($toEmail, "@") ?: '', 1));
+        
+        require_once __DIR__ . '/database.php';
+        if (!$isTest && function_exists('isEmailOrDomainAlreadySent') && isEmailOrDomainAlreadySent($toEmail, $destDomain)) {
+            error_log("🛡️ [SMTP MAILER DUPLICATE BLOCKED] Prevented duplicate email to {$toEmail} ({$destDomain})");
+            return [
+                'success' => false,
+                'mode' => 'DUPLICATE_GUARD_BLOCKED',
+                'message' => "Duplicate Blocked: {$toEmail} ({$destDomain}) has already been sent an email previously."
+            ];
+        }
         if (empty($smtpUser) || empty($smtpPass)) {
             // Fallback: Use PHP native mail() or queue for manual/Gmail 1-click
             $headers = "From: {$fromName} <{$fromEmail}>\r\n" .
@@ -174,6 +186,9 @@ class SmtpMailer {
         fclose($socket);
 
         if (substr($response, 0, 3) === '250') {
+            if (!$isTest && function_exists('recordSentEmailToLedger')) {
+                recordSentEmailToLedger($toEmail, $destDomain, $subject);
+            }
             return [
                 'success' => true,
                 'mode' => 'Real SMTP Delivery',
