@@ -685,7 +685,7 @@ function publishLinkedInCommentRecord(PDO $db, array $settings, string $postUrl,
     if (!empty($settings['linkedin_access_token']) && !empty($settings['linkedin_person_urn'])) {
         // If targetShareUrn is empty, try to get latest published post share URN
         if (empty($targetShareUrn)) {
-            $stmt = $db->query("SELECT external_post_id FROM linkedin_posts WHERE external_post_id IS NOT NULL ORDER BY id DESC LIMIT 1");
+            $stmt = $db->query("SELECT external_post_id FROM linkedin_posts WHERE external_post_id IS NOT NULL AND external_post_id != '' ORDER BY id DESC LIMIT 1");
             $targetShareUrn = $stmt->fetchColumn() ?: 'urn:li:share:7513170705216069633';
         }
 

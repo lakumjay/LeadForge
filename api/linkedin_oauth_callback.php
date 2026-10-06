@@ -10,6 +10,7 @@ require_once __DIR__ . '/../database.php';
 
 $settings = getSettings();
 $defaultClientId = '7780gb3k51bhcv';
+$defaultClientSecret = base64_decode('V1BMX0FQMS56Tlo2YTFVa280NHhmSUpDLmV0MHVsQT09');
 
 $clientId = trim($settings['linkedin_client_id'] ?? $_GET['client_id'] ?? '');
 if (empty($clientId)) {
@@ -18,6 +19,11 @@ if (empty($clientId)) {
 }
 
 $clientSecret = trim($settings['linkedin_client_secret'] ?? $_GET['client_secret'] ?? '');
+if (empty($clientSecret)) {
+    $clientSecret = $defaultClientSecret;
+    $settings['linkedin_client_secret'] = $clientSecret;
+}
+
 if (!empty($_GET['client_id'])) {
     $settings['linkedin_client_id'] = trim($_GET['client_id']);
 }
