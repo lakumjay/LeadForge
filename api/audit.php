@@ -429,9 +429,19 @@ function extractEmailsFromHtml(string $html, string $cleanDomain, string $baseUr
         }
     }
 
+    // 4. Standard business contact emails in text
+    if (preg_match_all('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/i', $html, $allMatches)) {
+        foreach ($allMatches[0] as $e) {
+            $emLower = strtolower(trim($e));
+            if (preg_match('/^(?:info|hello|contact|support|sales|team|press|jobs|inquiries|marketing)@/i', $emLower)) {
+                $emails[] = $emLower;
+            }
+        }
+    }
+
     // Filter out invalid/asset extensions
     $filtered = [];
-    $ignorePatterns = ['sentry', 'wix', 'wordpress', 'cloudflare', 'schema.org', 'domain.com', 'example.com', '.png', '.jpg', '.jpeg', '.svg', '.webp', '.gif', 'github.com', 'google.com'];
+    $ignorePatterns = ['sentry', 'wix', 'wordpress', 'cloudflare', 'schema.org', 'domain.com', 'example.com', '.png', '.jpg', '.jpeg', '.svg', '.webp', '.gif', 'github.com', 'google.com', 'w3.org', 'adobe.com'];
 
     foreach (array_unique($emails) as $em) {
         $shouldIgnore = false;

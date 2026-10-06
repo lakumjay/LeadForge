@@ -103,18 +103,19 @@ if ($emailsSentToday < $dailyEmailLimit) {
 }
 
 // ----------------------------------------------------
-// D. PRIMARY COLD OUTREACH PIPELINE (MAX 2 LEADS PER RUN)
+// D. PRIMARY COLD OUTREACH PIPELINE (MAX 2 EMAILS SENT PER RUN)
 // ----------------------------------------------------
 $leadsDispatchedThisRun = 0;
 $candidatesChecked = 0;
 $maxLeadsPerRun = 2;
+$maxCandidatesToScan = 15;
 
 if ($emailsSentToday < $dailyEmailLimit && !empty($agencies)) {
     $shuffledAgencies = $agencies;
     shuffle($shuffledAgencies);
 
     foreach ($shuffledAgencies as $targetAgency) {
-        if ($leadsDispatchedThisRun >= $maxLeadsPerRun || $candidatesChecked >= $maxLeadsPerRun || $emailsSentToday >= $dailyEmailLimit) {
+        if ($leadsDispatchedThisRun >= $maxLeadsPerRun || $candidatesChecked >= $maxCandidatesToScan || $emailsSentToday >= $dailyEmailLimit) {
             break;
         }
 
