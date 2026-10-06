@@ -228,6 +228,7 @@ if ($emailsSentToday < $dailyEmailLimit && !empty($agencies)) {
                 if ($smtpRes['success']) {
                     $emailsSentToday++;
                     $leadsDispatchedThisRun++;
+                    recordSentEmailToLedger($emailCheck['email'], $agencyDomain, $subject);
                     cronLog("✉️ [REAL SMTP DELIVERED] Dispatched to {$targetAgency['name']} ({$emailCheck['email']})!");
 
                     $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");

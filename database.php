@@ -261,6 +261,57 @@ function isEmailOrDomainAlreadySent(?string $email, ?string $domain): bool {
 }
 
 /**
+ * Strict 24-Hour Same-Day Guard: Prevent multiple emails to same company/domain in 24 hours
+ */
+function isEmailOrDomainSentRecently(?string $email, ?string $domain, int $hours = 24): bool {
+    $cleanEmail = !empty($email) ? strtolower(trim($email)) : '';
+    
+    $cleanDomain = '';
+    if (!empty($domain)) {
+        $cleanDomain = strtolower(trim($domain));
+        if (strpos($cleanDomain, 'http') === 0) {
+            $cleanDomain = parse_url($cleanDomain, PHP_URL_HOST) ?? $cleanDomain;
+        }
+        $cleanDomain = preg_replace('/^www\./i', '', $cleanDomain);
+    }
+    if (empty($cleanDomain) && !empty($cleanEmail) && strpos($cleanEmail, '@') !== false) {
+        $cleanDomain = substr(strrchr($cleanEmail, "@"), 1);
+    }
+
+    try {
+        $db = Database::getConnection();
+        $cutoff = date('Y-m-d H:i:s', time() - ($hours * 3600));
+
+        // 1. Check sent_history table within timeframe
+        if (!empty($cleanEmail)) {
+            $stmt = $db->prepare("SELECT id FROM sent_history WHERE LOWER(recipient_email) = ? AND sent_at >= ? LIMIT 1");
+            $stmt->execute([$cleanEmail, $cutoff]);
+            if ($stmt->fetch()) return true;
+        }
+        if (!empty($cleanDomain)) {
+            $stmt = $db->prepare("SELECT id FROM sent_history WHERE LOWER(recipient_domain) = ? AND sent_at >= ? LIMIT 1");
+            $stmt->execute([$cleanDomain, $cutoff]);
+            if ($stmt->fetch()) return true;
+        }
+
+        // 2. Check leads updated_at / created_at within timeframe
+        if (!empty($cleanEmail)) {
+            $stmt = $db->prepare("SELECT id FROM leads WHERE LOWER(client_email) = ? AND (updated_at >= ? OR created_at >= ?) LIMIT 1");
+            $stmt->execute([$cleanEmail, $cutoff, $cutoff]);
+            if ($stmt->fetch()) return true;
+        }
+        if (!empty($cleanDomain)) {
+            $stmt = $db->prepare("SELECT id FROM leads WHERE (LOWER(url) LIKE ? OR LOWER(client_email) LIKE ?) AND (updated_at >= ? OR created_at >= ?) LIMIT 1");
+            $stmt->execute(['%' . $cleanDomain . '%', '%@' . $cleanDomain, $cutoff, $cutoff]);
+            if ($stmt->fetch()) return true;
+        }
+    } catch (Throwable $e) {}
+
+    return false;
+}
+
+
+/**
  * Record sent email to both persistent file ledger & database table
  */
 function recordSentEmailToLedger(string $email, ?string $domain, string $subject = ''): void {

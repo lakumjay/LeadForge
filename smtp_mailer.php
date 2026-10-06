@@ -13,7 +13,8 @@ class SmtpMailer {
         string $toEmail,
         string $subject,
         string $body,
-        ?array $customSettings = null
+        ?array $customSettings = null,
+        bool $isFollowup = false
     ): array {
         $settings = $customSettings ?: getSettings();
         
@@ -29,14 +30,27 @@ class SmtpMailer {
         $destDomain = strtolower(substr(strrchr($toEmail, "@") ?: '', 1));
         
         require_once __DIR__ . '/database.php';
-        if (!$isTest && function_exists('isEmailOrDomainAlreadySent') && isEmailOrDomainAlreadySent($toEmail, $destDomain)) {
-            error_log("🛡️ [SMTP MAILER DUPLICATE BLOCKED] Prevented duplicate email to {$toEmail} ({$destDomain})");
+
+        // STRICT RULE 1: Never send more than 1 email to the same domain/email in the SAME DAY (24 Hours)
+        if (!$isTest && function_exists('isEmailOrDomainSentRecently') && isEmailOrDomainSentRecently($toEmail, $destDomain, 24)) {
+            error_log("🛡️ [SMTP MAILER 24H BLOCKED] Prevented multiple emails to {$toEmail} ({$destDomain}) within 24 hours.");
+            return [
+                'success' => false,
+                'mode' => 'SAME_DAY_BLOCKED',
+                'message' => "Blocked: An email was already sent to {$toEmail} ({$destDomain}) in the last 24 hours. Strict 1-touch/day policy enforced."
+            ];
+        }
+
+        // STRICT RULE 2: For cold initial outreach ($isFollowup === false), permanent deduplication
+        if (!$isTest && !$isFollowup && function_exists('isEmailOrDomainAlreadySent') && isEmailOrDomainAlreadySent($toEmail, $destDomain)) {
+            error_log("🛡️ [SMTP MAILER DUPLICATE BLOCKED] Prevented duplicate initial email to {$toEmail} ({$destDomain})");
             return [
                 'success' => false,
                 'mode' => 'DUPLICATE_GUARD_BLOCKED',
                 'message' => "Duplicate Blocked: {$toEmail} ({$destDomain}) has already been sent an email previously."
             ];
         }
+
         if (empty($smtpUser) || empty($smtpPass)) {
             // Fallback: Use PHP native mail() or queue for manual/Gmail 1-click
             $headers = "From: {$fromName} <{$fromEmail}>\r\n" .
