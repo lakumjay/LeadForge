@@ -177,154 +177,77 @@ function seedCuratedLinkedInProspects(PDO $db): int {
             'name' => 'Ken Braun',
             'company' => 'Lounge Lizard Worldwide',
             'role' => 'Founder & CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Ken%20Braun%20Lounge%20Lizard',
+            'url' => 'https://www.linkedin.com/in/kenbraun/',
             'note' => "Hi Ken, saw your work at Lounge Lizard. I specialize in fast Laravel/PHP backend sprints & speed optimization for digital agencies. Thought I'd connect in case your dev team ever needs extra overflow capacity!"
         ],
         [
             'name' => 'Jake Baadsgaard',
             'company' => 'Disruptive Advertising',
             'role' => 'Founder & CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Jake%20Baadsgaard%20Disruptive%20Advertising',
+            'url' => 'https://www.linkedin.com/in/jakebaadsgaard/',
             'note' => "Hi Jake, love Disruptive Advertising's scale. I help agencies fix tracking gaps & build high-speed custom landing pages on Laravel/Vue. Thought I'd connect with fellow growth leaders!"
         ],
         [
             'name' => 'Eric Siu',
             'company' => 'Single Grain',
             'role' => 'Founder & Chairman',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Eric%20Siu%20Single%20Grain',
+            'url' => 'https://www.linkedin.com/in/ericosiu/',
             'note' => "Hi Eric, huge fan of Single Grain's marketing frameworks. I specialize in technical SEO audits, site speed & custom web tooling for agencies. Would love to connect!"
         ],
         [
             'name' => 'Tom Craig',
             'company' => 'Impression Digital',
             'role' => 'Co-Founder & Director',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Tom%20Craig%20Impression%20Digital',
+            'url' => 'https://www.linkedin.com/in/tom-craig-impression/',
             'note' => "Hi Tom, noticed Impression's recent work in the UK. I provide on-demand white-label Laravel/PHP development for digital agencies needing flexible sprint capacity. Great to connect!"
         ],
         [
             'name' => 'Johnathan Dane',
             'company' => 'KlientBoost',
             'role' => 'Founder & CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Johnathan%20Dane%20KlientBoost',
+            'url' => 'https://www.linkedin.com/in/johnathandane/',
             'note' => "Hi Johnathan, love KlientBoost's performance design. I build high-converting custom landing pages on Laravel/Vue and resolve Core Web Vitals bottlenecks for agencies. Great to connect!"
         ],
         [
             'name' => 'Kasim Aslam',
             'company' => 'Solutions 8',
             'role' => 'Founder & CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Kasim%20Aslam%20Solutions%208',
+            'url' => 'https://www.linkedin.com/in/kasimaslam/',
             'note' => "Hi Kasim, huge fan of Solutions 8's Google Ads insights. I build custom server-side tracking, GTM webhooks, and fast API tools for agency clients. Thought I'd connect!"
         ],
         [
             'name' => 'Jason Swenk',
             'company' => 'Agency Mastery',
             'role' => 'Founder & Agency Advisor',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Jason%20Swenk',
+            'url' => 'https://www.linkedin.com/in/jasonswenk/',
             'note' => "Hi Jason, love your agency growth frameworks. I provide on-demand white-label Laravel backend capacity to help scaling agencies clear developer backlogs. Would love to connect!"
         ],
         [
             'name' => 'Ross Simmonds',
             'company' => 'Foundation Marketing',
             'role' => 'Founder & CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Ross%20Simmonds%20Foundation',
+            'url' => 'https://www.linkedin.com/in/rosssimmonds/',
             'note' => "Hi Ross, love Foundation's B2B content distribution models. I build custom web scrapers, data pipelines, and fast Laravel portals for agencies. Hope to connect!"
-        ],
-        [
-            'name' => 'Rick Tobin',
-            'company' => 'Circus PPC',
-            'role' => 'Managing Director',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Rick%20Tobin%20Circus%20PPC',
-            'note' => "Hi Rick, saw Circus PPC's specialized focus. I handle custom API integrations, server-side tracking, and web speed optimization for agencies. Hope to connect!"
-        ],
-        [
-            'name' => 'Michael Del Bimbo',
-            'company' => 'Northern Commerce',
-            'role' => 'CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Michael%20Del%20Bimbo%20Northern%20Commerce',
-            'note' => "Hi Michael, love what Northern Commerce is doing with e-commerce. I specialize in fast PHP/Laravel backends & checkout bug resolution. Thought I'd connect!"
-        ],
-        [
-            'name' => 'Lauren Oakes',
-            'company' => 'Megaphone Marketing',
-            'role' => 'CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Lauren%20Oakes%20Megaphone%20Marketing',
-            'note' => "Hi Lauren, saw Megaphone Marketing's growth across Australia. I handle overnight time-zone development & Core Web Vitals fixes for AU agencies. Would love to connect!"
-        ],
-        [
-            'name' => 'Alex Miller',
-            'company' => 'Vortex Digital Agency',
-            'role' => 'Founder & CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Alex%20Miller%20Vortex%20Digital',
-            'note' => "Hi Alex, love Vortex Digital's agency work. I specialize in fast backend sprints, bug fixes & API connections on flexible weekly sprints. Great to connect!"
-        ],
-        [
-            'name' => 'Sarah Jenkins',
-            'company' => 'Elevate Commerce UK',
-            'role' => 'Head of Performance',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Sarah%20Jenkins%20Elevate%20Commerce',
-            'note' => "Hi Sarah, saw Elevate's scale in e-com performance. I help resolve server-side tracking & Core Web Vitals bottlenecks so conversion rates don't drop. Hope to connect!"
-        ],
-        [
-            'name' => 'David Thompson',
-            'company' => 'BluePeak Interactive',
-            'role' => 'Technical Director',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=David%20Thompson%20BluePeak%20Interactive',
-            'note' => "Hi David, saw BluePeak's impressive tech work. I'm a full-stack Laravel/PHP developer helping agencies clear backlog tickets & build APIs. Would love to connect!"
-        ],
-        [
-            'name' => 'Emma Watson',
-            'company' => 'Pulse Media Sydney',
-            'role' => 'Managing Director',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Emma%20Watson%20Pulse%20Media%20Sydney',
-            'note' => "Hi Emma, love Pulse Media's work in Sydney. I handle overnight development & Core Web Vitals sprints for Australian teams. Thought I'd connect!"
-        ],
-        [
-            'name' => 'Michael Chen',
-            'company' => 'ShopScale Labs',
-            'role' => 'Co-Founder & CTO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Michael%20Chen%20ShopScale%20Labs',
-            'note' => "Hi Michael, saw ShopScale's e-com tools. I specialize in custom themes, AJAX carts & API integrations. Thought I'd connect with fellow builders!"
-        ],
-        [
-            'name' => 'Florian Heinemann',
-            'company' => 'Project A Ventures',
-            'role' => 'Managing Director',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Florian%20Heinemann%20Project%20A',
-            'note' => "Hi Florian, huge respect for Project A's venture builder model. I specialize in full-stack Laravel/PHP sprints and technical architecture. Great to connect!"
-        ],
-        [
-            'name' => 'Ronald Hans',
-            'company' => 'Dept Agency NL',
-            'role' => 'Founder',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Ronald%20Hans%20Dept%20Agency',
-            'note' => "Hi Ronald, love Dept Agency's global tech footprint. I provide agile backend development and bug fixing support for growing teams. Hope to connect!"
-        ],
-        [
-            'name' => 'Marcus Tan',
-            'company' => 'Construct Digital SG',
-            'role' => 'Co-Founder',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Marcus%20Tan%20Construct%20Digital',
-            'note' => "Hi Marcus, saw Construct Digital's B2B tech work. I help digital agencies with on-demand Laravel backend capacity and fast API integrations. Great to connect!"
         ],
         [
             'name' => 'Andrew Gazdecki',
             'company' => 'Acquire.com',
             'role' => 'Founder & CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Andrew%20Gazdecki%20Acquire',
+            'url' => 'https://www.linkedin.com/in/agazdecki/',
             'note' => "Hi Andrew, huge fan of Acquire.com's marketplace. I specialize in full-stack Laravel/PHP engineering and database optimization for startups. Great to connect!"
         ],
         [
             'name' => 'Dan Martell',
             'company' => 'SaaS Academy',
             'role' => 'Founder & CEO',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Dan%20Martell%20SaaS%20Academy',
+            'url' => 'https://www.linkedin.com/in/danmartell/',
             'note' => "Hi Dan, love your 'Buy Back Your Time' playbook. I help SaaS founders and agencies buy back time by taking over their backend dev backlogs. Hope to connect!"
         ],
         [
             'name' => 'Liam Martin',
             'company' => 'Time Doctor',
             'role' => 'Co-Founder',
-            'url' => 'https://www.linkedin.com/search/results/people/?keywords=Liam%20Martin%20Time%20Doctor',
+            'url' => 'https://www.linkedin.com/in/liammcivormartin/',
             'note' => "Hi Liam, huge respect for your remote work leadership. I'm a senior full-stack Laravel engineer working asynchronously with US/EU agencies. Great to connect!"
         ]
     ];
