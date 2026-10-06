@@ -28,6 +28,16 @@ if ($action === 'status') {
 
     $statusData['recent_logs'] = $recentLogs;
 
+    // Self-Healing Trigger: If last heartbeat > 5 minutes ago, trigger background cron cycle
+    $lastHeartbeatTime = isset($statusData['last_heartbeat']) ? strtotime($statusData['last_heartbeat']) : 0;
+    if (time() - $lastHeartbeatTime > 300) {
+        $runnerPath = ROOT_PATH . '/cron_runner.php';
+        if (file_exists($runnerPath)) {
+            @exec("nohup /usr/local/bin/php " . escapeshellarg($runnerPath) . " > /dev/null 2>&1 &");
+            @exec("nohup php " . escapeshellarg($runnerPath) . " > /dev/null 2>&1 &");
+        }
+    }
+
     echo json_encode([
         'status' => 'success',
         'data' => $statusData

@@ -90,6 +90,15 @@ while (true) {
             $agencyIdx++;
 
             $agencyDomain = preg_replace('/^www\./i', '', parse_url($targetAgency['website'], PHP_URL_HOST));
+
+            // Duplicate Suppression Guard: Check if company or domain was already contacted in last 30 days
+            $dupCheck = $db->prepare("SELECT id FROM leads WHERE (company = ? OR url LIKE ? OR title LIKE ?) AND created_at >= datetime('now', '-30 days')");
+            $dupCheck->execute([$targetAgency['name'], "%{$agencyDomain}%", "%{$targetAgency['name']}%"]);
+            if ($dupCheck->fetch()) {
+                daemonLog("⏭️ [DUPLICATE GUARD] {$targetAgency['name']} ({$agencyDomain}) was already processed recently. Skipping to prevent repeated emails.");
+                continue;
+            }
+
             daemonLog("🔍 [LIVE AUDIT] Scanning {$targetAgency['name']} ({$targetAgency['website']})...");
 
             $audit = performSiteAudit($targetAgency['website']);

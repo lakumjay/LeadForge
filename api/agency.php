@@ -14,7 +14,7 @@ $category = $_GET['category'] ?? 'all';
 $search = trim($_GET['search'] ?? '');
 
 $agencies = [
-    // --- UNITED STATES: SEO, ADS & WEB AGENCIES ---
+    // --- UNITED STATES AGENCIES ---
     [
         'id' => 'us_seo_1',
         'name' => 'Single Grain Marketing',
@@ -24,7 +24,7 @@ $agencies = [
         'city' => 'Los Angeles, CA',
         'category' => 'SEO, Google Ads & Growth',
         'size' => '50-100 employees',
-        'tech_gap' => 'Focuses on ad strategy; constantly needs technical SEO, speed optimization, and GA4 tag tracking implementations.',
+        'tech_gap' => 'Needs technical SEO, speed optimization, and GA4 tag tracking implementations.',
         'outreach_angle' => 'Technical SEO & GA4 Server-Side Tracking Partner.',
         'target_roles' => ['VP of SEO', 'Director of Paid Media']
     ],
@@ -32,12 +32,12 @@ $agencies = [
         'id' => 'us_ads_1',
         'name' => 'Disruptive Advertising',
         'website' => 'https://disruptiveadvertising.com',
-        'direct_email' => 'contact@disruptiveadvertising.com',
+        'direct_email' => null, // Scrape live contact page
         'country' => 'United States',
         'city' => 'Pleasant Grove, UT',
         'category' => 'Google Ads & PPC Performance',
         'size' => '100-150 employees',
-        'tech_gap' => 'Manages $100M+ in ad spend; needs landing page speed optimization and Google Ads conversion API fixes.',
+        'tech_gap' => 'Needs landing page speed optimization and Google Ads conversion API fixes.',
         'outreach_angle' => 'PPC Landing Page Developer & Conversion Rate Optimizer.',
         'target_roles' => ['Head of Paid Search', 'Operations Lead']
     ],
@@ -50,7 +50,7 @@ $agencies = [
         'city' => 'New York, NY',
         'category' => 'Full-Service Digital & Web',
         'size' => '50-100 employees',
-        'tech_gap' => 'Heavy on branding; outsources custom Laravel, API integrations, and technical audits.',
+        'tech_gap' => 'Outsources custom Laravel, API integrations, and technical audits.',
         'outreach_angle' => 'White-label Backend, SEO & API Support.',
         'target_roles' => ['Technical Director', 'Head of Production']
     ],
@@ -76,12 +76,38 @@ $agencies = [
         'city' => 'San Francisco, CA',
         'category' => 'Pure-Play Technical SEO',
         'size' => '60-120 employees',
-        'tech_gap' => 'Provides SEO strategy audits but lacks development resources to execute backend code fixes.',
+        'tech_gap' => 'Lacks development resources to execute backend code fixes from audits.',
         'outreach_angle' => 'Technical SEO Implementation Developer for client roadmaps.',
         'target_roles' => ['Head of Technical SEO', 'Client Success Director']
     ],
+    [
+        'id' => 'us_dev_3',
+        'name' => 'SmartSites Digital Marketing',
+        'website' => 'https://www.smartsites.com',
+        'direct_email' => 'contact@smartsites.com',
+        'country' => 'United States',
+        'city' => 'Paramus, NJ',
+        'category' => 'Web Development & PPC',
+        'size' => '100-250 employees',
+        'tech_gap' => 'High volume of small business websites needing fast PHP/WordPress optimizations.',
+        'outreach_angle' => 'On-demand Web Dev & Speed Sprint Support.',
+        'target_roles' => ['Managing Director', 'Head of Dev']
+    ],
+    [
+        'id' => 'us_ecom_4',
+        'name' => 'Coalition Technologies',
+        'website' => 'https://coalitiontechnologies.com',
+        'direct_email' => null,
+        'country' => 'United States',
+        'city' => 'Los Angeles, CA',
+        'category' => 'SEO & Shopify E-Commerce',
+        'size' => '200+ employees',
+        'tech_gap' => 'Custom Shopify app integrations and Core Web Vitals speed tuning.',
+        'outreach_angle' => 'Shopify Liquid & Full Stack Dev Partner.',
+        'target_roles' => ['Director of SEO', 'Lead Developer']
+    ],
 
-    // --- UNITED KINGDOM: SEO, PPC & DEV AGENCIES ---
+    // --- UNITED KINGDOM AGENCIES ---
     [
         'id' => 'uk_seo_1',
         'name' => 'Impression Digital UK',
@@ -109,17 +135,17 @@ $agencies = [
         'target_roles' => ['Managing Director', 'Head of PPC']
     ],
     [
-        'id' => 'uk_1',
-        'name' => 'Cyber-Duck Digital Agency',
-        'website' => 'https://www.cyber-duck.co.uk',
+        'id' => 'uk_dev_2',
+        'name' => 'Hallam Internet UK',
+        'website' => 'https://www.hallaminternet.com',
         'direct_email' => null,
         'country' => 'United Kingdom',
-        'city' => 'London / Elstree',
-        'category' => 'Digital Transformation & Web',
-        'size' => '50-90 employees',
-        'tech_gap' => 'Extensive PHP/Laravel client projects with recurring maintenance contracts.',
-        'outreach_angle' => 'Maintenance partner for SLA bug fixes and Laravel migrations.',
-        'target_roles' => ['Head of Technology', 'Operations Manager']
+        'city' => 'Nottingham / London',
+        'category' => 'Strategic Digital Marketing',
+        'size' => '50-80 employees',
+        'tech_gap' => 'Backend database & tracking implementations.',
+        'outreach_angle' => 'Technical Web & Analytics Specialist.',
+        'target_roles' => ['Head of Operations', 'Technical SEO Lead']
     ],
     [
         'id' => 'uk_3',
@@ -135,7 +161,7 @@ $agencies = [
         'target_roles' => ['Digital Strategy Director', 'Technical Lead']
     ],
 
-    // --- CANADA & AUSTRALIA ---
+    // --- CANADA AGENCIES ---
     [
         'id' => 'ca_1',
         'name' => 'Northern Commerce',
@@ -150,6 +176,34 @@ $agencies = [
         'target_roles' => ['VP of Technology', 'Lead Architect']
     ],
     [
+        'id' => 'ca_2',
+        'name' => 'Major Tom Digital',
+        'website' => 'https://www.majortom.com',
+        'direct_email' => null,
+        'country' => 'Canada',
+        'city' => 'Vancouver / Toronto',
+        'category' => 'Full-Service Digital Agency',
+        'size' => '80-120 employees',
+        'tech_gap' => 'Custom web development and marketing automation.',
+        'outreach_angle' => 'Full-Stack Developer for Overflow Sprint Work.',
+        'target_roles' => ['VP Technology', 'Director of Web']
+    ],
+    [
+        'id' => 'ca_3',
+        'name' => 'Search Engine People',
+        'website' => 'https://www.searchenginepeople.com',
+        'direct_email' => null,
+        'country' => 'Canada',
+        'city' => 'Pickering / Toronto, ON',
+        'category' => 'SEO & Paid Search Agency',
+        'size' => '50-100 employees',
+        'tech_gap' => 'Implementation of schema markup, Core Web Vitals, and tracking.',
+        'outreach_angle' => 'Technical Implementation Partner for SEO Audits.',
+        'target_roles' => ['Director of SEO', 'Director of PPC']
+    ],
+
+    // --- AUSTRALIA AGENCIES ---
+    [
         'id' => 'au_1',
         'name' => 'Megaphone Marketing Australia',
         'website' => 'https://megaphonemarketing.com.au',
@@ -161,6 +215,32 @@ $agencies = [
         'tech_gap' => 'Heavy ad scaling agency requiring rapid Shopify/web fixes and overnight bug resolution.',
         'outreach_angle' => 'Overnight technical sprint completion (tasks resolved while Melbourne sleeps).',
         'target_roles' => ['Operations Director', 'Head of Paid Media']
+    ],
+    [
+        'id' => 'au_2',
+        'name' => 'Reload Media Australia',
+        'website' => 'https://www.reloadmedia.com.au',
+        'direct_email' => null,
+        'country' => 'Australia',
+        'city' => 'Brisbane / Sydney',
+        'category' => 'Digital Marketing & Growth',
+        'size' => '40-70 employees',
+        'tech_gap' => 'E-Commerce tracking and PHP/Shopify technical fixes.',
+        'outreach_angle' => 'E-Commerce Developer & Tracking Specialist.',
+        'target_roles' => ['Head of Digital', 'Technical Lead']
+    ],
+    [
+        'id' => 'au_3',
+        'name' => 'King Kong Digital Australia',
+        'website' => 'https://kingkong.co',
+        'direct_email' => null,
+        'country' => 'Australia',
+        'city' => 'Melbourne, VIC',
+        'category' => 'High-Conversion Funnels & PPC',
+        'size' => '70-120 employees',
+        'tech_gap' => 'High-speed landing page development and custom funnel tracking scripts.',
+        'outreach_angle' => 'High-Speed Landing Page & Conversion CAPI Developer.',
+        'target_roles' => ['Head of Production', 'CRO Lead']
     ]
 ];
 
