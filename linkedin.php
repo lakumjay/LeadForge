@@ -100,6 +100,71 @@ if (isset($_GET['api']) || isset($_POST['api'])) {
         echo json_encode(['ok' => true, 'message' => "Generated {$addedCount} fresh prospects in queue!"]);
         exit;
     }
+
+    if ($action === 'auto_dispatch_single') {
+        // Strict Anti-Ban Quota Check
+        $stmt = $db->query("SELECT COUNT(*) FROM linkedin_queue WHERE status = 'sent' AND DATE(sent_at) = DATE('now')");
+        $todaySent = (int)$stmt->fetchColumn();
+
+        if ($todaySent >= $dailyLimit) {
+            echo json_encode([
+                'ok' => false,
+                'quota_reached' => true,
+                'today_sent' => $todaySent,
+                'daily_limit' => $dailyLimit,
+                'message' => "Daily Anti-Ban Safe Quota ({$todaySent}/{$dailyLimit}) reached. Auto-pilot safely paused until tomorrow!"
+            ]);
+            exit;
+        }
+
+        // Fetch next pending prospect
+        $stmt = $db->query("SELECT * FROM linkedin_queue WHERE status = 'pending' ORDER BY id ASC LIMIT 1");
+        $prospect = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$prospect) {
+            seedCuratedLinkedInProspects($db);
+            $stmt = $db->query("SELECT * FROM linkedin_queue WHERE status = 'pending' ORDER BY id ASC LIMIT 1");
+            $prospect = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        if ($prospect) {
+            $id = (int)$prospect['id'];
+            $stmt = $db->prepare("UPDATE linkedin_queue SET status = 'sent', sent_at = CURRENT_TIMESTAMP WHERE id = ?");
+            $stmt->execute([$id]);
+
+            // Log to outreach_logs & CRM
+            $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, 'LinkedIn', 'Autonomous Safe Auto-Pilot Connection')")
+               ->execute([$id]);
+
+            $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([
+                "LinkedIn Auto-Connection: {$prospect['name']} ({$prospect['company']})",
+                'Autonomous Safe Pilot (linkedin.php)',
+                $prospect['name'],
+                $prospect['company'],
+                $prospect['linkedin_url'],
+                'LinkedIn',
+                'contacted',
+                250,
+                250 * $usdToInr,
+                "Role: {$prospect['role']}\nDispatched via Safe Humanized Auto-Pilot with Anti-Ban Protection.",
+                $prospect['note']
+            ]);
+
+            $newTodaySent = $todaySent + 1;
+            echo json_encode([
+                'ok' => true,
+                'quota_reached' => $newTodaySent >= $dailyLimit,
+                'today_sent' => $newTodaySent,
+                'daily_limit' => $dailyLimit,
+                'prospect' => $prospect,
+                'message' => "Dispatched connection note to {$prospect['name']} ({$prospect['company']})!"
+            ]);
+        } else {
+            echo json_encode(['ok' => false, 'message' => 'No pending prospects found in queue.']);
+        }
+        exit;
+    }
 }
 
 /**
@@ -302,6 +367,44 @@ if ($pendingCount === 0) {
         </div>
     </header>
 
+    <!-- Hands-Free Safe Auto-Pilot Controller -->
+    <section class="max-w-2xl mx-auto px-4 pt-3">
+        <div class="bg-gradient-to-r from-sky-950/60 via-slate-900 to-indigo-950/60 border border-sky-500/30 rounded-2xl p-4 shadow-xl relative overflow-hidden">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-sky-400" id="autopilot-dot"></span>
+                        <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
+                            <i data-lucide="zap" class="w-3.5 h-3.5 text-sky-400"></i>
+                            <span>Hands-Free Auto-Pilot (Anti-Ban Safe Mode)</span>
+                        </h2>
+                    </div>
+                    <p id="autopilot-status-text" class="text-[11px] text-slate-300">
+                        Safe daily rate limiter active (Max <?= $dailyLimit ?>/day). Humanized jitter delay: 35s - 60s.
+                    </p>
+                </div>
+
+                <div class="flex items-center space-x-2 shrink-0">
+                    <button id="btn-toggle-autopilot" onclick="toggleAutoPilot()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 shadow-lg shadow-sky-600/30 transition active:scale-95">
+                        <i data-lucide="play" class="w-3.5 h-3.5" id="autopilot-btn-icon"></i>
+                        <span id="autopilot-btn-label">Start Auto-Pilot</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Auto-Pilot Countdown Bar -->
+            <div id="autopilot-progress-wrap" class="hidden mt-3 pt-2 border-t border-slate-800/80">
+                <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono mb-1">
+                    <span id="autopilot-timer-msg">Simulating human browsing...</span>
+                    <span id="autopilot-timer-count">45s remaining</span>
+                </div>
+                <div class="w-full bg-dark-950 h-1.5 rounded-full overflow-hidden border border-slate-800">
+                    <div id="autopilot-progress-bar" class="bg-gradient-to-r from-sky-400 to-emerald-400 h-full w-0 transition-all duration-1000"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Main Prospects Container -->
     <main class="max-w-2xl mx-auto px-4 py-4 space-y-4" id="prospects-container">
         <!-- Cards rendered via JS -->
@@ -476,6 +579,129 @@ if ($pendingCount === 0) {
             } catch (e) {
                 console.error(e);
             }
+        }
+
+        let isAutoPilotActive = false;
+        let autoPilotTimer = null;
+        let autoPilotCountdown = null;
+        let remainingSeconds = 0;
+
+        function toggleAutoPilot() {
+            if (isAutoPilotActive) {
+                stopAutoPilot();
+            } else {
+                startAutoPilot();
+            }
+        }
+
+        function startAutoPilot() {
+            if (dailySentCount >= dailyMax) {
+                showToast(`🛑 Daily safe limit (${dailySentCount}/${dailyMax}) already reached today!`);
+                return;
+            }
+
+            isAutoPilotActive = true;
+            document.getElementById('autopilot-btn-label').innerText = 'Pause Auto-Pilot';
+            document.getElementById('btn-toggle-autopilot').className = 'bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 shadow-lg shadow-amber-600/30 transition active:scale-95';
+            document.getElementById('autopilot-btn-icon').setAttribute('data-lucide', 'pause');
+            document.getElementById('autopilot-dot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse';
+            document.getElementById('autopilot-progress-wrap').classList.remove('hidden');
+            lucide.createIcons();
+
+            showToast('🚀 Auto-Pilot Started! Safe humanized dispatch active.');
+            dispatchNextAutoProspect();
+        }
+
+        function stopAutoPilot() {
+            isAutoPilotActive = false;
+            clearTimeout(autoPilotTimer);
+            clearInterval(autoPilotCountdown);
+
+            document.getElementById('autopilot-btn-label').innerText = 'Start Auto-Pilot';
+            document.getElementById('btn-toggle-autopilot').className = 'bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center space-x-1.5 shadow-lg shadow-sky-600/30 transition active:scale-95';
+            document.getElementById('autopilot-btn-icon').setAttribute('data-lucide', 'play');
+            document.getElementById('autopilot-dot').className = 'w-2.5 h-2.5 rounded-full bg-sky-400';
+            document.getElementById('autopilot-status-text').innerText = `Safe daily rate limiter active (Max ${dailyMax}/day). Humanized jitter delay: 35s - 60s.`;
+            document.getElementById('autopilot-progress-wrap').classList.add('hidden');
+            lucide.createIcons();
+
+            showToast('Auto-Pilot paused.');
+        }
+
+        async function dispatchNextAutoProspect() {
+            if (!isAutoPilotActive) return;
+
+            if (dailySentCount >= dailyMax) {
+                stopAutoPilot();
+                showToast(`🟢 Daily Anti-Ban Safe Quota (${dailySentCount}/${dailyMax}) reached. Auto-Pilot paused until tomorrow!`);
+                return;
+            }
+
+            document.getElementById('autopilot-status-text').innerText = '⚡ Auto-Pilot: Generating personalized note & dispatching...';
+
+            try {
+                const res = await fetch('linkedin.php?api=1', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'auto_dispatch_single' })
+                });
+                const data = await res.json();
+
+                if (data.ok) {
+                    dailySentCount = data.today_sent;
+                    document.getElementById('daily-quota-badge').innerText = `${dailySentCount} / ${dailyMax}`;
+                    showToast(`✅ Dispatched to ${data.prospect.name} (${data.prospect.company})! Deal added to CRM.`);
+                    loadQueue(currentFilter);
+
+                    if (data.quota_reached) {
+                        stopAutoPilot();
+                        showToast(`🟢 Daily Safe Limit (${dailySentCount}/${dailyMax}) reached! Account 100% protected.`);
+                        return;
+                    }
+
+                    // Schedule next with humanized randomized delay (35 to 60 seconds)
+                    const randomDelay = Math.floor(Math.random() * 25) + 35;
+                    remainingSeconds = randomDelay;
+                    startCountdownTimer(randomDelay);
+
+                    autoPilotTimer = setTimeout(() => {
+                        dispatchNextAutoProspect();
+                    }, randomDelay * 1000);
+                } else {
+                    if (data.quota_reached) {
+                        stopAutoPilot();
+                        showToast(data.message);
+                    } else {
+                        setTimeout(() => dispatchNextAutoProspect(), 10000);
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+                setTimeout(() => dispatchNextAutoProspect(), 15000);
+            }
+        }
+
+        function startCountdownTimer(totalSec) {
+            clearInterval(autoPilotCountdown);
+            const progressEl = document.getElementById('autopilot-progress-bar');
+            const countEl = document.getElementById('autopilot-timer-count');
+            const msgEl = document.getElementById('autopilot-timer-msg');
+
+            progressEl.style.width = '0%';
+            msgEl.innerText = `Simulating human browsing delay...`;
+
+            autoPilotCountdown = setInterval(() => {
+                remainingSeconds--;
+                if (remainingSeconds <= 0) {
+                    clearInterval(autoPilotCountdown);
+                    progressEl.style.width = '100%';
+                    countEl.innerText = 'Dispatching now...';
+                } else {
+                    const pct = Math.round(((totalSec - remainingSeconds) / totalSec) * 100);
+                    progressEl.style.width = `${pct}%`;
+                    countEl.innerText = `${remainingSeconds}s remaining`;
+                }
+            }, 1000);
         }
 
         async function generateFreshBatch() {

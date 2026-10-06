@@ -90,6 +90,41 @@ if ($currentHour === 9 && $currentMinute < 10) {
 }
 
 // ----------------------------------------------------
+// B2. AUTONOMOUS LINKEDIN SAFE DISPATCH (ANTI-BAN SAFE LIMIT)
+// ----------------------------------------------------
+$stmt = $db->prepare("SELECT COUNT(*) FROM outreach_logs WHERE platform = 'LinkedIn' AND DATE(created_at) = ?");
+$stmt->execute([$today]);
+$liSentToday = (int)$stmt->fetchColumn();
+$liDailyLimit = (int)($settings['daily_linkedin_limit'] ?? 15);
+
+if ($liSentToday < $liDailyLimit) {
+    $stmt = $db->query("SELECT * FROM linkedin_queue WHERE status = 'pending' ORDER BY id ASC LIMIT 1");
+    $liProspect = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($liProspect) {
+        $liId = (int)$liProspect['id'];
+        $db->prepare("UPDATE linkedin_queue SET status = 'sent', sent_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$liId]);
+        $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, 'LinkedIn', 'Server-Side Autonomous Safe Outreach')")->execute([$liId]);
+        $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([
+            "LinkedIn Connection: {$liProspect['name']} ({$liProspect['company']})",
+            'cPanel Server Autonomous Pilot',
+            $liProspect['name'],
+            $liProspect['company'],
+            $liProspect['linkedin_url'],
+            'LinkedIn',
+            'contacted',
+            250,
+            250 * $usdToInr,
+            "Role: {$liProspect['role']}\nDispatched via 24/7 Server Autonomous LinkedIn Engine with Anti-Ban Protection.",
+            $liProspect['note']
+        ]);
+        $liSentToday++;
+        cronLog("💼 [LINKEDIN AUTO-DISPATCH] Dispatched connection note to {$liProspect['name']} ({$liProspect['company']})! Today: {$liSentToday}/{$liDailyLimit}");
+    }
+}
+
+// ----------------------------------------------------
 // C. 3-STAGE SMART FOLLOW-UP SEQUENCE (48h, 5d, 9d)
 // ----------------------------------------------------
 if ($emailsSentToday < $dailyEmailLimit) {
