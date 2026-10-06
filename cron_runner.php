@@ -194,11 +194,12 @@ cLog("✅ [CRM SYNC] Processed {$batchSize} mass leads for {$currentCountry} ({$
 // ----------------------------------------------------
 // 5. LINKEDIN AUTO-CONNECT PREPARATION
 // ----------------------------------------------------
-if ($linkedInSentToday < $dailyLinkedInLimit && !empty($activeProspects)) {
+$prospectList = !empty($activeProspects) ? $activeProspects : ($prospects ?? []);
+if ($linkedInSentToday < $dailyLinkedInLimit && !empty($prospectList)) {
     $stmt = $db->query("SELECT client_name FROM leads WHERE platform = 'LinkedIn'");
     $alreadyContacted = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-    foreach ($activeProspects as $prospect) {
+    foreach ($prospectList as $prospect) {
         if (!in_array($prospect['name'], $alreadyContacted)) {
             $dealUsd = (float)($prospect['deal_usd'] ?? 250);
             $dealInr = $dealUsd * $usdToInr;

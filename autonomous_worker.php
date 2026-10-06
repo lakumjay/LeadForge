@@ -16,6 +16,8 @@ declare(strict_types=1);
 // Prevent script timeout
 set_time_limit(0);
 ignore_user_abort(true);
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/database.php';
@@ -36,9 +38,14 @@ function daemonLog(string $msg): void {
     global $logFile;
     $time = date('Y-m-d H:i:s');
     $line = "[{$time}] {$msg}\n";
-    file_put_contents($logFile, $line, FILE_APPEND);
+    @file_put_contents($logFile, $line, FILE_APPEND);
     echo $line;
 }
+
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    daemonLog("⚠️ [PHP NOTICE] {$errstr} in " . basename($errfile) . ":{$errline}");
+    return true;
+});
 
 daemonLog("🚀 ========================================================");
 daemonLog("🚀 LeadForge AI 24/7 Autonomous Master Daemon Online!");
@@ -225,11 +232,12 @@ while (true) {
         // ----------------------------------------------------
         // ACTION 5: LINKEDIN ACTIVE PROSPECT AUTO-CONNECT
         // ----------------------------------------------------
-        if ($linkedInSentToday < $dailyLinkedInLimit) {
+        $prospectList = !empty($activeProspects) ? $activeProspects : ($prospects ?? []);
+        if ($linkedInSentToday < $dailyLinkedInLimit && !empty($prospectList)) {
             $stmt = $db->query("SELECT client_name FROM leads WHERE platform = 'LinkedIn'");
             $alreadyContacted = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-            foreach ($activeProspects as $prospect) {
+            foreach ($prospectList as $prospect) {
                 if ($linkedInSentToday >= $dailyLinkedInLimit) break;
 
                 if (!in_array($prospect['name'], $alreadyContacted)) {
