@@ -7,21 +7,23 @@
 
 declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../database.php';
 
-$action = $_GET['action'] ?? 'fetch';
+$action = $_GET['action'] ?? null;
 
-if ($action === 'fetch') {
-    try {
-        $forceRefresh = isset($_GET['refresh']) && $_GET['refresh'] === '1';
-        $filter = $_GET['filter'] ?? 'all'; // 'all', 'seo', 'ads', 'laravel', 'urgent', 'bugfix', 'reddit'
-        $maxAgeMinutes = isset($_GET['max_age']) ? (int)$_GET['max_age'] : 30;
-        
-        $cacheFile = DATA_PATH . '/jobs_cache.json';
-        $cacheTime = file_exists($cacheFile) ? filemtime($cacheFile) : 0;
-        $now = time();
+if (isset($_GET['action']) || (php_sapi_name() !== 'cli' && basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'radar.php')) {
+    header('Content-Type: application/json; charset=utf-8');
+    $action = $action ?: 'fetch';
+    if ($action === 'fetch') {
+        try {
+            $forceRefresh = isset($_GET['refresh']) && $_GET['refresh'] === '1';
+            $filter = $_GET['filter'] ?? 'all'; // 'all', 'seo', 'ads', 'laravel', 'urgent', 'bugfix', 'reddit'
+            $maxAgeMinutes = isset($_GET['max_age']) ? (int)$_GET['max_age'] : 30;
+            
+            $cacheFile = DATA_PATH . '/jobs_cache.json';
+            $cacheTime = file_exists($cacheFile) ? filemtime($cacheFile) : 0;
+            $now = time();
         
         $jobs = [];
         if ($forceRefresh || ($now - $cacheTime) > 30 || !file_exists($cacheFile)) {
@@ -106,6 +108,7 @@ if ($action === 'fetch') {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         exit;
     }
+}
 }
 
 /**

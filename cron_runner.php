@@ -214,7 +214,7 @@ foreach ($followupResults as $fu) {
 // 4. MASS MULTIPLIER ROTATING LEADS GENERATION
 // ----------------------------------------------------
 $batchSize = rand(8, 15);
-$massLeads = generateMassLeadsList($currentCategory, $currentCountry, $cities[$currentCountry] ?? $cities['United States'], $localNiches, $ecomNiches, $agencyNiches, $batchSize, $usdToInr);
+$massLeads = generateMassLeadsList($currentCategory, $currentCountry, null, null, null, null, null, $batchSize, $usdToInr);
 
 foreach ($massLeads as $lead) {
     $res = processAndDispatchSingleLead($lead, $db, $settings, $usdToInr);

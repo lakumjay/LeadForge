@@ -15,19 +15,21 @@ require_once __DIR__ . '/audit.php';
 
 $rawInput = file_get_contents('php://input');
 $postData = json_decode($rawInput, true) ?: $_POST;
-$action = $_GET['action'] ?? $postData['action'] ?? 'product_hunt';
+$action = $_GET['action'] ?? $postData['action'] ?? null;
 
-$db = Database::getConnection();
-$settings = getSettings();
-$usdToInr = (float)($settings['usd_to_inr'] ?? 86.5);
+if (isset($_GET['action']) || isset($postData['action']) || (php_sapi_name() !== 'cli' && basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'stealth_tools.php')) {
+    $action = $action ?: 'product_hunt';
+    $db = Database::getConnection();
+    $settings = getSettings();
+    $usdToInr = (float)($settings['usd_to_inr'] ?? 86.5);
 
-// =========================================================================
-// 1. UPWORK 0-COMPETITION CLIENT DE-ANONYMIZER & STEALTH BYPASS
-// =========================================================================
-if ($action === 'upwork_de_anonymize') {
-    $jobText = trim($postData['job_text'] ?? $_GET['job_text'] ?? '');
-    $jobTitle = trim($postData['job_title'] ?? $_GET['job_title'] ?? 'Upwork Project');
-    $clientLocation = trim($postData['client_location'] ?? $_GET['client_location'] ?? 'United States');
+    // =========================================================================
+    // 1. UPWORK 0-COMPETITION CLIENT DE-ANONYMIZER & STEALTH BYPASS
+    // =========================================================================
+    if ($action === 'upwork_de_anonymize') {
+        $jobText = trim($postData['job_text'] ?? $_GET['job_text'] ?? '');
+        $jobTitle = trim($postData['job_title'] ?? $_GET['job_title'] ?? 'Upwork Project');
+        $clientLocation = trim($postData['client_location'] ?? $_GET['client_location'] ?? 'United States');
 
     if (empty($jobText) && empty($jobTitle)) {
         echo json_encode(['status' => 'error', 'message' => 'Please provide the Upwork job text or title.']);
@@ -117,6 +119,7 @@ if ($action === 'github_bounties') {
         'bounties' => $bounties
     ], JSON_PRETTY_PRINT);
     exit;
+}
 }
 
 // -------------------------------------------------------------------------

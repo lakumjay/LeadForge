@@ -125,9 +125,28 @@ if (isset($_GET['action']) || isset($postData['action']) || (php_sapi_name() !==
 /**
  * Helper to generate lead list
  */
-function generateMassLeadsList($category, $country, $selectedCities, $localNiches, $ecomNiches, $agencyNiches, $saasNiches, $limit, $usdToInr): array {
+function generateMassLeadsList(
+    string $category = 'all',
+    string $country = 'United States',
+    ?array $selectedCities = null,
+    ?array $localNiches = null,
+    ?array $ecomNiches = null,
+    ?array $agencyNiches = null,
+    ?array $saasNiches = null,
+    int $limit = 10,
+    float $usdToInr = 86.5
+): array {
+    global $cities, $localNiches, $ecomNiches, $agencyNiches, $saasNiches;
+
+    $selectedCities = !empty($selectedCities) ? $selectedCities : ($cities[$country] ?? ['New York, NY', 'London', 'Toronto, ON', 'Sydney']);
+    $localNiches = !empty($localNiches) ? $localNiches : ['Dental & Medical Clinics', 'Real Estate Agencies', 'HVAC & Solar Contractors', 'Law Firms'];
+    $ecomNiches = !empty($ecomNiches) ? $ecomNiches : ['Apparel & Fashion', 'Health Supplements', 'Home Decor', 'Smart Gadgets'];
+    $agencyNiches = !empty($agencyNiches) ? $agencyNiches : ['Digital Marketing Agency', 'SEO Growth Agency', 'PPC Agency'];
+    $saasNiches = !empty($saasNiches) ? $saasNiches : ['AI & Automation Software', 'B2B SaaS Platform', 'Fintech Gateway'];
+
     $leads = [];
     $isIndia = ($country === 'India');
+    $limit = max(1, $limit);
     
     for ($i = 1; $i <= $limit; $i++) {
         $city = $selectedCities[array_rand($selectedCities)];
