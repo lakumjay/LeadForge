@@ -442,6 +442,22 @@ if (!headers_sent()) {
                 <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-400"></i>
                 <span>🏆 Profile Optimizer</span>
             </button>
+            <button onclick="switchMasterTab('carousel')" id="tab-nav-carousel" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
+                <i data-lucide="layers" class="w-3.5 h-3.5 text-rose-400"></i>
+                <span>📑 PDF Carousel Maker</span>
+            </button>
+            <button onclick="switchMasterTab('lead_magnet')" id="tab-nav-lead_magnet" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
+                <i data-lucide="gift" class="w-3.5 h-3.5 text-pink-400"></i>
+                <span>🎁 Lead Magnet DM</span>
+            </button>
+            <button onclick="switchMasterTab('video_teardown')" id="tab-nav-video_teardown" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
+                <i data-lucide="video" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>🎥 60s Video Teardown</span>
+            </button>
+            <button onclick="switchMasterTab('sow_closer')" id="tab-nav-sow_closer" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
+                <i data-lucide="briefcase" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>💼 Deal Closer (SOW)</span>
+            </button>
         </div>
     </header>
 
@@ -1507,7 +1523,206 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
         </div>
     </section>
 
+    <!-- TAB 9: 📑 AI VIRAL PDF CAROUSEL & SLIDE DECK MAKER (3.5x DWELL TIME BOOST) -->
+    <section id="view-carousel" class="max-w-3xl mx-auto px-4 pt-3 space-y-4 hidden">
+        <div class="bg-gradient-to-r from-rose-950/80 via-slate-900 to-pink-950/80 border border-rose-500/40 rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-400 animate-pulse"></span>
+                    <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
+                        <i data-lucide="layers" class="w-4 h-4 text-rose-400"></i>
+                        <span>AI Document / PDF Carousel Maker</span>
+                    </h2>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">3.5x Dwell Time Algorithm Boost</span>
+                </div>
+                <p class="text-xs text-slate-300">
+                    LinkedIn Document posts (Carousels) receive <b>3.5x higher dwell time</b> than text. Generate aesthetic swipeable slide decks ready to post!
+                </p>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+                <button onclick="generateCarouselDeck()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-lg shadow-rose-600/30 flex items-center space-x-1.5 transition">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <span>⚡ Generate Carousel</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
+                <div class="flex items-center space-x-2">
+                    <label class="text-xs text-slate-400 font-semibold">Carousel Blueprint Topic:</label>
+                    <select id="carousel-topic-select" onchange="generateCarouselDeck()" class="bg-dark-950 border border-slate-700 text-white text-xs rounded-lg px-2.5 py-1.5 focus:border-rose-500 focus:outline-none">
+                        <option value="speed_optimization">⚡ 4.2s to 380ms Speed Blueprint (7 Slides)</option>
+                        <option value="backend_bugs">🐛 5 Backend Mistakes Costing Startups $50k (6 Slides)</option>
+                    </select>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="copyCarouselDeckText()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1 transition border border-slate-700">
+                        <i data-lucide="copy" class="w-3 h-3"></i>
+                        <span>Copy All Slides Text</span>
+                    </button>
+                    <button onclick="printCarouselPdf()" class="text-xs bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1 transition">
+                        <i data-lucide="printer" class="w-3 h-3"></i>
+                        <span>1-Click Save as PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Carousel Title & Header Preview -->
+            <div id="carousel-deck-preview" class="space-y-3">
+                <div class="p-8 text-center text-slate-500 text-xs">
+                    <i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-rose-400"></i>
+                    Generating high-converting LinkedIn carousel slide deck...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 10: 🎁 COMMENT-TO-DM LEAD MAGNET CLOSER -->
+    <section id="view-lead_magnet" class="max-w-3xl mx-auto px-4 pt-3 space-y-4 hidden">
+        <div class="bg-gradient-to-r from-pink-950/80 via-slate-900 to-purple-950/80 border border-pink-500/40 rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-pink-400 animate-pulse"></span>
+                    <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
+                        <i data-lucide="gift" class="w-4 h-4 text-pink-400"></i>
+                        <span>"Comment Ladder" Lead Magnet & DM Closer</span>
+                    </h2>
+                </div>
+                <p class="text-xs text-slate-300">
+                    Post viral "Comment AUDIT to get this" copy ➔ Trigger algorithm 5x comment boost ➔ AI Auto-DMs the checklist + booking link!
+                </p>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+                <button onclick="loadLeadMagnetFunnel()" class="bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-lg shadow-pink-600/30 flex items-center space-x-1.5 transition">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <span>⚡ Load Funnel</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-4 shadow-xl">
+            <div class="flex items-center space-x-2 pb-2 border-b border-slate-800">
+                <label class="text-xs text-slate-400 font-semibold">Select Lead Magnet Asset:</label>
+                <select id="lead-magnet-select" onchange="loadLeadMagnetFunnel()" class="bg-dark-950 border border-slate-700 text-white text-xs rounded-lg px-2.5 py-1.5 focus:border-pink-500 focus:outline-none">
+                    <option value="audit_checklist">📋 15-Point Web Performance & Speed Architecture Checklist</option>
+                    <option value="scaling_playbook">📘 Enterprise Laravel & 10k Concurrent Scaling Playbook</option>
+                </select>
+            </div>
+
+            <div id="lead-magnet-content" class="space-y-3">
+                <div class="p-8 text-center text-slate-500 text-xs">
+                    <i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-pink-400"></i>
+                    Loading lead magnet conversion workflow...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 11: 🎥 60-SEC AI VIDEO / LOOM TEARDOWN PITCH -->
+    <section id="view-video_teardown" class="max-w-3xl mx-auto px-4 pt-3 space-y-4 hidden">
+        <div class="bg-gradient-to-r from-amber-950/80 via-slate-900 to-orange-950/80 border border-amber-500/40 rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                    <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
+                        <i data-lucide="video" class="w-4 h-4 text-amber-400"></i>
+                        <span>60-Sec AI Video / Loom Teardown Generator</span>
+                    </h2>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">55%+ Reply Rate</span>
+                </div>
+                <p class="text-xs text-slate-300">
+                    Enter any target agency URL. AI creates a 60-second video audit script & pitch email showing their exact performance bottlenecks.
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-0.5">Target Contact Name</label>
+                    <input type="text" id="video-client-name" value="Ken Braun" class="w-full bg-dark-950 border border-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-0.5">Company / Agency Name</label>
+                    <input type="text" id="video-company-name" value="Lounge Lizard Worldwide" class="w-full bg-dark-950 border border-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-0.5">Target Website URL</label>
+                    <input type="text" id="video-website-url" value="https://www.loungelizard.com" class="w-full bg-dark-950 border border-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs focus:border-amber-500 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-1">
+                <button onclick="generateVideoScript()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-lg shadow-amber-600/30 flex items-center space-x-1.5 transition">
+                    <i data-lucide="video" class="w-3.5 h-3.5"></i>
+                    <span>🎬 Generate 60s Loom Teardown Script</span>
+                </button>
+            </div>
+
+            <div id="video-teardown-result" class="space-y-3 pt-2">
+                <!-- Video Script Timeline Output -->
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 12: 💼 1-CLICK SCOPE OF WORK (SOW) & STRIPE DEAL CLOSER -->
+    <section id="view-sow_closer" class="max-w-3xl mx-auto px-4 pt-3 space-y-4 hidden">
+        <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-teal-950/80 border border-emerald-500/40 rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
+                        <i data-lucide="briefcase" class="w-4 h-4 text-emerald-400"></i>
+                        <span>1-Click Scope of Work & Deal Closer</span>
+                    </h2>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Instant Milestone Billing</span>
+                </div>
+                <p class="text-xs text-slate-300">
+                    When a client asks for scope/budget, 1-click generates a formal SOW agreement with milestones ($500 deposit + $1,000 delivery) and payment terms.
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-0.5">Client Contact Name</label>
+                    <input type="text" id="sow-client-name" value="Alex Vance" class="w-full bg-dark-950 border border-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs focus:border-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-0.5">Agency / Company</label>
+                    <input type="text" id="sow-company-name" value="Apex Growth Digital" class="w-full bg-dark-950 border border-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs focus:border-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-0.5">Service Package</label>
+                    <select id="sow-service-type" class="w-full bg-dark-950 border border-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs focus:border-emerald-500 focus:outline-none">
+                        <option value="speed_refactor">⚡ Sub-Second Speed & Architecture Sprint ($1,500)</option>
+                        <option value="backend_sprint">🛠️ 48-Hour Laravel/PHP Bug Fix & API Sprint ($800)</option>
+                        <option value="monthly_retainer">🤝 Dedicated White-Label Retainer ($2,500/mo)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-0.5">Deal Total (USD)</label>
+                    <input type="number" id="sow-deal-usd" value="1500" class="w-full bg-dark-950 border border-slate-800 text-white rounded-lg px-2.5 py-1.5 text-xs focus:border-emerald-500 focus:outline-none">
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-1">
+                <button onclick="generateSowDocument()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-lg shadow-emerald-600/30 flex items-center space-x-1.5 transition">
+                    <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
+                    <span>📝 Generate Formal SOW Agreement</span>
+                </button>
+            </div>
+
+            <div id="sow-document-result" class="space-y-3 pt-2">
+                <!-- SOW Agreement Document Output -->
+            </div>
+        </div>
+    </section>
+
     <!-- LinkedIn Settings Modal -->
+
     <div id="modal-linkedin-settings" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
             <div class="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -1624,7 +1839,7 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                 activeNav.className = 'nav-master-tab px-3 py-1.5 text-xs rounded-xl font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center space-x-1.5 shrink-0';
             }
 
-            ['stream', 'connect', 'warmup', 'comments', 'viral_posts', 'funnel', 'radar', 'profile_opt'].forEach(t => {
+            ['stream', 'connect', 'warmup', 'comments', 'viral_posts', 'funnel', 'radar', 'profile_opt', 'carousel', 'lead_magnet', 'video_teardown', 'sow_closer'].forEach(t => {
                 const el = document.getElementById('view-' + t);
                 if (el) el.classList.toggle('hidden', t !== tabId);
             });
@@ -1647,6 +1862,18 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
             if (tabId === 'radar') {
                 loadMarketTrends();
             }
+            if (tabId === 'carousel') {
+                generateCarouselDeck();
+            }
+            if (tabId === 'lead_magnet') {
+                loadLeadMagnetFunnel();
+            }
+            if (tabId === 'video_teardown') {
+                generateVideoScript();
+            }
+            if (tabId === 'sow_closer') {
+                generateSowDocument();
+            }
             lucide.createIcons();
         }
 
@@ -1662,6 +1889,352 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                 }
             } catch (e) {}
         }
+
+        // ----------------------------------------------------
+        // AI PDF CAROUSEL DECK MAKER HANDLERS
+        // ----------------------------------------------------
+        let currentCarouselData = null;
+
+        async function generateCarouselDeck() {
+            const topic = document.getElementById('carousel-topic-select') ? document.getElementById('carousel-topic-select').value : 'speed_optimization';
+            const container = document.getElementById('carousel-deck-preview');
+            if (container) container.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs"><i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-rose-400"></i>Generating carousel slides...</div>';
+            lucide.createIcons();
+
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'generate_carousel', topic: topic })
+                });
+                const data = await res.json();
+                if (!data.ok) return;
+                currentCarouselData = data.carousel;
+                renderCarouselDeck(data.carousel);
+            } catch (e) {
+                showToast('Carousel generated!');
+            }
+        }
+
+        function renderCarouselDeck(c) {
+            const container = document.getElementById('carousel-deck-preview');
+            if (!container || !c) return;
+
+            const slidesHtml = (c.slides || []).map(s => `
+                <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2 relative overflow-hidden">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 font-mono">${escapeHtml(s.badge)}</span>
+                        <span class="text-xs font-mono font-bold text-slate-500">Slide ${s.num} of ${c.slides_count}</span>
+                    </div>
+                    <h4 class="text-sm font-bold text-white font-sans">${escapeHtml(s.heading)}</h4>
+                    <p class="text-xs text-slate-300 font-sans">${escapeHtml(s.subtext)}</p>
+                    <div class="space-y-1 py-1">
+                        ${(s.bullets || []).map(b => `<div class="text-[11px] text-slate-400 flex items-start space-x-1.5"><span class="text-rose-400 font-bold">•</span><span>${escapeHtml(b)}</span></div>`).join('')}
+                    </div>
+                    <div class="pt-2 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-rose-300 font-semibold font-sans">
+                        <span>💡 ${escapeHtml(s.takeaway)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="p-3 bg-dark-950 rounded-xl border border-rose-500/30 space-y-1">
+                    <h3 class="text-sm font-bold text-white">${escapeHtml(c.title)}</h3>
+                    <p class="text-xs text-slate-400">${escapeHtml(c.subtitle)} • <b>${c.slides_count} Slides</b> • Author: ${escapeHtml(c.author)}</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    ${slidesHtml}
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function copyCarouselDeckText() {
+            if (!currentCarouselData) return;
+            let fullText = `📑 ${currentCarouselData.title}\n${currentCarouselData.subtitle}\n\n`;
+            (currentCarouselData.slides || []).forEach(s => {
+                fullText += `--- SLIDE ${s.num}: ${s.badge} ---\n`;
+                fullText += `${s.heading}\n${s.subtext}\n`;
+                (s.bullets || []).forEach(b => { fullText += `• ${b}\n`; });
+                fullText += `Takeaway: ${s.takeaway}\n\n`;
+            });
+            navigator.clipboard.writeText(fullText);
+            showToast('📋 All carousel slides copied to clipboard!');
+        }
+
+        function printCarouselPdf() {
+            if (!currentCarouselData) return;
+            const printWin = window.open('', '_blank');
+            const slidesHtml = (currentCarouselData.slides || []).map(s => `
+                <div style="page-break-after: always; width: 540px; height: 675px; background: #0b1120; color: #fff; padding: 36px; border-radius: 16px; font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; margin: 20px auto; border: 2px solid #334155;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <span style="background: #e11d48; color: #fff; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 6px; text-transform: uppercase;">${escapeHtml(s.badge)}</span>
+                            <span style="color: #94a3b8; font-size: 13px; font-weight: bold;">Slide ${s.num} / ${currentCarouselData.slides_count}</span>
+                        </div>
+                        <h2 style="font-size: 22px; font-weight: 800; line-height: 1.3; margin-bottom: 12px; color: #f8fafc;">${escapeHtml(s.heading)}</h2>
+                        <p style="font-size: 14px; color: #cbd5e1; line-height: 1.5; margin-bottom: 20px;">${escapeHtml(s.subtext)}</p>
+                        <div style="margin: 16px 0;">
+                            ${(s.bullets || []).map(b => `<div style="font-size: 13px; color: #e2e8f0; margin-bottom: 10px; line-height: 1.4;"><b style="color: #f43f5e;">•</b> ${escapeHtml(b)}</div>`).join('')}
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid #334155; padding-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 12px; font-weight: 600; color: #fda4af;">💡 ${escapeHtml(s.takeaway)}</span>
+                        <span style="font-size: 11px; color: #64748b;">${escapeHtml(currentCarouselData.author)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            printWin.document.write(`
+                <html>
+                <head><title>${escapeHtml(currentCarouselData.title)} - PDF Carousel</title></head>
+                <body style="background: #020617; padding: 20px;">
+                    ${slidesHtml}
+                    <script>window.onload = function() { window.print(); };<\/script>
+                </body>
+                </html>
+            `);
+            printWin.document.close();
+        }
+
+        // ----------------------------------------------------
+        // LEAD MAGNET FUNNEL HANDLERS
+        // ----------------------------------------------------
+        let currentLeadMagnet = null;
+
+        async function loadLeadMagnetFunnel() {
+            const type = document.getElementById('lead-magnet-select') ? document.getElementById('lead-magnet-select').value : 'audit_checklist';
+            const container = document.getElementById('lead-magnet-content');
+            if (container) container.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs"><i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-pink-400"></i>Loading funnel...</div>';
+            lucide.createIcons();
+
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'generate_lead_magnet', type: type })
+                });
+                const data = await res.json();
+                if (!data.ok) return;
+                currentLeadMagnet = data.lead_magnet;
+                renderLeadMagnetFunnel(data.lead_magnet);
+            } catch (e) {}
+        }
+
+        function renderLeadMagnetFunnel(lm) {
+            const container = document.getElementById('lead-magnet-content');
+            if (!container || !lm) return;
+
+            container.innerHTML = `
+                <!-- Step 1: Viral Post Hook -->
+                <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-pink-400 flex items-center space-x-1.5">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                            <span>1. Viral Post Hook (Comment Trigger)</span>
+                        </span>
+                        <button onclick="copyToClipboard(currentLeadMagnet.post_hook_copy, 'Viral post copied!')" class="text-xs bg-pink-500/20 text-pink-300 hover:bg-pink-500/30 px-2.5 py-1 rounded-lg font-semibold border border-pink-500/30 flex items-center space-x-1">
+                            <i data-lucide="copy" class="w-3 h-3"></i>
+                            <span>Copy Post</span>
+                        </button>
+                    </div>
+                    <textarea readonly class="w-full bg-dark-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-300 font-sans leading-relaxed h-32 focus:outline-none">${escapeHtml(lm.post_hook_copy)}</textarea>
+                </div>
+
+                <!-- Step 2: Algorithm 5x Public Comment Reply -->
+                <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-sky-400 flex items-center space-x-1.5">
+                            <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                            <span>2. Public Reply Template (Triggers 5x Algorithm Reach)</span>
+                        </span>
+                        <button onclick="copyToClipboard(currentLeadMagnet.comment_reply_template, 'Public reply copied!')" class="text-xs bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 px-2.5 py-1 rounded-lg font-semibold border border-sky-500/30 flex items-center space-x-1">
+                            <i data-lucide="copy" class="w-3 h-3"></i>
+                            <span>Copy Reply</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-300 bg-dark-950 p-2.5 rounded-lg border border-slate-800 font-mono">${escapeHtml(lm.comment_reply_template)}</p>
+                </div>
+
+                <!-- Step 3: High-Converting DM Closer -->
+                <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-emerald-400 flex items-center space-x-1.5">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            <span>3. High-Converting DM Closer (With Diagnostic Call CTA)</span>
+                        </span>
+                        <button onclick="copyToClipboard(currentLeadMagnet.dm_closer_copy, 'DM copy copied!')" class="text-xs bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 px-2.5 py-1 rounded-lg font-semibold border border-emerald-500/30 flex items-center space-x-1">
+                            <i data-lucide="copy" class="w-3 h-3"></i>
+                            <span>Copy DM</span>
+                        </button>
+                    </div>
+                    <textarea readonly class="w-full bg-dark-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-300 font-sans leading-relaxed h-28 focus:outline-none">${escapeHtml(lm.dm_closer_copy)}</textarea>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // ----------------------------------------------------
+        // 60-SEC VIDEO TEARDOWN SCRIPT HANDLERS
+        // ----------------------------------------------------
+        let currentVideoScript = null;
+
+        async function generateVideoScript() {
+            const clientName = document.getElementById('video-client-name') ? document.getElementById('video-client-name').value : 'Ken Braun';
+            const companyName = document.getElementById('video-company-name') ? document.getElementById('video-company-name').value : 'Lounge Lizard Worldwide';
+            const websiteUrl = document.getElementById('video-website-url') ? document.getElementById('video-website-url').value : 'https://www.loungelizard.com';
+            const container = document.getElementById('video-teardown-result');
+
+            if (container) container.innerHTML = '<div class="p-6 text-center text-slate-500 text-xs"><i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-amber-400"></i>Generating 60-sec video teardown script...</div>';
+            lucide.createIcons();
+
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'generate_video_teardown', client_name: clientName, company_name: companyName, website_url: websiteUrl })
+                });
+                const data = await res.json();
+                if (!data.ok) return;
+                currentVideoScript = data.script;
+                renderVideoScript(data.script);
+            } catch (e) {}
+        }
+
+        function renderVideoScript(vs) {
+            const container = document.getElementById('video-teardown-result');
+            if (!container || !vs) return;
+
+            const timelineHtml = (vs.scenes || []).map(s => `
+                <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800 space-y-1">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-mono font-bold text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30">${escapeHtml(s.timestamp)}</span>
+                        <span class="text-slate-400 text-[11px]">${escapeHtml(s.action)}</span>
+                    </div>
+                    <p class="text-xs text-slate-200 font-sans pt-1 italic">"${escapeHtml(s.voiceover)}"</p>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-bold text-white flex items-center space-x-1.5">
+                            <i data-lucide="clapperboard" class="w-4 h-4 text-amber-400"></i>
+                            <span>60-Second Video Script Timeline</span>
+                        </h4>
+                        <span class="text-[10px] font-mono text-slate-400">Prospect: ${escapeHtml(vs.client_name)} (${escapeHtml(vs.company_name)})</span>
+                    </div>
+                    ${timelineHtml}
+                </div>
+
+                <div class="p-3.5 bg-dark-950 rounded-xl border border-amber-500/30 space-y-2 mt-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-amber-300">Accompanying Pitch Message (Email / LinkedIn DM)</span>
+                        <button onclick="copyToClipboard(currentVideoScript.email_wrapper.body, 'Video pitch email copied!')" class="text-xs bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 px-2.5 py-1 rounded-lg font-semibold border border-amber-500/30 flex items-center space-x-1">
+                            <i data-lucide="copy" class="w-3 h-3"></i>
+                            <span>Copy Message</span>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-400 font-mono"><b>Subject:</b> ${escapeHtml(vs.email_wrapper.subject)}</p>
+                    <textarea readonly class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-slate-300 font-sans h-24 focus:outline-none">${escapeHtml(vs.email_wrapper.body)}</textarea>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // ----------------------------------------------------
+        // 1-CLICK SOW & DEAL CLOSER HANDLERS
+        // ----------------------------------------------------
+        let currentSowDoc = null;
+
+        async function generateSowDocument() {
+            const clientName = document.getElementById('sow-client-name') ? document.getElementById('sow-client-name').value : 'Alex Vance';
+            const companyName = document.getElementById('sow-company-name') ? document.getElementById('sow-company-name').value : 'Apex Growth Digital';
+            const serviceType = document.getElementById('sow-service-type') ? document.getElementById('sow-service-type').value : 'speed_refactor';
+            const dealUsd = document.getElementById('sow-deal-usd') ? parseFloat(document.getElementById('sow-deal-usd').value) : 1500;
+            const container = document.getElementById('sow-document-result');
+
+            if (container) container.innerHTML = '<div class="p-6 text-center text-slate-500 text-xs"><i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-emerald-400"></i>Generating formal SOW agreement...</div>';
+            lucide.createIcons();
+
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'generate_sow', client_name: clientName, company_name: companyName, service_type: serviceType, deal_usd: dealUsd })
+                });
+                const data = await res.json();
+                if (!data.ok) return;
+                currentSowDoc = data.sow;
+                renderSowDocument(data.sow);
+            } catch (e) {}
+        }
+
+        function renderSowDocument(sow) {
+            const container = document.getElementById('sow-document-result');
+            if (!container || !sow) return;
+
+            const milestonesHtml = (sow.milestones || []).map(m => `
+                <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-800 space-y-1">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-white">${escapeHtml(m.phase)}</span>
+                        <span class="font-mono font-bold text-emerald-400">$${m.amount_usd.toLocaleString()} (₹${m.amount_inr.toLocaleString()})</span>
+                    </div>
+                    <p class="text-[11px] text-slate-300 font-sans">${escapeHtml(m.deliverable)}</p>
+                    <span class="text-[10px] text-slate-500 font-mono block pt-1">Status: ${escapeHtml(m.status)}</span>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="p-4 bg-dark-950 rounded-2xl border border-emerald-500/40 space-y-3 shadow-xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
+                        <div>
+                            <h3 class="text-sm font-bold text-white">${escapeHtml(sow.title)}</h3>
+                            <p class="text-xs text-slate-400">Prepared for: <b>${escapeHtml(sow.client)}</b> • Timeline: <b>${escapeHtml(sow.timeline)}</b></p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-slate-400 block font-mono">Total Agreed Scope</span>
+                            <span class="text-base font-bold text-emerald-400 font-mono">$${sow.deal_usd.toLocaleString()} USD (₹${sow.deal_inr.toLocaleString()})</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Milestone Breakdown & Payment Schedule</h4>
+                        ${milestonesHtml}
+                    </div>
+
+                    <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 space-y-1">
+                        <p><b>🛡️ ${escapeHtml(sow.guarantee)}</b></p>
+                        <p class="text-slate-400">${escapeHtml(sow.payment_instructions)}</p>
+                    </div>
+
+                    <div class="flex justify-end space-x-2 pt-1">
+                        <button onclick="copySowAgreementText()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3.5 py-1.5 rounded-lg font-semibold border border-slate-700 flex items-center space-x-1 transition">
+                            <i data-lucide="copy" class="w-3 h-3"></i>
+                            <span>Copy SOW Agreement</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function copySowAgreementText() {
+            if (!currentSowDoc) return;
+            let fullText = `📄 ${currentSowDoc.title}\nClient: ${currentSowDoc.client}\nConsultant: ${currentSowDoc.consultant}\nTotal Scope: $${currentSowDoc.deal_usd} USD (₹${currentSowDoc.deal_inr} INR)\nTimeline: ${currentSowDoc.timeline}\n\n`;
+            (currentSowDoc.milestones || []).forEach(m => {
+                fullText += `[${m.status}] ${m.phase} — $${m.amount_usd} USD\nDeliverables: ${m.deliverable}\n\n`;
+            });
+            fullText += `Guarantee: ${currentSowDoc.guarantee}\nPayment: ${currentSowDoc.payment_instructions}\n`;
+            navigator.clipboard.writeText(fullText);
+            showToast('📋 SOW Agreement copied to clipboard!');
+        }
+
+        function copyToClipboard(text, msg) {
+            navigator.clipboard.writeText(text);
+            showToast(msg || 'Copied to clipboard!');
+        }
+
 
         async function loadTodaySummary() {
             try {

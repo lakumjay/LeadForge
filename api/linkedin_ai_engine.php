@@ -519,6 +519,55 @@ if ($action === 'get_market_trends') {
     exit;
 }
 
+// ------------------------------------------------------------------
+// 17. GENERATE VIRAL LINKEDIN PDF CAROUSEL (3.5x DWELL TIME BOOST)
+// ------------------------------------------------------------------
+if ($action === 'generate_carousel') {
+    $topic = trim($data['topic'] ?? 'speed_optimization');
+    $carousel = generateLinkedInCarouselDeck($topic, $userName, $title);
+    echo json_encode(['ok' => true, 'carousel' => $carousel]);
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 18. GENERATE COMMENT LADDER LEAD MAGNET & AUTO-DM CLOSER
+// ------------------------------------------------------------------
+if ($action === 'generate_lead_magnet') {
+    $type = trim($data['type'] ?? 'audit_checklist');
+    $leadMagnet = generateLeadMagnetFunnel($type, $userName, $title);
+    echo json_encode(['ok' => true, 'lead_magnet' => $leadMagnet]);
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 19. GENERATE 60-SEC AI VIDEO / LOOM TEARDOWN SCRIPT
+// ------------------------------------------------------------------
+if ($action === 'generate_video_teardown') {
+    $clientName = trim($data['client_name'] ?? 'Founder');
+    $companyName = trim($data['company_name'] ?? 'Digital Agency');
+    $websiteUrl = trim($data['website_url'] ?? 'https://agency.com');
+    $bottleneck = trim($data['bottleneck'] ?? '3.8s Mobile LCP & Unindexed Queries');
+    
+    $script = generateVideoTeardownScript($clientName, $companyName, $websiteUrl, $bottleneck, $userName, $title);
+    echo json_encode(['ok' => true, 'script' => $script]);
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 20. GENERATE 1-CLICK SCOPE OF WORK (SOW) & STRIPE DEAL CLOSER
+// ------------------------------------------------------------------
+if ($action === 'generate_sow') {
+    $clientName = trim($data['client_name'] ?? 'Alex Vance');
+    $companyName = trim($data['company_name'] ?? 'Apex Growth Agency');
+    $serviceType = trim($data['service_type'] ?? 'speed_refactor');
+    $dealUsd = (float)($data['deal_usd'] ?? 1500);
+    
+    $sow = generateScopeOfWorkDocument($clientName, $companyName, $serviceType, $dealUsd, $userName, $title, $usdToInr);
+    echo json_encode(['ok' => true, 'sow' => $sow]);
+    exit;
+}
+
+
 /**
  * Intelligent Comment Generation Engine
  */
@@ -1329,6 +1378,257 @@ function processNurturePipelineCycle(PDO $db, array $settings): array {
 
     return ['ok' => false, 'message' => 'No pipeline tasks due at this moment.'];
 }
+
+/**
+ * Generate Multi-Slide High-Impact LinkedIn PDF Carousel Deck
+ */
+function generateLinkedInCarouselDeck(string $topic, string $userName, string $title): array {
+    $decks = [
+        'speed_optimization' => [
+            'title' => 'How We Cut Page Load Times From 4.2s to 380ms',
+            'subtitle' => 'The Exact 5-Step Architecture Blueprint for Digital Agencies & E-Com',
+            'slides' => [
+                [
+                    'num' => 1,
+                    'badge' => 'CASE STUDY DECK',
+                    'heading' => 'From 4.2s Latency to 380ms Sub-Second Speed',
+                    'subtext' => 'How we saved a scaling web application $4,200/mo and restored 99+ Core Web Vitals.',
+                    'bullets' => ['Target: High-traffic Laravel & Vue application', 'Core Crisis: 4.2s LCP causing 35% bounce rate', 'Timeline: 48-Hour Sprint'],
+                    'takeaway' => 'Swipe to see the 5 architecture steps ➔'
+                ],
+                [
+                    'num' => 2,
+                    'badge' => 'STEP 1: THE BOTTLENECK',
+                    'heading' => 'Eliminate the Hidden N+1 Query Trap',
+                    'subtext' => '120 queries were firing per page request inside Blade loops.',
+                    'bullets' => ['Problem: Relationship queries inside foreach loops', 'Fix: Eager load with subquery constraints', 'Impact: Dropped DB query count from 120 ➔ 4 queries'],
+                    'takeaway' => 'Reduced DB response time from 1.8s to 45ms.'
+                ],
+                [
+                    'num' => 3,
+                    'badge' => 'STEP 2: REDIS IN-MEMORY LAYER',
+                    'heading' => 'Compound Caching for Read-Heavy Endpoints',
+                    'subtext' => 'Never query the disk database for static catalog/pricing data.',
+                    'bullets' => ['Implemented Redis in-memory cache tags', 'Cache TTL: 15-minute rolling invalidation on write events', 'Edge cache headers: stale-while-revalidate'],
+                    'takeaway' => '94% of incoming requests served directly from memory.'
+                ],
+                [
+                    'num' => 4,
+                    'badge' => 'STEP 3: ASSET STREAMLINING',
+                    'heading' => 'Critical CSS Inlining & Lazy Execution',
+                    'subtext' => 'Eliminating render-blocking third-party scripts.',
+                    'bullets' => ['Extracted top-of-fold critical CSS into HTML head', 'Deferred heavy tracking pixels and GTM containers', 'Converted images to modern WebP/AVIF format with explicit dimensions'],
+                    'takeaway' => 'LCP dropped from 4.2s to 0.7s.'
+                ],
+                [
+                    'num' => 5,
+                    'badge' => 'STEP 4: SERVER EDGE TUNING',
+                    'heading' => 'HTTP/3, Brotli & FastCGI Microcaching',
+                    'subtext' => 'Edge compression cuts payload by 68%.',
+                    'bullets' => ['Replaced Gzip with level-6 Brotli compression', 'Enabled HTTP/3 QUIC protocol for zero-RTT mobile handshakes', 'Configured 2-second Nginx FastCGI microcache for peak traffic surges'],
+                    'takeaway' => 'Handles 5,000 concurrent users without CPU spikes.'
+                ],
+                [
+                    'num' => 6,
+                    'badge' => 'FINAL RESULTS',
+                    'heading' => 'Final Production Metrics',
+                    'subtext' => 'Lighthouse 99/100 • LCP 380ms • 0 Downtime.',
+                    'bullets' => ['Mobile PageSpeed: 38 ➔ 99 Score', 'Conversion Rate: +28.4% increase in 14 days', 'Server Cost: Reduced by $4,200/month'],
+                    'takeaway' => 'Fast code is the highest ROI marketing strategy.'
+                ],
+                [
+                    'num' => 7,
+                    'badge' => 'WORK WITH JAY',
+                    'heading' => 'Want a Speed Overhaul for Your Web App?',
+                    'subtext' => "I help digital agencies & founders fix bottlenecks in 48-hour sprints.",
+                    'bullets' => ['Full-Stack Laravel, PHP, Vue & Performance Audits', 'Zero Downtime Architecture Refactoring', 'Direct Pair Programming & Git Sprints'],
+                    'takeaway' => "Connect with {$userName} • Repost to help another developer!"
+                ]
+            ]
+        ],
+        'backend_bugs' => [
+            'title' => '5 Backend Architecture Mistakes That Cost Startups $50k',
+            'subtitle' => 'How to Spot and Fix Silent Scale Bottlenecks Before Production Crashes',
+            'slides' => [
+                [
+                    'num' => 1,
+                    'badge' => 'ARCHITECTURAL TEARDOWN',
+                    'heading' => '5 Costly Backend Mistakes We Spot in Code Audits',
+                    'subtext' => 'Why 90% of PHP & Laravel apps struggle past 1,000 concurrent users.',
+                    'bullets' => ['Analyzed across 40+ agency & SaaS codebases', 'Covers: DB locking, queue starvation, cache stampedes', 'Practical, battle-tested fixes'],
+                    'takeaway' => 'Swipe through the top 5 mistakes ➔'
+                ],
+                [
+                    'num' => 2,
+                    'badge' => 'MISTAKE #1',
+                    'heading' => 'Synchronous Webhooks & Third-Party APIs',
+                    'subtext' => 'Calling Stripe, HubSpot, or Email APIs inside the user request lifecycle.',
+                    'bullets' => ['Symptoms: Slow checkout buttons and intermittent timeouts', 'Danger: If third-party API is slow, your entire app hangs', 'Fix: Offload 100% of external network calls to Redis Queues with exponential backoff'],
+                    'takeaway' => 'User response drops from 2.5s to 90ms.'
+                ],
+                [
+                    'num' => 3,
+                    'badge' => 'MISTAKE #2',
+                    'heading' => 'Missing Compound Indexes on Filter Columns',
+                    'subtext' => 'Using single-column indexes on complex WHERE queries.',
+                    'bullets' => ['Queries using WHERE status = ? AND company_id = ? trigger full table scans', 'Fix: Add compound composite indexes matching query cardinality', 'Impact: 200,000 row search drops from 1.4s to 3ms'],
+                    'takeaway' => 'Always check EXPLAIN queries in staging.'
+                ],
+                [
+                    'num' => 4,
+                    'badge' => 'MISTAKE #3',
+                    'heading' => 'Cache Stampede & Missing Locks',
+                    'subtext' => 'When a popular cache key expires, 500 users query the database simultaneously.',
+                    'bullets' => ['Database CPU spikes to 100% instantly', 'Fix: Use atomic cache locks with early probabilistic regeneration', 'In Laravel: Cache::lock()->get() or stale-while-revalidate'],
+                    'takeaway' => 'Zero downtime during high-traffic viral spikes.'
+                ],
+                [
+                    'num' => 5,
+                    'badge' => 'MISTAKE #4',
+                    'heading' => 'Unbounded Database Pagination',
+                    'subtext' => 'Using OFFSET 100000 on deep paginated lists.',
+                    'bullets' => ['OFFSET scans and discards thousands of rows before returning 20', 'Fix: Implement keyset / cursor-based pagination (WHERE id < last_id)', 'Execution time remains constant regardless of page depth'],
+                    'takeaway' => 'Infinite scroll with constant O(1) query time.'
+                ],
+                [
+                    'num' => 6,
+                    'badge' => 'SUMMARY & ACTION',
+                    'heading' => 'The High-Performance Architecture Rule',
+                    'subtext' => "1. Queue external calls • 2. Index compound filters • 3. Lock cache writes • 4. Keyset pagination",
+                    'bullets' => ['Reliability scales with simplicity, not complexity.', 'Need an audit on your backend code?'],
+                    'takeaway' => "Follow {$userName} ({$title}) for weekly engineering insights!"
+                ]
+            ]
+        ]
+    ];
+
+    $selected = $decks[$topic] ?? $decks['speed_optimization'];
+    $selected['topic'] = $topic;
+    $selected['slides_count'] = count($selected['slides']);
+    $selected['author'] = $userName;
+    $selected['author_title'] = $title;
+
+    return $selected;
+}
+
+/**
+ * Generate High-Converting Lead Magnet Funnel & Auto-DM Copy
+ */
+function generateLeadMagnetFunnel(string $type, string $userName, string $title): array {
+    $funnels = [
+        'audit_checklist' => [
+            'name' => '15-Point Agency Web Performance & Speed Architecture Checklist',
+            'tagline' => 'Free interactive diagnostic checklist used to overhaul 40+ agency web applications.',
+            'post_hook_copy' => "Agencies are losing 30%+ of ad conversions because their client landing pages take 3.2s to load on mobile.\n\nOver the last 2 years, we audited 40+ web applications and distilled the 15 most common performance leaks into a single 1-page Architecture Checklist:\n\n✅ Database N+1 query detectors\n✅ Redis cache invalidation rules\n✅ Edge Brotli & HTTP/3 server configs\n✅ Core Web Vitals (LCP & CLS) quick wins\n✅ Zero-downtime deployment guardrails\n\nWant a copy? Drop \"AUDIT\" below and I'll DM you the interactive PDF + Loom teardown for free. 👇",
+            'comment_reply_template' => "Just sent the checklist to your DM @{Name}! Check your inbox and let me know if point #4 helps your current stack. 🚀",
+            'dm_closer_copy' => "Hey {Name}! Thanks for commenting on the speed architecture post.\n\nHere is your direct access to the 15-Point Web Performance & Security Checklist:\n👉 https://leadsflow.snwebkarma.in/assets/audit_checklist.pdf\n\nIf you have an active project or client site you'd like a quick 5-minute technical diagnostic on, just send over the URL and I'll gladly run our automated profiling tools for you.\n\nBest,\n{$userName}\n{$title}",
+            'checklist_items' => [
+                '1. Server-Side Asset Minification (CSS/JS combined & Brotli compressed)',
+                '2. Database Query Eager Loading (Eliminate all foreach N+1 queries)',
+                '3. Compound MySQL Indexes on filtered and sorted columns',
+                '4. Redis in-memory caching on high-frequency read endpoints',
+                '5. Offloading third-party API calls & emails to background workers',
+                '6. Modern Next-Gen Image Formats (WebP / AVIF with width/height attributes)',
+                '7. Font Display Swap to eliminate invisible text during load',
+                '8. Server-Side GA4/Meta CAPI tracking bypassing browser ad-blockers',
+                '9. HTTP/3 QUIC Protocol enabled for sub-second mobile handshakes',
+                '10. Automated daily database backups with verified restore drills'
+            ]
+        ],
+        'scaling_playbook' => [
+            'name' => 'Enterprise Laravel & Full-Stack 10k Concurrent Scaling Playbook',
+            'tagline' => 'Step-by-step technical blueprints for scaling PHP/Laravel to 10k+ concurrent requests.',
+            'post_hook_copy' => "Most Laravel apps slow down under 1,000 concurrent users. It's almost never PHP's fault.\n\nIt's usually unindexed queries, synchronous external HTTP calls, and missing Redis connection pools.\n\nI compiled our internal 8-Step Scaling Playbook covering:\n👉 Redis cache tag hierarchies\n👉 DB Read/Write replicas configuration\n👉 Keyset cursor pagination\n👉 Queue worker optimization & supervisor rules\n\nComment \"SCALE\" below and I will send the complete guide to your DM! 🚀",
+            'comment_reply_template' => "Sent the scaling playbook to your DM @{Name}! Hope it helps optimize your architecture. 💡",
+            'dm_closer_copy' => "Hey {Name}! Here is the 10k Concurrent Scaling Playbook:\n👉 https://leadsflow.snwebkarma.in/assets/scaling_playbook.pdf\n\nFeel free to review the DB replica and queue tuning sections. If your dev team ever needs extra overflow sprint bandwidth, I'd love to connect.\n\nBest,\n{$userName}",
+            'checklist_items' => [
+                '1. Database Read/Write Replica Splitting',
+                '2. Horizon Queue Worker Concurrency & Memory Limits',
+                '3. Keyset Pagination over Offset Scans',
+                '4. Atomic Cache Locks for High-Traffic Write Bursts',
+                '5. Microcaching Nginx FastCGI Buffers'
+            ]
+        ]
+    ];
+
+    return $funnels[$type] ?? $funnels['audit_checklist'];
+}
+
+/**
+ * Generate 60-Second AI Video / Loom Teardown Pitch Script
+ */
+function generateVideoTeardownScript(string $clientName, string $companyName, string $websiteUrl, string $bottleneck, string $userName, string $title): array {
+    return [
+        'client_name' => $clientName,
+        'company_name' => $companyName,
+        'website_url' => $websiteUrl,
+        'target_bottleneck' => $bottleneck,
+        'duration' => '60 Seconds (High-Converting Loom)',
+        'scenes' => [
+            [
+                'timestamp' => '00:00 - 00:15',
+                'action' => "Screen recording of {$websiteUrl} homepage with cursor hovering over hero section.",
+                'voiceover' => "Hey {$clientName}, Jay here—Senior Full-Stack Architect. I was checking out {$companyName}'s web presence and love the work you guys are doing in the space. I ran a quick performance diagnostic on the site and spotted a critical quick-win."
+            ],
+            [
+                'timestamp' => '00:15 - 00:35',
+                'action' => "Switch tab to Chrome DevTools / Lighthouse audit showing the {$bottleneck}.",
+                'voiceover' => "Right here, your mobile Largest Contentful Paint is sitting at 3.8s. The main culprit is uncompressed hero assets and an unindexed database query loading synchronously on the main thread, which is costing you roughly 25-30% of potential leads."
+            ],
+            [
+                'timestamp' => '00:35 - 00:50',
+                'action' => "Show VS Code code snippet with 3-line eager-loading and caching fix.",
+                'voiceover' => "I put together a clean 3-step refactoring fix that cuts this load time down to under 600ms without changing any of your existing frontend styling or design."
+            ],
+            [
+                'timestamp' => '00:50 - 01:00',
+                'action' => "Switch to Jay's GitHub / LinkedIn profile with contact info.",
+                'voiceover' => "I would love to implement this for you as a quick 48-hour sprint. Let me know if you'd like me to send over the pull request!"
+            ]
+        ],
+        'email_wrapper' => [
+            'subject' => "60-second video teardown regarding {$companyName}'s site speed",
+            'body' => "Hi {$clientName},\n\nI recorded a quick 60-second Loom video showing a performance bottleneck on {$websiteUrl} and how to fix it:\n\n▶️ [Watch 60s Video Teardown]\n\nHope this is helpful for your tech team!\n\nBest,\n{$userName}\n{$title}"
+        ]
+    ];
+}
+
+/**
+ * Generate 1-Click Scope of Work (SOW) & Milestone Closer
+ */
+function generateScopeOfWorkDocument(string $clientName, string $companyName, string $serviceType, float $dealUsd, string $userName, string $title, float $usdToInr): array {
+    $dealInr = round($dealUsd * $usdToInr);
+    $depositUsd = round($dealUsd * 0.4);
+    $completionUsd = $dealUsd - $depositUsd;
+
+    return [
+        'title' => "Scope of Work & Milestone Agreement: {$companyName}",
+        'client' => "{$clientName} ({$companyName})",
+        'consultant' => "{$userName} — {$title}",
+        'deal_usd' => $dealUsd,
+        'deal_inr' => $dealInr,
+        'timeline' => '3 to 5 Business Days',
+        'milestones' => [
+            [
+                'phase' => 'Milestone 1: Project Kickoff & Diagnostic Benchmark',
+                'amount_usd' => $depositUsd,
+                'amount_inr' => round($depositUsd * $usdToInr),
+                'status' => 'Upfront Deposit (40%)',
+                'deliverable' => 'Full codebase profiling, staging environment setup, baseline Lighthouse & query audit.'
+            ],
+            [
+                'phase' => 'Milestone 2: Code Refactoring, Caching & Speed Overhaul',
+                'amount_usd' => $completionUsd,
+                'amount_inr' => round($completionUsd * $usdToInr),
+                'status' => 'Upon Production Deployment (60%)',
+                'deliverable' => 'Query optimization, Redis caching layer, asset deferral, Lighthouse 90+ score verification, 30-day bug warranty.'
+            ]
+        ],
+        'guarantee' => '100% Satisfaction Guarantee: Zero downtime deployment with 30-day free post-launch support and daily Git commits.',
+        'payment_instructions' => 'Milestone deposits accepted via Stripe, Wire Transfer, or PayPal.'
+    ];
+}
+
 
 
 
