@@ -31,8 +31,8 @@
             }
         }
     </script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Lucide Icons (Pinned Stable Version) -->
+    <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
     <style>
         @keyframes pulse-slow {
             0%, 100% { opacity: 1; transform: scale(1); }
@@ -1279,7 +1279,7 @@
                     <div class="flex flex-col sm:flex-row gap-3">
                         <input type="email" id="settings-test-to" placeholder="Enter test recipient email (e.g. your personal email)" class="flex-1 bg-dark-900 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:border-emerald-500 focus:outline-none">
                         <button onclick="sendTestEmail()" id="btn-test-smtp" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/30 px-5 py-2 rounded-xl text-xs font-semibold flex items-center justify-center space-x-2 transition">
-                            <i data-lucide="mail-forward" class="w-3.5 h-3.5"></i>
+                            <i data-lucide="forward" class="w-3.5 h-3.5"></i>
                             <span>Send Test Email</span>
                         </button>
                     </div>

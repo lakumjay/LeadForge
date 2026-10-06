@@ -1,9 +1,14 @@
 <?php
 /**
  * LeadForge AI - CRM Pipeline & ₹50,000/Month Target Tracker
+ * High-Performance Aggregation, Pagination & Gzip Compression
  */
 
 declare(strict_types=1);
+
+if (!ob_get_level() && extension_loaded('zlib') && !ini_get('zlib.output_compression')) {
+    ob_start('ob_gzhandler');
+}
 
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../config.php';
@@ -25,52 +30,62 @@ try {
         case 'all':
         case 'fetch':
             $status = $_GET['status'] ?? 'all';
-            $sql = "SELECT * FROM leads";
+            $limit = isset($_GET['limit']) ? max(1, min(200, (int)$_GET['limit'])) : 100;
+            $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $offset = ($page - 1) * $limit;
+
+            // 1. Ultra-fast metrics calculation directly in SQLite
+            $metricsSql = "SELECT 
+                COALESCE(SUM(CASE WHEN status = 'won' THEN COALESCE(deal_value_inr, deal_value_usd * :rate1) ELSE 0 END), 0) AS total_won_inr,
+                COALESCE(SUM(CASE WHEN status = 'won' THEN deal_value_usd ELSE 0 END), 0) AS total_won_usd,
+                COALESCE(SUM(CASE WHEN status IN ('contacted', 'discussing', 'new') THEN COALESCE(deal_value_inr, deal_value_usd * :rate2) ELSE 0 END), 0) AS pipeline_inr,
+                COALESCE(SUM(CASE WHEN status = 'won' THEN 1 ELSE 0 END), 0) AS won_count,
+                COUNT(*) AS total_count
+            FROM leads";
+
+            $mStmt = $db->prepare($metricsSql);
+            $mStmt->execute([':rate1' => $usdRate, ':rate2' => $usdRate]);
+            $metrics = $mStmt->fetch(PDO::FETCH_ASSOC) ?: [
+                'total_won_inr' => 0,
+                'total_won_usd' => 0,
+                'pipeline_inr' => 0,
+                'won_count' => 0,
+                'total_count' => 0
+            ];
+
+            // 2. Fetch leads with limit and pagination
+            $sql = "SELECT id, title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent, created_at, updated_at FROM leads";
             $params = [];
 
             if ($status !== 'all') {
                 $sql .= " WHERE status = ?";
                 $params[] = $status;
             }
-            $sql .= " ORDER BY id DESC";
+            $sql .= " ORDER BY id DESC LIMIT ? OFFSET ?";
+            $params[] = $limit;
+            $params[] = $offset;
 
             $stmt = $db->prepare($sql);
             $stmt->execute($params);
-            $leads = $stmt->fetchAll();
+            $leads = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Calculate overall CRM metrics
-            $totalWonInr = 0;
-            $totalWonUsd = 0;
-            $pipelineInr = 0;
-            $contactedCount = 0;
-            $wonCount = 0;
-
-            foreach ($leads as $l) {
+            // Normalize values
+            foreach ($leads as &$l) {
                 $valUsd = (float)($l['deal_value_usd'] ?? 0);
                 $valInr = (float)($l['deal_value_inr'] ?? 0);
                 if ($valInr == 0 && $valUsd > 0) {
-                    $valInr = $valUsd * $usdRate;
-                }
-
-                if ($l['status'] === 'won') {
-                    $totalWonInr += $valInr;
-                    $totalWonUsd += $valUsd;
-                    $wonCount++;
-                } elseif (in_array($l['status'], ['contacted', 'discussing', 'new'])) {
-                    $pipelineInr += $valInr;
-                }
-
-                if ($l['status'] !== 'new') {
-                    $contactedCount++;
+                    $l['deal_value_inr'] = $valUsd * $usdRate;
                 }
             }
+            unset($l);
 
-            // Anti-ban daily quota usage
+            // 3. Anti-ban daily quota usage
             $today = date('Y-m-d');
             $qStmt = $db->prepare("SELECT platform, COUNT(*) as count FROM outreach_logs WHERE DATE(created_at) = ? GROUP BY platform");
             $qStmt->execute([$today]);
             $quotaUsage = $qStmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
+            $totalWonInr = (float)$metrics['total_won_inr'];
             $progressPct = min(100, round(($totalWonInr / max(1, $monthlyGoalInr)) * 100, 1));
 
             echo json_encode([
@@ -78,11 +93,13 @@ try {
                 'stats' => [
                     'monthly_goal_inr' => $monthlyGoalInr,
                     'total_won_inr' => round($totalWonInr, 2),
-                    'total_won_usd' => round($totalWonUsd, 2),
-                    'pipeline_inr' => round($pipelineInr, 2),
+                    'total_won_usd' => round((float)$metrics['total_won_usd'], 2),
+                    'pipeline_inr' => round((float)$metrics['pipeline_inr'], 2),
                     'progress_percentage' => $progressPct,
-                    'won_deals_count' => $wonCount,
-                    'total_leads_count' => count($leads),
+                    'won_deals_count' => (int)$metrics['won_count'],
+                    'total_leads_count' => (int)$metrics['total_count'],
+                    'page' => $page,
+                    'limit' => $limit,
                     'daily_quota' => [
                         'linkedin' => [
                             'used' => (int)($quotaUsage['LinkedIn'] ?? 0),

@@ -2095,16 +2095,15 @@ function escapeHtml(str) {
 // Initial Boot
 document.addEventListener('DOMContentLoaded', () => {
     switchTab('autopilot');
-    fetchAutopilotStatus();
     loadRadarJobs();
     loadCrmLeads();
 
-    // Auto-refresh live radar every 35 seconds
+    // Auto-refresh live radar every 60 seconds
     radarAutoTimer = setInterval(() => {
         if (currentTab === 'radar') {
             loadRadarJobs();
         }
-    }, 35000);
+    }, 60000);
 
     // Auto-Pilot continuous execution loop (every 40 seconds)
     setInterval(() => {

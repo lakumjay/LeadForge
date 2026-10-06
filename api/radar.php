@@ -10,6 +10,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../database.php';
 
+if (!ob_get_level() && extension_loaded('zlib') && !ini_get('zlib.output_compression')) {
+    ob_start('ob_gzhandler');
+}
+
 $action = $_GET['action'] ?? null;
 
 if (isset($_GET['action']) || (php_sapi_name() !== 'cli' && basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'radar.php')) {
@@ -26,7 +30,7 @@ if (isset($_GET['action']) || (php_sapi_name() !== 'cli' && basename($_SERVER['S
             $now = time();
         
         $jobs = [];
-        if ($forceRefresh || ($now - $cacheTime) > 30 || !file_exists($cacheFile)) {
+        if ($forceRefresh || ($now - $cacheTime) > 300 || !file_exists($cacheFile)) {
             $jobs = scanAllFreeChannels();
             file_put_contents($cacheFile, json_encode($jobs));
         } else {
