@@ -24,35 +24,53 @@ $db = Database::getConnection();
 $settings = getSettings();
 $usdToInr = (float)($settings['usd_to_inr'] ?? 86.5);
 
-// Curated Seed Databases across High-Ticket Niches
+// Curated Global Databases across All High-Ticket Niches
 $localNiches = [
-    'Dental & Medical Clinics', 'Real Estate & Property Agencies', 'HVAC, Roofing & Plumbing Contractors',
-    'Law Firms & Attorneys', 'Luxury Auto Detailing & Dealerships', 'High-End Restaurants & Catering',
-    'Fitness Studios & Gyms', 'Accounting & Financial Advisors'
+    'Dental & Medical Clinics', 'Real Estate & Property Agencies', 'HVAC, Solar & Roofing Contractors',
+    'Law Firms & Corporate Attorneys', 'Luxury Auto Detailing & Dealerships', 'High-End Restaurants & Catering',
+    'Fitness Studios & Gyms', 'Accounting & Financial Advisors', 'Plastic Surgery & Aesthetic Clinics',
+    'Architectural & Interior Design Studios', 'Private Schools & Coaching Institutes', 'Logistics & Supply Chain'
 ];
 
 $ecomNiches = [
-    'Apparel & Fashion Boutique', 'Health Supplements & Skincare', 'Home Decor & Furniture',
-    'Electronics & Gadgets', 'Pet Supplies & Accessories', 'Outdoor & Sports Gear', 'Gourmet Food & Beverages'
+    'Apparel & Luxury Fashion', 'Health Supplements & Skincare', 'Home Decor & Modern Furniture',
+    'Electronics & Smart Gadgets', 'Pet Supplies & Accessories', 'Outdoor, Sports & Fitness Gear',
+    'Gourmet Food & Organic Beverages', 'Fine Jewelry & Watches', 'Beauty & Cosmetics Brands'
 ];
 
 $agencyNiches = [
-    'Digital Marketing Agency', 'SEO & Performance Agency', 'PPC & Google Ads Agency',
-    'Shopify Plus Partner Agency', 'Creative Design Studio', 'B2B Lead Gen Agency'
+    'Digital Marketing Agency', 'SEO & Performance Growth Agency', 'PPC & Google Ads Agency',
+    'Shopify Plus Partner Agency', 'Creative Web & UI/UX Studio', 'B2B Lead Generation Agency',
+    'Full-Service Media Buying Agency', 'E-Commerce Scaling Agency'
+];
+
+$saasNiches = [
+    'AI & Automation Software', 'B2B SaaS & CRM Platform', 'Fintech & Payment Gateway',
+    'EdTech & Online Learning Portal', 'Healthcare Management SaaS', 'Real Estate PropTech Platform'
 ];
 
 $cities = [
-    'United States' => ['New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX', 'Miami, FL', 'Austin, TX', 'San Francisco, CA', 'Seattle, WA', 'Atlanta, GA', 'Denver, CO'],
-    'United Kingdom' => ['London', 'Manchester', 'Birmingham', 'Leeds', 'Bristol', 'Edinburgh', 'Glasgow', 'Liverpool'],
-    'Australia' => ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast'],
-    'Canada' => ['Toronto, ON', 'Vancouver, BC', 'Montreal, QC', 'Calgary, AB', 'Ottawa, ON']
+    'United States' => ['New York, NY', 'Los Angeles, CA', 'Chicago, IL', 'Houston, TX', 'Miami, FL', 'Austin, TX', 'San Francisco, CA', 'Seattle, WA', 'Atlanta, GA', 'Denver, CO', 'Dallas, TX', 'Boston, MA'],
+    'United Kingdom' => ['London', 'Manchester', 'Birmingham', 'Leeds', 'Bristol', 'Edinburgh', 'Glasgow', 'Liverpool', 'Nottingham', 'Newcastle'],
+    'Australia' => ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast', 'Canberra'],
+    'Canada' => ['Toronto, ON', 'Vancouver, BC', 'Montreal, QC', 'Calgary, AB', 'Ottawa, ON', 'Edmonton, AB'],
+    'India' => ['Bangalore, KA', 'Mumbai, MH', 'Delhi NCR', 'Ahmedabad, GJ', 'Surat, GJ', 'Pune, MH', 'Hyderabad, TS', 'Chennai, TN', 'Kolkata, WB', 'Jaipur, RJ'],
+    'United Arab Emirates' => ['Dubai, Downtown', 'Dubai, Marina', 'Abu Dhabi', 'Sharjah', 'Dubai, Business Bay'],
+    'Singapore' => ['Singapore CBD', 'Marina Bay', 'Orchard Road', 'Jurong East'],
+    'Germany' => ['Berlin', 'Munich', 'Hamburg', 'Frankfurt', 'Cologne', 'Dusseldorf'],
+    'Netherlands' => ['Amsterdam', 'Rotterdam', 'Utrecht', 'The Hague', 'Eindhoven'],
+    'Ireland' => ['Dublin', 'Cork', 'Galway', 'Limerick'],
+    'New Zealand' => ['Auckland', 'Wellington', 'Christchurch', 'Hamilton'],
+    'France' => ['Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Toulouse'],
+    'Saudi Arabia' => ['Riyadh', 'Jeddah', 'Dammam', 'Khobar'],
+    'Global' => ['New York, US', 'London, UK', 'Dubai, UAE', 'Singapore, SG', 'Toronto, CA', 'Sydney, AU', 'Bangalore, IN', 'Amsterdam, NL', 'Berlin, DE']
 ];
 
-$selectedCities = $cities[$country] ?? $cities['United States'];
+$selectedCities = $cities[$country] ?? ($cities['Global'] ?? $cities['United States']);
 
 if (isset($_GET['action']) || isset($postData['action']) || (php_sapi_name() !== 'cli' && basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'mass_scanner.php')) {
     if ($action === 'generate') {
-        $leads = generateMassLeadsList($category, $country, $selectedCities, $localNiches, $ecomNiches, $agencyNiches, $limit, $usdToInr);
+        $leads = generateMassLeadsList($category, $country, $selectedCities, $localNiches, $ecomNiches, $agencyNiches, $saasNiches, $limit, $usdToInr);
         echo json_encode([
             'status' => 'success',
             'total_generated' => count($leads),
@@ -107,18 +125,20 @@ if (isset($_GET['action']) || isset($postData['action']) || (php_sapi_name() !==
 /**
  * Helper to generate lead list
  */
-function generateMassLeadsList($category, $country, $selectedCities, $localNiches, $ecomNiches, $agencyNiches, $limit, $usdToInr): array {
+function generateMassLeadsList($category, $country, $selectedCities, $localNiches, $ecomNiches, $agencyNiches, $saasNiches, $limit, $usdToInr): array {
     $leads = [];
+    $isIndia = ($country === 'India');
+    
     for ($i = 1; $i <= $limit; $i++) {
         $city = $selectedCities[array_rand($selectedCities)];
         
-        if ($category === 'no_website' || ($category === 'all' && $i % 3 === 0)) {
+        if ($category === 'no_website' || ($category === 'all' && $i % 4 === 0)) {
             $niche = $localNiches[array_rand($localNiches)];
-            $firstNames = ['Apex', 'Prime', 'Summit', 'Elite', 'Metro', 'Pinnacle', 'Starlight', 'BlueSky', 'Vanguard', 'Precision', 'Crown', 'Silverstone', 'GoldenGate', 'Atlas'];
+            $firstNames = ['Apex', 'Prime', 'Summit', 'Elite', 'Metro', 'Pinnacle', 'Starlight', 'BlueSky', 'Vanguard', 'Precision', 'Crown', 'Silverstone', 'GoldenGate', 'Atlas', 'Royal', 'Zenith'];
             $businessName = $firstNames[array_rand($firstNames)] . ' ' . explode(' ', $niche)[0] . ' of ' . explode(',', $city)[0];
             $reviews = rand(15, 140);
             $rating = number_format(rand(42, 50) / 10, 1);
-            $dealValueUsd = 250;
+            $dealValueUsd = $isIndia ? 180 : 250;
 
             $flaw = '🔴 No Website Listed on Google Business Profile';
             $angle = 'Build high-converting 1-day modern mobile website to capture lost Google Maps calls.';
@@ -142,12 +162,12 @@ function generateMassLeadsList($category, $country, $selectedCities, $localNiche
                 'opportunity_angle' => $angle,
                 'ready_pitch' => $pitch
             ];
-        } elseif ($category === 'ecommerce' || ($category === 'all' && $i % 3 === 1)) {
+        } elseif ($category === 'ecommerce' || ($category === 'all' && $i % 4 === 1)) {
             $niche = $ecomNiches[array_rand($ecomNiches)];
-            $ecomNames = ['LuxeLiving', 'PureAura', 'ZenVibe', 'UrbanStride', 'VelvetBloom', 'EcoHaven', 'NovaTrends', 'GlowCraft', 'SwiftSupply', 'NordicNest', 'TerraEssence'];
+            $ecomNames = ['LuxeLiving', 'PureAura', 'ZenVibe', 'UrbanStride', 'VelvetBloom', 'EcoHaven', 'NovaTrends', 'GlowCraft', 'SwiftSupply', 'NordicNest', 'TerraEssence', 'AuraSkin', 'CrownJewels', 'PulseWear'];
             $storeName = $ecomNames[array_rand($ecomNames)] . ' ' . rand(10, 99);
             $domain = strtolower(str_replace(' ', '', $storeName)) . '.com';
-            $dealValueUsd = 150;
+            $dealValueUsd = $isIndia ? 150 : 250;
 
             $flaw = '🟠 Missing Meta (Facebook) Pixel & GA4 Purchase Tracking';
             $angle = 'Setup Server-Side GTM & Meta Conversions API (CAPI) to fix wasted ad spend.';
@@ -163,7 +183,7 @@ function generateMassLeadsList($category, $country, $selectedCities, $localNiche
                 'website' => "https://{$domain}",
                 'domain' => $domain,
                 'subject' => "heads-up: missing Meta Pixel & GA4 purchase tracking on {$domain}",
-                'rating' => 'Active Shopify Store',
+                'rating' => 'Active E-Com Store',
                 'tech_flaw' => $flaw,
                 'outreach_channel' => 'Cold Email / Instagram DM / LinkedIn',
                 'deal_value_usd' => $dealValueUsd,
@@ -171,12 +191,41 @@ function generateMassLeadsList($category, $country, $selectedCities, $localNiche
                 'opportunity_angle' => $angle,
                 'ready_pitch' => $pitch
             ];
+        } elseif ($category === 'saas_tech' || ($category === 'all' && $i % 4 === 2)) {
+            $niche = $saasNiches[array_rand($saasNiches)];
+            $saasPrefix = ['CloudScale', 'AutoFlow', 'SyncPulse', 'DataZenith', 'NextLogic', 'CognitiveAI', 'VortexSaaS', 'ApexStack'];
+            $saasName = $saasPrefix[array_rand($saasPrefix)] . ' ' . explode(',', $city)[0];
+            $domain = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $saasName)) . '.io';
+            $dealValueUsd = $isIndia ? 250 : 400;
+
+            $flaw = '⚡ API Response Latency & Database Query Bottlenecks';
+            $angle = 'Laravel / Node backend optimization, query caching & webhook self-healing.';
+            $pitch = "Hi Technical Team,\n\nI was reviewing {$saasName}'s platform ({$domain}) and wanted to reach out: I specialize in backend API performance tuning, Laravel query optimization, and webhook reliability sprints.\n\nIf your engineering team is focused on product features and needs on-demand assistance knocking out backend tickets or latency optimizations, I'm available on flexible sprint contracts.\n\nWould you like to discuss any backend bottlenecks on your roadmap?\n\nBest,\nJay\nFull-Stack & Backend Engineer";
+
+            $leads[] = [
+                'id' => "mass_saas_{$i}",
+                'name' => $saasName,
+                'type' => 'SaaS & Tech Startup',
+                'country' => $country,
+                'city' => $city,
+                'niche' => $niche,
+                'website' => "https://{$domain}",
+                'domain' => $domain,
+                'subject' => "backend performance & API sprint support for {$saasName}",
+                'rating' => 'Verified Tech Venture',
+                'tech_flaw' => $flaw,
+                'outreach_channel' => 'Cold Email / LinkedIn CTO DM',
+                'deal_value_usd' => $dealValueUsd,
+                'deal_value_inr' => $dealValueUsd * $usdToInr,
+                'opportunity_angle' => $angle,
+                'ready_pitch' => $pitch
+            ];
         } else {
             $niche = $agencyNiches[array_rand($agencyNiches)];
-            $agencyPrefix = ['Apex Media', 'Altitude Digital', 'Pulse Marketing', 'Vortex Interactive', 'Beacon Growth', 'Horizon Creative', 'Velocity Media'];
+            $agencyPrefix = ['Apex Media', 'Altitude Digital', 'Pulse Marketing', 'Vortex Interactive', 'Beacon Growth', 'Horizon Creative', 'Velocity Media', 'Optima Growth'];
             $agencyName = $agencyPrefix[array_rand($agencyPrefix)] . ' ' . explode(',', $city)[0];
             $domain = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $agencyName)) . '.com';
-            $dealValueUsd = 300;
+            $dealValueUsd = $isIndia ? 200 : 300;
 
             $flaw = '🟡 Heavy Client Ticket Load & Backend Dev Bottlenecks';
             $angle = 'On-demand white-label Laravel, Speed & Technical SEO partner.';

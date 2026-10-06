@@ -241,6 +241,77 @@ $agencies = [
         'tech_gap' => 'High-speed landing page development and custom funnel tracking scripts.',
         'outreach_angle' => 'High-Speed Landing Page & Conversion CAPI Developer.',
         'target_roles' => ['Head of Production', 'CRO Lead']
+    ],
+
+    // --- INDIA AGENCIES ---
+    [
+        'id' => 'in_1',
+        'name' => 'Schbang Digital India',
+        'website' => 'https://www.schbang.com',
+        'direct_email' => null,
+        'country' => 'India',
+        'city' => 'Mumbai / Bangalore',
+        'category' => 'Full-Service Digital & Tech Agency',
+        'size' => '200+ employees',
+        'tech_gap' => 'Custom enterprise web applications, tracking, and high-load backend integrations.',
+        'outreach_angle' => 'White-Label Enterprise Laravel & API Specialist.',
+        'target_roles' => ['Head of Technology', 'Vice President']
+    ],
+    [
+        'id' => 'in_2',
+        'name' => 'FoxyMoron Digital Media',
+        'website' => 'https://www.foxymoron.in',
+        'direct_email' => null,
+        'country' => 'India',
+        'city' => 'Gurugram / Mumbai',
+        'category' => 'Performance Marketing & E-Commerce',
+        'size' => '100+ employees',
+        'tech_gap' => 'E-Commerce tracking and high-conversion landing page builds.',
+        'outreach_angle' => 'GA4 Tracking & Shopify Performance Developer.',
+        'target_roles' => ['Technical Director', 'Head of Media']
+    ],
+
+    // --- UAE (DUBAI) AGENCIES ---
+    [
+        'id' => 'uae_1',
+        'name' => 'NNC Media Dubai',
+        'website' => 'https://www.nnc.ae',
+        'direct_email' => null,
+        'country' => 'United Arab Emirates',
+        'city' => 'Dubai, Business Bay',
+        'category' => 'Luxury E-Commerce & Growth',
+        'size' => '50-100 employees',
+        'tech_gap' => 'High-ticket luxury Shopify & Magento technical speed optimization.',
+        'outreach_angle' => 'Luxury E-Commerce Developer & Speed Specialist.',
+        'target_roles' => ['Managing Director', 'Technical Lead']
+    ],
+
+    // --- SINGAPORE & EUROPE AGENCIES ---
+    [
+        'id' => 'sg_1',
+        'name' => 'Construct Digital Singapore',
+        'website' => 'https://www.constructdigital.com',
+        'direct_email' => null,
+        'country' => 'Singapore',
+        'city' => 'Singapore Central',
+        'category' => 'B2B Digital & Web Development',
+        'size' => '40-80 employees',
+        'tech_gap' => 'B2B portal development and custom API integrations.',
+        'outreach_angle' => 'Custom Web Application & API Partner.',
+        'target_roles' => ['Director of Technology', 'Operations Head']
+    ],
+    [
+        'id' => 'de_1',
+        'name' => 'Dept Agency Europe',
+        'website' => 'https://www.deptagency.com',
+        'direct_email' => null,
+        'country' => 'Germany',
+        'city' => 'Berlin / Amsterdam',
+        'category' => 'Global Technology & Marketing',
+        'size' => '500+ employees',
+        'tech_gap' => 'Large scale PHP/Laravel platforms and cloud integrations.',
+        'outreach_angle' => 'Full-Stack Developer for Overflow Sprint Work.',
+        'target_roles' => ['Engineering Lead', 'Director of Delivery']
     ]
 ];
 

@@ -49,12 +49,12 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 
 daemonLog("🚀 ========================================================");
 daemonLog("🚀 LeadForge AI 24/7 Autonomous Master Daemon Online!");
-daemonLog("🚀 Target Goal: ₹50,000/month ($600 USD) Client Acquisition Engine");
-daemonLog("🚀 Running 100% Hands-Free Day & Night across US, UK, CA, AU");
+daemonLog("🚀 Target Goal: ₹50,000+/month ($600+ USD) Client Acquisition Engine");
+daemonLog("🚀 Running 100% Hands-Free Day & Night across US, UK, CA, AU, India, UAE, SG & Global");
 daemonLog("🚀 ========================================================");
 
-$countries = ['United States', 'United Kingdom', 'Canada', 'Australia'];
-$categories = ['ecommerce', 'no_website', 'agency', 'all'];
+$countries = ['United States', 'United Kingdom', 'Canada', 'Australia', 'India', 'United Arab Emirates', 'Singapore', 'Germany', 'Netherlands', 'Ireland', 'New Zealand', 'France', 'Saudi Arabia'];
+$categories = ['ecommerce', 'no_website', 'agency', 'saas_tech', 'all'];
 
 $countryIdx = 0;
 $categoryIdx = 0;

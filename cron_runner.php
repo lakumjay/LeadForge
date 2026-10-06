@@ -36,8 +36,8 @@ function cLog(string $msg): void {
 
 cLog("⚡ [CRON EXECUTION] Starting 24/7 Autonomous Cycle...");
 
-$countries = ['United States', 'United Kingdom', 'Canada', 'Australia'];
-$categories = ['ecommerce', 'no_website', 'agency', 'all'];
+$countries = ['United States', 'United Kingdom', 'Canada', 'Australia', 'India', 'United Arab Emirates', 'Singapore', 'Germany', 'Netherlands', 'Ireland', 'New Zealand', 'France', 'Saudi Arabia'];
+$categories = ['ecommerce', 'no_website', 'agency', 'saas_tech', 'all'];
 
 $settings = getSettings();
 $db = Database::getConnection();

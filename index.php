@@ -375,30 +375,43 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Target Strategy Channel</label>
                         <select id="mass-filter-category" class="w-full bg-dark-950 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:border-emerald-500 focus:outline-none">
-                            <option value="all">🔥 All High-Ticket Streams (Combined)</option>
-                            <option value="no_website">🔴 Google Maps Businesses (No Website - $250 Pitch)</option>
-                            <option value="ecommerce">🟠 Shopify &amp; E-Com (Missing Meta/GA4 - $150 Pitch)</option>
-                            <option value="agency">🟡 US &amp; UK Agencies (Backend Overflow - $300 Pitch)</option>
+                            <option value="all">🔥 All High-Ticket Streams (Combined Global)</option>
+                            <option value="no_website">🔴 Google Maps Businesses (No Website - $250 / ₹21,000)</option>
+                            <option value="ecommerce">🟠 Shopify &amp; E-Com D2C (Missing Meta/GA4 - $250 / ₹21,000)</option>
+                            <option value="saas_tech">⚡ SaaS &amp; Tech Startups (API &amp; Backend - $400 / ₹34,000)</option>
+                            <option value="agency">🟡 Global Agencies (Backend Overflow - $300 / ₹25,000)</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Target Country</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Target Country / Region</label>
                         <select id="mass-filter-country" class="w-full bg-dark-950 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:border-emerald-500 focus:outline-none">
-                            <option value="United States">🇺🇸 United States</option>
-                            <option value="United Kingdom">🇬🇧 United Kingdom</option>
-                            <option value="Australia">🇦🇺 Australia</option>
-                            <option value="Canada">🇨🇦 Canada</option>
+                            <option value="Global">🌐 Global (All Countries Worldwide)</option>
+                            <option value="India">🇮🇳 India (Bangalore, Mumbai, Delhi, Surat, Pune, Ahmedabad)</option>
+                            <option value="United States">🇺🇸 United States (NY, CA, TX, FL, WA)</option>
+                            <option value="United Arab Emirates">🇦🇪 UAE (Dubai, Abu Dhabi, Sharjah)</option>
+                            <option value="United Kingdom">🇬🇧 United Kingdom (London, Manchester, Leeds)</option>
+                            <option value="Singapore">🇸🇬 Singapore (CBD, Marina Bay, Jurong)</option>
+                            <option value="Canada">🇨🇦 Canada (Toronto, Vancouver, Montreal)</option>
+                            <option value="Australia">🇦🇺 Australia (Sydney, Melbourne, Brisbane)</option>
+                            <option value="Germany">🇩🇪 Germany (Berlin, Munich, Frankfurt)</option>
+                            <option value="Netherlands">🇳🇱 Netherlands (Amsterdam, Rotterdam)</option>
+                            <option value="Ireland">🇮🇪 Ireland (Dublin, Cork)</option>
+                            <option value="New Zealand">🇳🇿 New Zealand (Auckland, Wellington)</option>
+                            <option value="France">🇫🇷 France (Paris, Lyon, Marseille)</option>
+                            <option value="Saudi Arabia">🇸🇦 Saudi Arabia (Riyadh, Jeddah)</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Batch Volume</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Batch Scale Volume</label>
                         <select id="mass-filter-limit" class="w-full bg-dark-950 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs focus:border-emerald-500 focus:outline-none font-mono">
                             <option value="50">50 High-Intent Targets</option>
                             <option value="100">100 High-Intent Targets</option>
                             <option value="250">250 High-Intent Targets</option>
                             <option value="500">500 High-Intent Targets</option>
+                            <option value="1000">⚡ 1,000 High-Velocity Targets</option>
+                            <option value="5000">🚀 5,000 Infinite Scale Targets</option>
                         </select>
                     </div>
 

@@ -38,6 +38,23 @@ function scanGoogleSalesNavigatorDorks(string $country, string $niche, int $limi
         ],
         'Australia' => [
             ['founder' => 'Lauren Oakes', 'role' => 'CEO', 'company' => 'Megaphone Marketing', 'website' => 'https://megaphonemarketing.com.au', 'niche' => 'E-Commerce & Growth Agency']
+        ],
+        'India' => [
+            ['founder' => 'Harshil Karia', 'role' => 'Founder', 'company' => 'Schbang Digital', 'website' => 'https://www.schbang.com', 'niche' => 'Full-Service Digital & Tech Agency'],
+            ['founder' => 'Suveer Bajaj', 'role' => 'Co-Founder', 'company' => 'FoxyMoron Digital', 'website' => 'https://www.foxymoron.in', 'niche' => 'E-Commerce & Performance Agency']
+        ],
+        'United Arab Emirates' => [
+            ['founder' => 'Tariq Al Habtoor', 'role' => 'Managing Director', 'company' => 'NNC Media Dubai', 'website' => 'https://www.nnc.ae', 'niche' => 'Digital Growth & E-Commerce'],
+            ['founder' => 'Karim Hajj', 'role' => 'CEO', 'company' => 'Pulse Digital UAE', 'website' => 'https://www.pulse.ae', 'niche' => 'Performance Marketing & Ads']
+        ],
+        'Singapore' => [
+            ['founder' => 'Marcus Tan', 'role' => 'Co-Founder', 'company' => 'Construct Digital SG', 'website' => 'https://www.constructdigital.com', 'niche' => 'B2B Digital & Web Development']
+        ],
+        'Germany' => [
+            ['founder' => 'Florian Heinemann', 'role' => 'Managing Director', 'company' => 'Project A Ventures', 'website' => 'https://www.project-a.com', 'niche' => 'Tech Ventures & E-Commerce']
+        ],
+        'Netherlands' => [
+            ['founder' => 'Ronald Hans', 'role' => 'Founder', 'company' => 'Dept Agency NL', 'website' => 'https://www.deptagency.com', 'niche' => 'Global Technology & Marketing']
         ]
     ];
 
