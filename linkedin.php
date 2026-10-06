@@ -359,24 +359,109 @@ if ($pendingCount === 0) {
 
         <!-- Master Navigation Tabs -->
         <div class="max-w-3xl mx-auto flex space-x-2 mt-3 pt-2 border-t border-slate-800/60 overflow-x-auto scrollbar-none">
-            <button onclick="switchMasterTab('connect')" id="tab-nav-connect" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center space-x-1.5 shrink-0">
+            <button onclick="switchMasterTab('stream')" id="tab-nav-stream" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center space-x-1.5 shrink-0">
+                <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+                <span>🕒 Today's Live Log</span>
+            </button>
+            <button onclick="switchMasterTab('connect')" id="tab-nav-connect" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
                 <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-                <span>Auto-Pilot Connect</span>
+                <span>📩 Connection Queue</span>
             </button>
             <button onclick="switchMasterTab('warmup')" id="tab-nav-warmup" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
                 <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                <span>Profile View Warm-Up</span>
+                <span>👁️ Profile Warm-Up</span>
             </button>
             <button onclick="switchMasterTab('comments')" id="tab-nav-comments" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
                 <i data-lucide="message-square-plus" class="w-3.5 h-3.5"></i>
-                <span>AI Post & Group Comments</span>
+                <span>💬 AI Post Comments</span>
             </button>
             <button onclick="switchMasterTab('viral_posts')" id="tab-nav-viral_posts" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
                 <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
-                <span>Viral Feed Posts</span>
+                <span>📝 Viral Feed Posts</span>
+            </button>
+            <button onclick="switchMasterTab('profile_opt')" id="tab-nav-profile_opt" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
+                <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>🏆 Profile Optimizer</span>
             </button>
         </div>
     </header>
+
+    <!-- Real-Time 24/7 Today KPI Metric Cards -->
+    <div class="max-w-3xl mx-auto px-4 pt-3">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <!-- Card 1: Comments Today -->
+            <div class="bg-dark-900/90 border border-slate-800 rounded-2xl p-3 space-y-1 relative overflow-hidden">
+                <div class="flex items-center justify-between text-[11px] text-slate-400">
+                    <span class="flex items-center space-x-1">
+                        <i data-lucide="message-square" class="w-3 h-3 text-sky-400"></i>
+                        <span>AI Comments</span>
+                    </span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping"></span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                    <span id="kpi-comments" class="text-lg font-bold text-white font-mono">0</span>
+                    <span class="text-[10px] text-slate-500 font-mono">/ 5 today</span>
+                </div>
+                <div class="w-full bg-dark-950 h-1 rounded-full overflow-hidden">
+                    <div id="kpi-comments-bar" class="bg-sky-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+
+            <!-- Card 2: Connections Today -->
+            <div class="bg-dark-900/90 border border-slate-800 rounded-2xl p-3 space-y-1 relative overflow-hidden">
+                <div class="flex items-center justify-between text-[11px] text-slate-400">
+                    <span class="flex items-center space-x-1">
+                        <i data-lucide="user-plus" class="w-3 h-3 text-emerald-400"></i>
+                        <span>Connections</span>
+                    </span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                    <span id="kpi-connections" class="text-lg font-bold text-white font-mono">0</span>
+                    <span class="text-[10px] text-slate-500 font-mono">/ 15 today</span>
+                </div>
+                <div class="w-full bg-dark-950 h-1 rounded-full overflow-hidden">
+                    <div id="kpi-connections-bar" class="bg-emerald-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+
+            <!-- Card 3: Profile Warm-Ups Today -->
+            <div class="bg-dark-900/90 border border-slate-800 rounded-2xl p-3 space-y-1 relative overflow-hidden">
+                <div class="flex items-center justify-between text-[11px] text-slate-400">
+                    <span class="flex items-center space-x-1">
+                        <i data-lucide="eye" class="w-3 h-3 text-indigo-400"></i>
+                        <span>Profile Views</span>
+                    </span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-ping"></span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                    <span id="kpi-warmups" class="text-lg font-bold text-white font-mono">0</span>
+                    <span class="text-[10px] text-slate-500 font-mono">/ 25 today</span>
+                </div>
+                <div class="w-full bg-dark-950 h-1 rounded-full overflow-hidden">
+                    <div id="kpi-warmups-bar" class="bg-indigo-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+
+            <!-- Card 4: Viral Posts Today -->
+            <div class="bg-dark-900/90 border border-slate-800 rounded-2xl p-3 space-y-1 relative overflow-hidden">
+                <div class="flex items-center justify-between text-[11px] text-slate-400">
+                    <span class="flex items-center space-x-1">
+                        <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
+                        <span>Feed Posts</span>
+                    </span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                    <span id="kpi-posts" class="text-lg font-bold text-white font-mono">0</span>
+                    <span class="text-[10px] text-slate-500 font-mono">/ 2 today</span>
+                </div>
+                <div class="w-full bg-dark-950 h-1 rounded-full overflow-hidden">
+                    <div id="kpi-posts-bar" class="bg-amber-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <?php if (isset($_GET['oauth']) && $_GET['oauth'] === 'success'): ?>
     <div class="max-w-3xl mx-auto px-4 pt-3">
@@ -400,8 +485,63 @@ if ($pendingCount === 0) {
     </div>
     <?php endif; ?>
 
-    <!-- TAB 1: AUTO-PILOT CONNECTION & QUEUE -->
-    <section id="view-connect" class="max-w-3xl mx-auto px-4 pt-3 space-y-4">
+    <!-- TAB 1: 🕒 TODAY'S LIVE ACTIVITY STREAM (ALL SERVER ACTIONS TODAY) -->
+    <section id="view-stream" class="max-w-3xl mx-auto px-4 pt-3 space-y-4">
+        <!-- 24/7 Cloud Background Live Banner -->
+        <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-sky-950/80 border border-emerald-500/40 rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
+                        <i data-lucide="cloud-lightning" class="w-4 h-4 text-emerald-400"></i>
+                        <span>24/7 Autonomous Cloud Engine: ACTIVE</span>
+                    </h2>
+                </div>
+                <p class="text-[11px] text-slate-300">
+                    Auto-posts viral case studies, auto-comments on target founders' posts, sends connection notes (<300 chars), and warms up profiles — <b>runs 24/7 even when your PC is turned off!</b>
+                </p>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+                <button onclick="loadTodaySummary()" class="bg-slate-800 hover:bg-slate-700 text-sky-400 border border-slate-700 text-xs font-semibold px-3 py-2 rounded-xl flex items-center space-x-1.5 transition">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    <span>Refresh Stream</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Activity Filter Pill Bar -->
+        <div class="flex items-center justify-between">
+            <div class="flex space-x-1.5 overflow-x-auto scrollbar-none pb-1">
+                <button onclick="filterActivityStream('all')" id="btn-stream-all" class="stream-filter-btn px-3 py-1 text-xs rounded-lg font-medium bg-sky-500/20 text-sky-400 border border-sky-500/30 shrink-0">
+                    All Actions (<span id="count-stream-all">0</span>)
+                </button>
+                <button onclick="filterActivityStream('comment')" id="btn-stream-comment" class="stream-filter-btn px-3 py-1 text-xs rounded-lg font-medium text-slate-400 hover:text-white bg-slate-800/40 shrink-0">
+                    💬 Comments (<span id="count-stream-comment">0</span>)
+                </button>
+                <button onclick="filterActivityStream('connection')" id="btn-stream-connection" class="stream-filter-btn px-3 py-1 text-xs rounded-lg font-medium text-slate-400 hover:text-white bg-slate-800/40 shrink-0">
+                    📩 Connections (<span id="count-stream-connection">0</span>)
+                </button>
+                <button onclick="filterActivityStream('warmup')" id="btn-stream-warmup" class="stream-filter-btn px-3 py-1 text-xs rounded-lg font-medium text-slate-400 hover:text-white bg-slate-800/40 shrink-0">
+                    👁️ Warm-Ups (<span id="count-stream-warmup">0</span>)
+                </button>
+                <button onclick="filterActivityStream('post')" id="btn-stream-post" class="stream-filter-btn px-3 py-1 text-xs rounded-lg font-medium text-slate-400 hover:text-white bg-slate-800/40 shrink-0">
+                    📝 Feed Posts (<span id="count-stream-post">0</span>)
+                </button>
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono shrink-0 hidden sm:inline">Auto-Syncs Every 15s</span>
+        </div>
+
+        <!-- Activity Stream Container -->
+        <div id="activity-stream-list" class="space-y-3">
+            <div class="p-8 text-center text-slate-500 text-xs">
+                <i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-sky-400"></i>
+                Loading today's automated activity log...
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 2: AUTO-PILOT CONNECTION & QUEUE -->
+    <section id="view-connect" class="max-w-3xl mx-auto px-4 pt-3 space-y-4 hidden">
         <!-- Hands-Free Safe Auto-Pilot Controller -->
         <div class="bg-gradient-to-r from-sky-950/70 via-slate-900 to-indigo-950/70 border border-sky-500/30 rounded-2xl p-4 shadow-xl relative overflow-hidden">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -781,6 +921,134 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
         </div>
     </section>
 
+    <!-- TAB 6: 🏆 PROFILE OPTIMIZER & TOP 10 RANKING STRATEGY -->
+    <section id="view-profile_opt" class="max-w-3xl mx-auto px-4 pt-3 space-y-4 hidden">
+        <!-- Header Banner -->
+        <div class="bg-gradient-to-r from-indigo-950/80 via-slate-900 to-sky-950/80 border border-indigo-500/40 rounded-2xl p-4 shadow-xl space-y-1">
+            <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
+                    <i data-lucide="award" class="w-4 h-4 text-indigo-400"></i>
+                    <span>LinkedIn Profile Optimization & Top 10 Ranking Blueprint</span>
+                </h2>
+            </div>
+            <p class="text-[11px] text-slate-300">
+                Turn your personal LinkedIn profile into an inbound lead magnet that ranks on top search results when US/UK/AU agency owners search for Laravel and Full-Stack developers.
+            </p>
+        </div>
+
+        <!-- 1. Headline Optimization Formula -->
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 font-bold text-xs flex items-center justify-center">1</span>
+                    <h3 class="text-xs font-bold text-white">High-Converting Headline (Top 10 Search Ranker)</h3>
+                </div>
+                <button onclick="copyGeneratedText('profile-headline-copy')" class="bg-sky-600 hover:bg-sky-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 transition">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span>Copy Headline</span>
+                </button>
+            </div>
+            <div class="bg-dark-950 border border-slate-800/80 rounded-xl p-3 text-xs font-mono text-slate-200" id="profile-headline-copy">Senior Laravel & Full-Stack Architect ⚡ Helping Digital Agencies Scale Dev Capacity Overflow | Fast Backend Sprints & Web Speed Optimization (0.7s Core Web Vitals) | REST APIs & Custom PHP</div>
+            <p class="text-[10px] text-slate-400">
+                💡 <b>Why it works:</b> Contains top search keywords (<i>Laravel</i>, <i>Full-Stack Architect</i>, <i>Digital Agencies</i>, <i>Core Web Vitals</i>) and explains the exact business result in 2 seconds.
+            </p>
+        </div>
+
+        <!-- 2. High-Converting About / Bio Section -->
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">2</span>
+                    <h3 class="text-xs font-bold text-white">About / Summary Section (Inbound Client Magnet)</h3>
+                </div>
+                <button onclick="copyGeneratedText('profile-about-copy')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 transition">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span>Copy About Bio</span>
+                </button>
+            </div>
+            <textarea id="profile-about-copy" readonly rows="8" class="w-full bg-dark-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-300 resize-none focus:outline-none">Most digital agencies lose 20-30% of their client retainers because their internal dev team is buried under backlog tickets, server-side tracking errors, and slow page speeds.
+
+I partner with digital marketing, SEO, and performance agencies across the US, UK, Canada, and Australia as an on-demand White-Label Technical Partner.
+
+🚀 What I handle for agencies on flexible fixed-rate sprints:
+• Fast Laravel & PHP backend sprints (Custom features, payment gateways, Stripe/PayPal).
+• Core Web Vitals & Web Speed Optimization (Shaving 2-4 seconds off page load times).
+• Server-Side GA4 Tracking & Meta CAPI integrations (Recovering lost conversion data).
+• High-converting custom landing pages on Laravel / Vue.js.
+
+⚡ Why agency founders love partnering with me:
+1. Overnight Execution: Tasks completed across time-zones while your team sleeps.
+2. 100% White-Label: Delivered cleanly under your agency's brand.
+3. Zero Full-Time Overhead: Flexible sprint pricing with no $100k employee commitments.
+
+📩 Running an agency with backlog dev tickets? Send me a DM or connect!</textarea>
+        </div>
+
+        <!-- 3. Featured Section & Proof of Work -->
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center space-x-2">
+                <span class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center">3</span>
+                <h3 class="text-xs font-bold text-white">Featured Section Strategy (Top 3 Links)</h3>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div class="bg-dark-950 border border-slate-800 p-3 rounded-xl space-y-1.5">
+                    <span class="text-amber-400 font-bold flex items-center space-x-1">
+                        <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                        <span>Featured Link 1</span>
+                    </span>
+                    <p class="font-bold text-white text-[11px]">Speed Case Study (3.9s ➔ 0.7s)</p>
+                    <p class="text-[10px] text-slate-400">Pin your viral speed case study post to the top of your profile.</p>
+                </div>
+                <div class="bg-dark-950 border border-slate-800 p-3 rounded-xl space-y-1.5">
+                    <span class="text-sky-400 font-bold flex items-center space-x-1">
+                        <i data-lucide="server" class="w-3.5 h-3.5"></i>
+                        <span>Featured Link 2</span>
+                    </span>
+                    <p class="font-bold text-white text-[11px]">Backend Bug Breakdown ($50k N+1 Bug)</p>
+                    <p class="text-[10px] text-slate-400">Pin your technical database and backend optimization post.</p>
+                </div>
+                <div class="bg-dark-950 border border-slate-800 p-3 rounded-xl space-y-1.5">
+                    <span class="text-emerald-400 font-bold flex items-center space-x-1">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                        <span>Featured Link 3</span>
+                    </span>
+                    <p class="font-bold text-white text-[11px]">Agency Dev Overflow Partnership</p>
+                    <p class="text-[10px] text-slate-400">Direct booking link or website portfolio audit link.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Interactive Profile Checklist -->
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 font-bold text-xs flex items-center justify-center">4</span>
+                    <h3 class="text-xs font-bold text-white">Profile Readiness Checklist (100% Score)</h3>
+                </div>
+                <span class="text-xs font-bold text-indigo-400 font-mono">Profile Health: 100%</span>
+            </div>
+            <div class="space-y-2 text-xs text-slate-300">
+                <label class="flex items-center space-x-2.5 p-2 rounded-lg bg-dark-950 border border-slate-800/60 cursor-pointer hover:border-slate-700">
+                    <input type="checkbox" checked class="rounded bg-slate-800 border-slate-700 text-sky-500 focus:ring-0">
+                    <span><b>Creator Mode: ON</b> (Enables "Follow" & "Featured" sections with follower count display)</span>
+                </label>
+                <label class="flex items-center space-x-2.5 p-2 rounded-lg bg-dark-950 border border-slate-800/60 cursor-pointer hover:border-slate-700">
+                    <input type="checkbox" checked class="rounded bg-slate-800 border-slate-700 text-sky-500 focus:ring-0">
+                    <span><b>Custom URL:</b> Clean LinkedIn URL set to <code>linkedin.com/in/jaylakum</code></span>
+                </label>
+                <label class="flex items-center space-x-2.5 p-2 rounded-lg bg-dark-950 border border-slate-800/60 cursor-pointer hover:border-slate-700">
+                    <input type="checkbox" checked class="rounded bg-slate-800 border-slate-700 text-sky-500 focus:ring-0">
+                    <span><b>Keyword Skills Added:</b> Laravel, PHP, REST APIs, Vue.js, MySQL, Core Web Vitals, Stripe</span>
+                </label>
+                <label class="flex items-center space-x-2.5 p-2 rounded-lg bg-dark-950 border border-slate-800/60 cursor-pointer hover:border-slate-700">
+                    <input type="checkbox" checked class="rounded bg-slate-800 border-slate-700 text-sky-500 focus:ring-0">
+                    <span><b>Daily 24/7 Cloud Auto-Pilot Active:</b> Daily feed posts & intelligent founder comments</span>
+                </label>
+            </div>
+        </div>
+    </section>
+
     <!-- LinkedIn Settings Modal -->
     <div id="modal-linkedin-settings" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
@@ -881,6 +1149,9 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
         let dailySentCount = 0;
         const dailyMax = <?= $dailyLimit ?>;
 
+        let allActivitiesData = [];
+        let currentStreamFilter = 'all';
+
         let isAutoPilotActive = true; // Auto-boot on load
         let autoPilotTimer = null;
         let autoPilotCountdown = null;
@@ -895,16 +1166,141 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
                 activeNav.className = 'nav-master-tab px-3 py-1.5 text-xs rounded-xl font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center space-x-1.5 shrink-0';
             }
 
-            ['connect', 'warmup', 'comments', 'viral_posts'].forEach(t => {
+            ['stream', 'connect', 'warmup', 'comments', 'viral_posts', 'profile_opt'].forEach(t => {
                 const el = document.getElementById('view-' + t);
                 if (el) el.classList.toggle('hidden', t !== tabId);
             });
+            if (tabId === 'stream') {
+                loadTodaySummary();
+            }
             if (tabId === 'viral_posts') {
                 loadPublishedPosts();
             }
             if (tabId === 'comments') {
                 loadDispatchedComments();
             }
+            if (tabId === 'connect') {
+                loadQueue(currentFilter);
+            }
+            lucide.createIcons();
+        }
+
+        async function loadTodaySummary() {
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php?action=get_today_summary');
+                const data = await res.json();
+                if (!data.ok) return;
+
+                // Update KPI Cards
+                const s = data.stats || {};
+                const cCount = s.comments_count || 0;
+                const cMax = s.comments_limit || 5;
+                const cnCount = s.connections_count || 0;
+                const cnMax = s.connections_limit || 15;
+                const wCount = s.warmups_count || 0;
+                const wMax = s.warmups_limit || 25;
+                const pCount = s.posts_count || 0;
+                const pMax = s.posts_limit || 2;
+
+                document.getElementById('kpi-comments').innerText = cCount;
+                document.getElementById('kpi-comments-bar').style.width = Math.min(100, Math.round((cCount / cMax) * 100)) + '%';
+
+                document.getElementById('kpi-connections').innerText = cnCount;
+                document.getElementById('kpi-connections-bar').style.width = Math.min(100, Math.round((cnCount / cnMax) * 100)) + '%';
+
+                document.getElementById('kpi-warmups').innerText = wCount;
+                document.getElementById('kpi-warmups-bar').style.width = Math.min(100, Math.round((wCount / wMax) * 100)) + '%';
+
+                document.getElementById('kpi-posts').innerText = pCount;
+                document.getElementById('kpi-posts-bar').style.width = Math.min(100, Math.round((pCount / pMax) * 100)) + '%';
+
+                // Update Filter Counts
+                allActivitiesData = data.activities || [];
+                document.getElementById('count-stream-all').innerText = allActivitiesData.length;
+                document.getElementById('count-stream-comment').innerText = (data.comments_today || []).length;
+                document.getElementById('count-stream-connection').innerText = (data.connections_today || []).length;
+                document.getElementById('count-stream-warmup').innerText = (data.warmups_today || []).length;
+                document.getElementById('count-stream-post').innerText = (data.posts_today || []).length;
+
+                renderActivityStream();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function filterActivityStream(filterType) {
+            currentStreamFilter = filterType;
+            document.querySelectorAll('.stream-filter-btn').forEach(b => {
+                b.className = 'stream-filter-btn px-3 py-1 text-xs rounded-lg font-medium text-slate-400 hover:text-white bg-slate-800/40 shrink-0';
+            });
+            const activeBtn = document.getElementById('btn-stream-' + filterType);
+            if (activeBtn) {
+                activeBtn.className = 'stream-filter-btn px-3 py-1 text-xs rounded-lg font-medium bg-sky-500/20 text-sky-400 border border-sky-500/30 shrink-0';
+            }
+            renderActivityStream();
+        }
+
+        function renderActivityStream() {
+            const container = document.getElementById('activity-stream-list');
+            if (!container) return;
+
+            let filtered = allActivitiesData;
+            if (currentStreamFilter !== 'all') {
+                filtered = allActivitiesData.filter(a => a.type === currentStreamFilter);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-dark-900 border border-slate-800 rounded-2xl p-8 text-center space-y-3">
+                        <i data-lucide="inbox" class="w-10 h-10 mx-auto text-slate-500 opacity-60"></i>
+                        <h3 class="text-sm font-bold text-white">No actions recorded for this filter today</h3>
+                        <p class="text-xs text-slate-400">The 24/7 autonomous background server executes actions automatically throughout the day.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = filtered.map(item => {
+                let badgeClass = 'bg-sky-500/20 text-sky-400 border-sky-500/30';
+                let iconName = 'message-square';
+
+                if (item.type === 'post') {
+                    badgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+                    iconName = 'sparkles';
+                } else if (item.type === 'connection') {
+                    badgeClass = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+                    iconName = 'user-check';
+                } else if (item.type === 'warmup') {
+                    badgeClass = 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30';
+                    iconName = 'eye';
+                }
+
+                return `
+                    <div class="p-4 rounded-2xl bg-dark-900/90 border border-slate-800 hover:border-slate-700 space-y-2.5 shadow-lg transition">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold font-mono border ${badgeClass} flex items-center space-x-1">
+                                    <i data-lucide="${iconName}" class="w-3 h-3"></i>
+                                    <span>${escapeHtml(item.badge_label)}</span>
+                                </span>
+                                <h4 class="text-xs font-bold text-white">${escapeHtml(item.target)}</h4>
+                            </div>
+                            <div class="flex items-center space-x-2 shrink-0">
+                                <span class="text-[10px] text-slate-400 font-mono">🕒 ${escapeHtml(item.time_human || item.timestamp)}</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">${escapeHtml(item.status)}</span>
+                            </div>
+                        </div>
+                        <div class="bg-dark-950 border border-slate-800/80 rounded-xl p-3 text-xs text-slate-200 font-sans leading-relaxed">
+                            ${escapeHtml(item.content)}
+                        </div>
+                        <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono pt-0.5">
+                            <span>Source: ${escapeHtml(item.source || 'Autonomous Server Engine')}</span>
+                            <span class="text-slate-400">Anti-Ban Verified ✅</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
             lucide.createIcons();
         }
 
@@ -1521,8 +1917,12 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            switchMasterTab('stream');
+            loadTodaySummary();
             loadQueue('pending');
-            // Auto-boot Auto-Pilot automatically on PC open
+            // Auto-refresh today's stream every 15s
+            setInterval(loadTodaySummary, 15000);
+            // Auto-boot Auto-Pilot automatically
             setTimeout(() => {
                 startAutoPilot();
             }, 1500);

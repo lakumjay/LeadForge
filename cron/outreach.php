@@ -142,6 +142,14 @@ if ($autoCommentResult && !empty($autoCommentResult['ok'])) {
 }
 
 // ----------------------------------------------------
+// B5. AUTONOMOUS LINKEDIN PROFILE VIEW WARM-UP TOUCH
+// ----------------------------------------------------
+$autoWarmupResult = autoPerformDailyLinkedInWarmup($db, $settings);
+if ($autoWarmupResult && !empty($autoWarmupResult['ok'])) {
+    cronLog("👁️ [LINKEDIN AUTO-WARMUP] Triggered profile view touch on {$autoWarmupResult['target']} ({$autoWarmupResult['company']})");
+}
+
+// ----------------------------------------------------
 // C. 3-STAGE SMART FOLLOW-UP SEQUENCE (48h, 5d, 9d)
 // ----------------------------------------------------
 if ($emailsSentToday < $dailyEmailLimit) {

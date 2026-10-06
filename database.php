@@ -154,6 +154,19 @@ class Database {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )");
 
+        // Automated LinkedIn Profile Warm-Up & View Touches Table
+        $db->exec("CREATE TABLE IF NOT EXISTS linkedin_warmups (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            company TEXT NOT NULL,
+            role TEXT DEFAULT 'Founder / CEO',
+            profile_url TEXT NOT NULL,
+            action_type TEXT DEFAULT 'profile_view',
+            status TEXT DEFAULT 'completed',
+            warmed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+
         // Ultra-Fast Indexes for Instant Lead Querying & Filtering
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_status ON leads (status);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_platform ON leads (platform);");
@@ -163,6 +176,8 @@ class Database {
         $db->exec("CREATE INDEX IF NOT EXISTS idx_outreach_platform_date ON outreach_logs (platform, created_at);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_sent_history_email ON sent_history (recipient_email);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_sent_history_domain ON sent_history (recipient_domain);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_warmups_warmed ON linkedin_warmups (warmed_at);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_warmups_profile ON linkedin_warmups (profile_url);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_queue_status ON linkedin_queue (status);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_queue_url ON linkedin_queue (linkedin_url);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_audit_cache_created ON audit_cache (created_at);");
