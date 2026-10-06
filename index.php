@@ -206,17 +206,17 @@
 
                     <div class="bg-dark-950/80 border border-slate-800 p-4 rounded-xl">
                         <span class="text-xs text-slate-400 block mb-1">Target Geographies</span>
-                        <span class="text-sm font-bold text-white block truncate">🇺🇸 US &amp; 🇬🇧 UK Agencies</span>
-                        <span class="text-[11px] text-slate-500 block">High $ Payers</span>
+                        <span class="text-sm font-bold text-white block truncate">🇺🇸 US 🇬🇧 UK 🇨🇦 CA 🇦🇺 AU</span>
+                        <span class="text-[11px] text-emerald-400 block font-medium">⚡ Active 24/7 Rotation</span>
                     </div>
 
                     <div class="bg-dark-950/80 border border-slate-800 p-4 rounded-xl">
-                        <span class="text-xs text-slate-400 block mb-1">Client Reply Alert</span>
-                        <span class="text-sm font-bold text-emerald-400 flex items-center space-x-1">
-                            <i data-lucide="volume-2" class="w-4 h-4"></i>
-                            <span>macOS Chime ON</span>
+                        <span class="text-xs text-slate-400 block mb-1">Client Reply &amp; Follow-Ups</span>
+                        <span class="text-sm font-bold text-emerald-400 flex items-center space-x-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span>1 Active Reply • 3-Stage Auto</span>
                         </span>
-                        <span class="text-[11px] text-slate-500 block">Desktop Notification</span>
+                        <span class="text-[11px] text-slate-500 block">Smart 48h / 96h Sequence</span>
                     </div>
                 </div>
             </div>
@@ -1235,12 +1235,18 @@
                 </div>
             </div>
 
-            <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
-                <a id="modal-pitch-link" href="#" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
-                    <span>Open Target Client Website</span>
-                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                </a>
-                <div class="flex space-x-2">
+            <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center space-x-4">
+                    <a id="modal-pitch-link" href="#" target="_blank" class="text-xs text-emerald-400 hover:underline flex items-center space-x-1">
+                        <span>Open Client Website</span>
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </a>
+                    <a id="modal-pitch-linkedin" href="#" target="_blank" class="text-xs text-sky-400 hover:underline flex items-center space-x-1">
+                        <span>Find Decision Maker on LinkedIn</span>
+                        <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                    </a>
+                </div>
+                <div class="flex space-x-2 w-full sm:w-auto justify-end">
                     <button onclick="copyToClipboard('modal-pitch-content')" class="px-4 py-2 bg-slate-800 text-slate-200 text-xs rounded-xl hover:bg-slate-700 border border-slate-700 flex items-center space-x-1.5">
                         <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                         <span>Copy Pitch</span>

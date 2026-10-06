@@ -1494,6 +1494,13 @@ function viewSentPitch(leadId) {
         linkEl.classList.add('hidden');
     }
 
+    const linkedinEl = document.getElementById('modal-pitch-linkedin');
+    if (linkedinEl) {
+        const companyName = (lead.company || lead.client_name || lead.title || '').replace(/Founder Outreach:|Opportunity:|Mass Outreach:/i, '').trim();
+        const query = encodeURIComponent(`${companyName} Founder CEO`);
+        linkedinEl.href = `https://www.linkedin.com/search/results/people/?keywords=${query}`;
+    }
+
     document.getElementById('modal-view-sent-pitch').classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
 }
