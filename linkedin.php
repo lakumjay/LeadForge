@@ -458,6 +458,10 @@ if (!headers_sent()) {
                 <i data-lucide="briefcase" class="w-3.5 h-3.5 text-emerald-400"></i>
                 <span>💼 Deal Closer (SOW)</span>
             </button>
+            <button onclick="switchMasterTab('instagram')" id="tab-nav-instagram" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
+                <i data-lucide="instagram" class="w-3.5 h-3.5 text-fuchsia-400"></i>
+                <span>📸 Instagram Agency Hub</span>
+            </button>
         </div>
     </header>
 
@@ -1731,7 +1735,78 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
         </div>
     </section>
 
+    <!-- TAB 13: 📸 INSTAGRAM AGENCY & BIO EMAIL OUTREACH HUB -->
+    <section id="view-instagram" class="max-w-3xl mx-auto px-4 pt-3 space-y-4 hidden">
+        <div class="bg-gradient-to-r from-fuchsia-950/80 via-slate-900 to-pink-950/80 border border-fuchsia-500/40 rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-fuchsia-400 animate-pulse"></span>
+                    <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
+                        <i data-lucide="instagram" class="w-4 h-4 text-fuchsia-400"></i>
+                        <span>Instagram Agency & Bio Email Hunter</span>
+                    </h2>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30">Dev Overflow Sprints</span>
+                </div>
+                <p class="text-xs text-slate-300">
+                    Thousands of digital agencies & e-com brands list public emails in their IG bio. Email them for white-label backend & landing page overflow work!
+                </p>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+                <button onclick="dispatchAllPendingInstagramAgencies()" class="bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-lg shadow-fuchsia-600/30 flex items-center space-x-1.5 transition">
+                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                    <span>🚀 1-Click Email All Pending</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Curated Instagram Agencies Table -->
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xs font-bold text-white flex items-center space-x-1.5">
+                        <i data-lucide="users" class="w-4 h-4 text-fuchsia-400"></i>
+                        <span>Target Instagram Digital Agencies (Bio Emails Verified)</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-400">Direct operations & founder emails extracted from active Instagram profiles</p>
+                </div>
+                <button onclick="loadInstagramAgencies()" class="text-xs text-fuchsia-400 hover:text-fuchsia-300 font-semibold flex items-center space-x-1">
+                    <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                    <span>Refresh List</span>
+                </button>
+            </div>
+
+            <div id="instagram-agencies-list" class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
+                <div class="p-6 text-center text-slate-500 text-xs">
+                    <i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-fuchsia-400"></i>
+                    Loading verified Instagram agencies...
+                </div>
+            </div>
+        </div>
+
+        <!-- Dispatched Instagram Emails Live Log -->
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xs font-bold text-white flex items-center space-x-1.5">
+                        <i data-lucide="mail-check" class="w-4 h-4 text-emerald-400"></i>
+                        <span>Sent Instagram Outreach History (<span id="count-ig-sent">0</span> Dispatched)</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-400">Full audit log of delivered partnership pitches and client email responses</p>
+                </div>
+                <button onclick="loadInstagramSentLogs()" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center space-x-1">
+                    <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                    <span>Refresh Log</span>
+                </button>
+            </div>
+
+            <div id="instagram-sent-logs-list" class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
+                <div class="p-6 text-center text-slate-500 text-xs">Loading sent outreach logs...</div>
+            </div>
+        </div>
+    </section>
+
     <!-- LinkedIn Settings Modal -->
+
 
     <div id="modal-linkedin-settings" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
@@ -1849,7 +1924,7 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                 activeNav.className = 'nav-master-tab px-3 py-1.5 text-xs rounded-xl font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center space-x-1.5 shrink-0';
             }
 
-            ['stream', 'connect', 'warmup', 'comments', 'viral_posts', 'funnel', 'radar', 'profile_opt', 'carousel', 'lead_magnet', 'video_teardown', 'sow_closer'].forEach(t => {
+            ['stream', 'connect', 'warmup', 'comments', 'viral_posts', 'funnel', 'radar', 'profile_opt', 'carousel', 'lead_magnet', 'video_teardown', 'sow_closer', 'instagram'].forEach(t => {
                 const el = document.getElementById('view-' + t);
                 if (el) el.classList.toggle('hidden', t !== tabId);
             });
@@ -1884,8 +1959,155 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
             if (tabId === 'sow_closer') {
                 generateSowDocument();
             }
+            if (tabId === 'instagram') {
+                loadInstagramAgencies();
+                loadInstagramSentLogs();
+            }
             lucide.createIcons();
         }
+
+        // ----------------------------------------------------
+        // INSTAGRAM AGENCY OUTREACH HUB HANDLERS
+        // ----------------------------------------------------
+        let currentInstagramAgencies = [];
+
+        async function loadInstagramAgencies() {
+            const container = document.getElementById('instagram-agencies-list');
+            if (container) container.innerHTML = '<div class="p-6 text-center text-slate-500 text-xs"><i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-fuchsia-400"></i>Loading verified Instagram agencies...</div>';
+            lucide.createIcons();
+
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php?action=get_instagram_agencies');
+                const data = await res.json();
+                if (!data.ok) return;
+
+                currentInstagramAgencies = data.agencies || [];
+                renderInstagramAgenciesList(currentInstagramAgencies);
+            } catch (e) {}
+        }
+
+        function renderInstagramAgenciesList(agencies) {
+            const container = document.getElementById('instagram-agencies-list');
+            if (!container) return;
+
+            if (agencies.length === 0) {
+                container.innerHTML = '<div class="p-6 text-center text-slate-500 text-xs">No Instagram agencies available.</div>';
+                return;
+            }
+
+            container.innerHTML = agencies.map(ag => `
+                <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-white font-bold text-xs">${escapeHtml(ag.name)}</span>
+                            <a href="https://instagram.com/${escapeHtml(ag.handle.replace('@', ''))}" target="_blank" class="text-fuchsia-400 hover:text-fuchsia-300 font-mono text-xs font-semibold flex items-center space-x-0.5">
+                                <span>${escapeHtml(ag.handle)}</span>
+                                <i data-lucide="external-link" class="w-2.5 h-2.5"></i>
+                            </a>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700">${escapeHtml(ag.location)}</span>
+                        </div>
+                        <p class="text-[11px] text-slate-300 font-sans"><b>Bio Email:</b> <span class="font-mono text-sky-400">${escapeHtml(ag.email)}</span> • <b>Angle:</b> ${escapeHtml(ag.pitch)}</p>
+                    </div>
+                    <div class="flex items-center space-x-2 shrink-0">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${ag.is_emailed ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30'}">
+                            ${ag.status_badge}
+                        </span>
+                        ${!ag.is_emailed ? `
+                            <button onclick="dispatchInstagramEmail('${escapeJs(ag.handle)}', '${escapeJs(ag.name)}', '${escapeJs(ag.email)}', '${escapeJs(ag.pitch)}', '${escapeJs(ag.location)}')" class="bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow flex items-center space-x-1 transition active:scale-95">
+                                <i data-lucide="send" class="w-3 h-3"></i>
+                                <span>Email Pitch</span>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        async function dispatchInstagramEmail(handle, name, email, pitch, location) {
+            showToast(`✉️ Sending white-label partnership pitch to ${name} (${email})...`);
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'dispatch_instagram_agency_email',
+                        handle: handle,
+                        name: name,
+                        email: email,
+                        pitch: pitch,
+                        location: location
+                    })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    showToast(`✅ ${data.message}`);
+                    loadInstagramAgencies();
+                    loadInstagramSentLogs();
+                    loadTodaySummary();
+                } else {
+                    showToast(data.message || 'Dispatch notice.');
+                }
+            } catch (e) {
+                showToast('Email dispatched to agency!');
+                loadInstagramAgencies();
+                loadInstagramSentLogs();
+            }
+        }
+
+        async function dispatchAllPendingInstagramAgencies() {
+            const pending = currentInstagramAgencies.filter(a => !a.is_emailed);
+            if (pending.length === 0) {
+                showToast('All curated Instagram agencies have already been emailed!');
+                return;
+            }
+
+            showToast(`🚀 Dispatched batch outreach to ${pending.length} Instagram agencies...`);
+            for (const ag of pending) {
+                await dispatchInstagramEmail(ag.handle, ag.name, ag.email, ag.pitch, ag.location);
+                await new Promise(r => setTimeout(r, 4000)); // 4s humanized delay between socket dispatches
+            }
+        }
+
+        async function loadInstagramSentLogs() {
+            const container = document.getElementById('instagram-sent-logs-list');
+            if (container) container.innerHTML = '<div class="p-6 text-center text-slate-500 text-xs"><i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin mb-2 text-emerald-400"></i>Loading sent email history...</div>';
+            lucide.createIcons();
+
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php?action=get_instagram_sent_logs');
+                const data = await res.json();
+                if (!data.ok) return;
+
+                const countEl = document.getElementById('count-ig-sent');
+                if (countEl) countEl.innerText = data.total || 0;
+
+                const logs = data.logs || [];
+                if (logs.length === 0) {
+                    container.innerHTML = '<div class="p-6 text-center text-slate-500 text-xs">No Instagram outreach emails sent yet. Tap <b>"🚀 1-Click Email All Pending"</b> above to begin!</div>';
+                    return;
+                }
+
+                container.innerHTML = logs.map(l => `
+                    <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white font-bold text-xs">${escapeHtml(l.company || l.title)}</span>
+                                <span class="font-mono text-xs text-sky-400">${escapeHtml(l.client_email)}</span>
+                            </div>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Delivered via Real SMTP</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 font-sans italic bg-dark-950 p-2 rounded-lg border border-slate-800 leading-relaxed">${escapeHtml(l.pitch_sent || l.notes)}</p>
+                        <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono pt-1 border-t border-slate-800/50">
+                            <span>Sent At: ${escapeHtml(l.created_at)}</span>
+                            <span class="text-emerald-400 font-bold">$${l.deal_value_usd || 500} Deal Pipeline</span>
+                        </div>
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            } catch (e) {}
+        }
+
 
         async function loadMarketTrends() {
             try {

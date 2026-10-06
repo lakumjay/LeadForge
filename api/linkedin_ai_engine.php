@@ -379,6 +379,137 @@ if ($action === 'generate_instagram_dork') {
     exit;
 }
 
+// ------------------------------------------------------------------
+// 13C. GET INSTAGRAM AGENCIES LIST WITH SENT STATUS
+// ------------------------------------------------------------------
+if ($action === 'get_instagram_agencies') {
+    require_once __DIR__ . '/sales_navigator.php';
+    $dorkData = generateInstagramAgencyDorks('United States', 'agencies');
+    $agencies = $dorkData['curated_agencies'] ?? [];
+
+    foreach ($agencies as &$ag) {
+        $email = strtolower(trim($ag['email']));
+        $domain = strtolower(substr(strrchr($email, "@") ?: '', 1));
+
+        $stmt = $db->prepare("SELECT id, status, created_at FROM leads WHERE LOWER(client_email) = ? OR LOWER(url) LIKE ? ORDER BY id DESC LIMIT 1");
+        $stmt->execute([$email, "%{$domain}%"]);
+        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing) {
+            $ag['is_emailed'] = true;
+            $ag['lead_id'] = $existing['id'];
+            $ag['emailed_at'] = $existing['created_at'];
+            $ag['status_badge'] = '🟢 Emailed (Delivered)';
+        } else {
+            $ag['is_emailed'] = false;
+            $ag['lead_id'] = null;
+            $ag['emailed_at'] = null;
+            $ag['status_badge'] = '⚡ Ready to Email';
+        }
+    }
+
+    echo json_encode(['ok' => true, 'agencies' => $agencies]);
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 13D. DISPATCH PARTNERSHIP EMAIL TO INSTAGRAM AGENCY
+// ------------------------------------------------------------------
+if ($action === 'dispatch_instagram_agency_email') {
+    require_once __DIR__ . '/../smtp_mailer.php';
+    require_once __DIR__ . '/../email_verifier.php';
+
+    $handle = trim($data['handle'] ?? '@agency');
+    $name = trim($data['name'] ?? 'Agency Team');
+    $email = strtolower(trim($data['email'] ?? ''));
+    $pitchFocus = trim($data['pitch'] ?? 'White-Label Dev Sprints');
+    $location = trim($data['location'] ?? 'USA');
+
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['ok' => false, 'message' => 'Valid Instagram bio email is required.']);
+        exit;
+    }
+
+    $domain = strtolower(substr(strrchr($email, "@") ?: '', 1));
+
+    // Check 24-hour same-day duplicate guard
+    if (function_exists('isEmailOrDomainSentRecently') && isEmailOrDomainSentRecently($email, $domain, 24)) {
+        echo json_encode(['ok' => false, 'message' => "Blocked: An email was already sent to {$email} in the last 24 hours."]);
+        exit;
+    }
+
+    $subject = "quick partnership question for {$name} team ({$handle})";
+    $body = "Hi {$name} Team,\n\n"
+        . "Came across {$handle} on Instagram and really love the campaigns and design work your team is putting out.\n\n"
+        . "I run a specialized technical team providing on-demand, overnight white-label backend sprints (Laravel, PHP, Vue, and Core Web Vitals speed optimization) for digital agencies.\n\n"
+        . "Whenever your internal development team is at capacity or needs extra overflow bandwidth to deliver client backlogs without hiring full-time staff, we handle 48-hour sprints with clean daily Git commits.\n\n"
+        . "Would your operations team be open to keeping our dev availability on file as a flexible overflow partner?\n\n"
+        . "Best regards,\n"
+        . "{$userName}\n"
+        . "{$title}";
+
+    $res = SmtpMailer::send($email, $subject, $body, $settings, false);
+
+    if ($res['success']) {
+        recordSentEmailToLedger($email, $domain, $subject);
+
+        $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, client_email, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([
+            "Instagram Agency Outreach: {$name} ({$handle})",
+            'Instagram Agency Hunter (linkedin.php)',
+            'Operations / Founder',
+            $email,
+            $name,
+            "https://instagram.com/" . ltrim($handle, '@'),
+            'Instagram Agency Email',
+            'contacted',
+            500,
+            500 * $usdToInr,
+            "Handle: {$handle}\nLocation: {$location}\nFocus: {$pitchFocus}\nDispatched via Gmail TLS Socket.",
+            $body
+        ]);
+        $leadId = (int)$db->lastInsertId();
+
+        $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, 'Instagram Agency Email', ?)")
+           ->execute([$leadId, "Instagram Outreach Delivered to {$name} ({$email})"]);
+
+        echo json_encode([
+            'ok' => true,
+            'lead_id' => $leadId,
+            'email' => $email,
+            'handle' => $handle,
+            'message' => "✉️ Partnership pitch delivered to {$name} ({$email}) via Real SMTP!"
+        ]);
+    } else {
+        echo json_encode([
+            'ok' => false,
+            'message' => $res['message'] ?? 'SMTP dispatch failed.'
+        ]);
+    }
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 13E. GET INSTAGRAM SENT EMAILS LOG
+// ------------------------------------------------------------------
+if ($action === 'get_instagram_sent_logs') {
+    $stmt = $db->query("
+        SELECT id, title, client_name, client_email, company, url, platform, status, deal_value_usd, notes, pitch_sent, created_at 
+        FROM leads 
+        WHERE platform LIKE '%Instagram%' OR source LIKE '%Instagram%'
+        ORDER BY id DESC LIMIT 50
+    ");
+    $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode([
+        'ok' => true,
+        'total' => count($logs),
+        'logs' => $logs
+    ]);
+    exit;
+}
+
+
 
 // ------------------------------------------------------------------
 // 14. IMPORT SALES NAV LEADS INTO 4-STAGE PIPELINE
