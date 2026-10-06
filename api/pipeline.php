@@ -20,6 +20,10 @@ $monthlyGoalInr = (float)($settings['monthly_goal_inr'] ?? 50000);
 try {
     switch ($action) {
         case 'list':
+        case 'get_all':
+        case 'get':
+        case 'all':
+        case 'fetch':
             $status = $_GET['status'] ?? 'all';
             $sql = "SELECT * FROM leads";
             $params = [];

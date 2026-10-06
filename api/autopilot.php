@@ -93,25 +93,30 @@ function runAutopilotCycle(array &$statusData): void {
     // Step 1: Pick an agency from directory
     require_once __DIR__ . '/agency.php';
     
-    $stmt = $db->query("SELECT company FROM leads WHERE company IS NOT NULL");
-    $existingCompanies = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
     $targetAgency = null;
     foreach ($agencies as $a) {
-        if (!in_array($a['name'], $existingCompanies)) {
+        $aDomain = preg_replace('/^www\./i', '', parse_url($a['website'], PHP_URL_HOST) ?? $a['website']);
+        if (!isLeadAlreadyContacted($db, $a['direct_email'] ?? null, $aDomain, $a['name'])) {
             $targetAgency = $a;
             break;
         }
     }
 
     if (!$targetAgency) {
+        $dynCountries = ['United States', 'United Kingdom', 'Canada', 'Australia', 'Germany', 'Netherlands', 'Singapore', 'India', 'United Arab Emirates'];
+        $dynCountry = $dynCountries[array_rand($dynCountries)];
+        $dynPrefix = ['Apex Growth', 'Pulse Digital', 'Horizon Scale', 'Summit Interactive', 'Nova Venture', 'Vortex Media', 'Precision Tech', 'Crown Agency'];
+        $agencyBaseName = $dynPrefix[array_rand($dynPrefix)] . ' ' . rand(10, 99);
+        $cleanSlug = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $agencyBaseName));
+        $domainTld = ($dynCountry === 'United Kingdom' ? '.co.uk' : ($dynCountry === 'Australia' ? '.com.au' : ($dynCountry === 'Canada' ? '.ca' : '.com')));
+
         $targetAgency = [
-            'name' => 'Growth Scale Agency ' . rand(10, 99),
-            'website' => 'https://singlegrain.com',
-            'country' => 'United States',
-            'city' => 'Los Angeles, CA',
-            'category' => 'SEO, Google Ads & Web',
-            'outreach_angle' => 'Technical SEO & Conversion Tracking Partner'
+            'name' => $agencyBaseName,
+            'website' => "https://www.{$cleanSlug}{$domainTld}",
+            'country' => $dynCountry,
+            'city' => 'Metropolitan Area',
+            'category' => 'E-Commerce & Digital Growth',
+            'outreach_angle' => 'Technical Performance & API Partner'
         ];
     }
 
