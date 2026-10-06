@@ -70,11 +70,9 @@ for ($a = 0; $a < $agenciesToAuditCount; $a++) {
     $targetAgency = $agencies[($startAgencyIdx + $a) % count($agencies)];
     $agencyDomain = preg_replace('/^www\./i', '', parse_url($targetAgency['website'], PHP_URL_HOST));
 
-    // Duplicate Suppression Guard: Check if company or domain was already contacted in last 30 days
-    $dupCheck = $db->prepare("SELECT id FROM leads WHERE (company = ? OR url LIKE ? OR title LIKE ?) AND created_at >= datetime('now', '-30 days')");
-    $dupCheck->execute([$targetAgency['name'], "%{$agencyDomain}%", "%{$targetAgency['name']}%"]);
-    if ($dupCheck->fetch()) {
-        cLog("⏭️ [DUPLICATE GUARD] {$targetAgency['name']} ({$agencyDomain}) was already processed recently. Skipping to prevent repeated emails.");
+    // Duplicate Suppression Guard: Check if company or domain was already contacted in database
+    if (isLeadAlreadyContacted($db, null, $agencyDomain, $targetAgency['name'])) {
+        cLog("⏭️ [DUPLICATE GUARD] {$targetAgency['name']} ({$agencyDomain}) was already processed. Skipping to prevent repeated emails.");
         continue;
     }
 
@@ -89,6 +87,11 @@ for ($a = 0; $a < $agenciesToAuditCount; $a++) {
     $discoveredEmail = $audit['primary_email'] ?? ($targetAgency['direct_email'] ?? null);
 
     if (!empty($discoveredEmail)) {
+        if (isLeadAlreadyContacted($db, $discoveredEmail, $agencyDomain, $targetAgency['name'])) {
+            cLog("⏭️ [DUPLICATE GUARD] {$discoveredEmail} already exists in CRM. Skipping.");
+            continue;
+        }
+
         $emailCheck = EmailVerifier::verify($discoveredEmail, false);
 
         if ($emailCheck['is_valid'] && $emailCheck['is_deliverable'] && !empty($settings['smtp_user'])) {

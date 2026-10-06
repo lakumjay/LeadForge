@@ -107,7 +107,46 @@ class Database {
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_platform ON leads (platform);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_company ON leads (company);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_created ON leads (created_at);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_email ON leads (client_email);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_outreach_platform_date ON outreach_logs (platform, created_at);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_audit_cache_created ON audit_cache (created_at);");
     }
+}
+
+/**
+ * Global Strict Anti-Duplicate Email & Domain Shield
+ * Guarantees zero duplicate emails are ever dispatched to the same recipient/company
+ */
+function isLeadAlreadyContacted(PDO $db, ?string $email, ?string $domain, ?string $company): bool {
+    // 1. Check exact email
+    if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $cleanEmail = strtolower(trim($email));
+        $stmt = $db->prepare("SELECT id FROM leads WHERE LOWER(client_email) = ? LIMIT 1");
+        $stmt->execute([$cleanEmail]);
+        if ($stmt->fetch()) return true;
+    }
+
+    // 2. Check clean domain (e.g. singlegrain.com, loungelizard.com)
+    $cleanDomain = '';
+    if (!empty($domain)) {
+        $cleanDomain = strtolower(preg_replace('/^www\./i', '', trim($domain)));
+        $cleanDomain = parse_url($cleanDomain, PHP_URL_HOST) ?? $cleanDomain;
+        $cleanDomain = preg_replace('/^www\./i', '', $cleanDomain);
+    }
+
+    if (!empty($cleanDomain) && strlen($cleanDomain) > 3) {
+        $stmt = $db->prepare("SELECT id FROM leads WHERE LOWER(url) LIKE ? OR LOWER(title) LIKE ? OR LOWER(client_email) LIKE ? LIMIT 1");
+        $stmt->execute(["%{$cleanDomain}%", "%{$cleanDomain}%", "%@{$cleanDomain}"]);
+        if ($stmt->fetch()) return true;
+    }
+
+    // 3. Check exact company name
+    if (!empty($company) && strlen(trim($company)) > 3) {
+        $cleanComp = strtolower(trim($company));
+        $stmt = $db->prepare("SELECT id FROM leads WHERE LOWER(company) = ? OR LOWER(title) LIKE ? LIMIT 1");
+        $stmt->execute([$cleanComp, "%{$cleanComp}%"]);
+        if ($stmt->fetch()) return true;
+    }
+
+    return false;
 }

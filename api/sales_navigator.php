@@ -72,6 +72,19 @@ function processFounderProspect(array $prospect, PDO $db, array $settings, float
     $website = $prospect['website'];
     $domain = preg_replace('/^www\./i', '', parse_url($website, PHP_URL_HOST) ?? $website);
 
+    // 0. Anti-Duplicate Guard: Check if company, domain, or email was already processed
+    if (isLeadAlreadyContacted($db, null, $domain, $company)) {
+        return [
+            'lead_id' => 0,
+            'founder' => $founderName,
+            'company' => $company,
+            'email' => null,
+            'issue' => 'Already Processed',
+            'smtp_delivered' => false,
+            'message' => 'Skipped: already contacted in CRM'
+        ];
+    }
+
     // 1. Audit business website for live bugs & flaws
     $audit = performSiteAudit($website);
     $primaryIssue = $audit['issues'][0] ?? [
@@ -86,6 +99,19 @@ function processFounderProspect(array $prospect, PDO $db, array $settings, float
     
     if (!empty($targetEmail)) {
         $emailCheck = EmailVerifier::verify($targetEmail, false);
+    }
+
+    // Double check with discovered email
+    if (!empty($emailCheck['email']) && isLeadAlreadyContacted($db, $emailCheck['email'], $domain, $company)) {
+        return [
+            'lead_id' => 0,
+            'founder' => $founderName,
+            'company' => $company,
+            'email' => $emailCheck['email'],
+            'issue' => 'Already Contacted',
+            'smtp_delivered' => false,
+            'message' => 'Skipped: email already contacted in CRM'
+        ];
     }
     
     $smtpDelivered = false;

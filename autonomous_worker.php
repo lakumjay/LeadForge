@@ -101,9 +101,7 @@ while (true) {
                 $candidateAgency = $agencies[($agencyIdx + $k) % $agenciesCount];
                 $candDomain = preg_replace('/^www\./i', '', parse_url($candidateAgency['website'], PHP_URL_HOST));
                 
-                $dupCheck = $db->prepare("SELECT id FROM leads WHERE (company = ? OR url LIKE ? OR title LIKE ?) AND created_at >= datetime('now', '-30 days')");
-                $dupCheck->execute([$candidateAgency['name'], "%{$candDomain}%", "%{$candidateAgency['name']}%"]);
-                if (!$dupCheck->fetch()) {
+                if (!isLeadAlreadyContacted($db, $candidateAgency['direct_email'] ?? null, $candDomain, $candidateAgency['name'])) {
                     $foundAgency = $candidateAgency;
                     $agencyIdx = ($agencyIdx + $k + 1) % $agenciesCount;
                     break;
@@ -124,6 +122,11 @@ while (true) {
                 $discoveredEmail = $audit['primary_email'] ?? ($targetAgency['direct_email'] ?? null);
 
                 if (!empty($discoveredEmail)) {
+                    if (isLeadAlreadyContacted($db, $discoveredEmail, $agencyDomain, $targetAgency['name'])) {
+                        daemonLog("⏭️ [DUPLICATE GUARD] {$discoveredEmail} ({$agencyDomain}) was already contacted. Skipping.");
+                        continue;
+                    }
+
                     $emailCheck = EmailVerifier::verify($discoveredEmail, false);
 
                     if ($emailCheck['is_valid'] && $emailCheck['is_deliverable'] && !empty($settings['smtp_user'])) {

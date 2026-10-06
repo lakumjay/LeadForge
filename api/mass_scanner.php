@@ -271,6 +271,20 @@ function processAndDispatchSingleLead(array $lead, PDO $db, array $settings, flo
         $domain = preg_replace('/^www\./i', '', parse_url($website, PHP_URL_HOST));
     }
 
+    // STRICT ANTI-DUPLICATE GUARD
+    if (isLeadAlreadyContacted($db, $lead['client_email'] ?? null, $domain, $name)) {
+        return [
+            'lead_id' => 0,
+            'name' => $name,
+            'email' => null,
+            'smtp_delivered' => false,
+            'status' => 'already_contacted',
+            'message' => 'Skipped: Already processed in CRM',
+            'deal_usd' => $dealUsd,
+            'deal_inr' => $dealInr
+        ];
+    }
+
     // STRICT ANTI-BOUNCE: Never guess contact@domain!
     $candidateEmail = !empty($lead['client_email']) && filter_var($lead['client_email'], FILTER_VALIDATE_EMAIL) ? $lead['client_email'] : null;
     $isDeliverable = false;

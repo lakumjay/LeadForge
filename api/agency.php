@@ -312,6 +312,97 @@ $agencies = [
         'tech_gap' => 'Large scale PHP/Laravel platforms and cloud integrations.',
         'outreach_angle' => 'Full-Stack Developer for Overflow Sprint Work.',
         'target_roles' => ['Engineering Lead', 'Director of Delivery']
+    ],
+    [
+        'id' => 'nl_1',
+        'name' => 'TamTam Digital Netherlands',
+        'website' => 'https://tamtam.nl',
+        'direct_email' => null,
+        'country' => 'Netherlands',
+        'city' => 'Amsterdam / Utrecht',
+        'category' => 'Digital Experience & E-Com',
+        'size' => '80-150 employees',
+        'tech_gap' => 'Headless e-commerce and high-conversion web performance.',
+        'outreach_angle' => 'Headless Laravel & Performance Partner.',
+        'target_roles' => ['Technical Lead', 'Head of Development']
+    ],
+    [
+        'id' => 'fr_1',
+        'name' => 'SensioLabs France',
+        'website' => 'https://sensiolabs.com',
+        'direct_email' => null,
+        'country' => 'France',
+        'city' => 'Paris / Lyon',
+        'category' => 'Enterprise Web & Framework Architecture',
+        'size' => '100+ employees',
+        'tech_gap' => 'Modern PHP, Symfony/Laravel enterprise integrations and API microservices.',
+        'outreach_angle' => 'Enterprise PHP & API Developer.',
+        'target_roles' => ['CTO', 'Lead Architect']
+    ],
+    [
+        'id' => 'sa_1',
+        'name' => 'Bright Creation Saudi',
+        'website' => 'https://brightcreation.com',
+        'direct_email' => null,
+        'country' => 'Saudi Arabia',
+        'city' => 'Riyadh / Jeddah',
+        'category' => 'E-Commerce & Digital Transformation',
+        'size' => '50-100 employees',
+        'tech_gap' => 'Payment gateway integrations (Mada/Stripe) and mobile responsiveness.',
+        'outreach_angle' => 'Payment Gateway & E-Commerce Integration Specialist.',
+        'target_roles' => ['Digital Transformation Lead', 'Managing Director']
+    ],
+    [
+        'id' => 'nz_1',
+        'name' => 'Springload New Zealand',
+        'website' => 'https://springload.co.nz',
+        'direct_email' => null,
+        'country' => 'New Zealand',
+        'city' => 'Wellington / Auckland',
+        'category' => 'Digital Products & Web Strategy',
+        'size' => '60-100 employees',
+        'tech_gap' => 'Accessible frontend design, technical SEO, and custom backend apps.',
+        'outreach_angle' => 'Full-Stack Performance & SEO Specialist.',
+        'target_roles' => ['Head of Technology', 'Technical Director']
+    ],
+    [
+        'id' => 'ie_1',
+        'name' => 'Continuum Digital Ireland',
+        'website' => 'https://continuum.ie',
+        'direct_email' => null,
+        'country' => 'Ireland',
+        'city' => 'Dublin',
+        'category' => 'Full-Service Digital Experience',
+        'size' => '50-90 employees',
+        'tech_gap' => 'CMS performance, API integrations, and GA4 tracking setups.',
+        'outreach_angle' => 'White-Label CMS & Analytics Developer.',
+        'target_roles' => ['Operations Director', 'Head of Tech']
+    ],
+    [
+        'id' => 'us_tech_1',
+        'name' => 'BairesDev Engineering',
+        'website' => 'https://www.bairesdev.com',
+        'direct_email' => null,
+        'country' => 'United States',
+        'city' => 'San Francisco, CA',
+        'category' => 'Custom Software & Cloud Sprints',
+        'size' => '500+ employees',
+        'tech_gap' => 'Backend API performance tuning and query optimization.',
+        'outreach_angle' => 'On-Demand Backend & Laravel Engineer.',
+        'target_roles' => ['Director of Engineering', 'VP Delivery']
+    ],
+    [
+        'id' => 'uk_tech_1',
+        'name' => 'Tangent Digital UK',
+        'website' => 'https://tangent.co.uk',
+        'direct_email' => null,
+        'country' => 'United Kingdom',
+        'city' => 'London',
+        'category' => 'Enterprise Digital Platforms',
+        'size' => '80-120 employees',
+        'tech_gap' => 'Modern PHP architecture and headless integration sprints.',
+        'outreach_angle' => 'White-label Sprint Engineer for Agency Backlog.',
+        'target_roles' => ['Tech Lead', 'Delivery Director']
     ]
 ];
 
