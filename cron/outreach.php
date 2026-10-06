@@ -150,6 +150,14 @@ if ($autoWarmupResult && !empty($autoWarmupResult['ok'])) {
 }
 
 // ----------------------------------------------------
+// B6. 4-STAGE SAFE MULTI-TOUCH NURTURING FUNNEL
+// ----------------------------------------------------
+$nurtureResult = processNurturePipelineCycle($db, $settings);
+if ($nurtureResult && !empty($nurtureResult['ok'])) {
+    cronLog("🎯 [LINKEDIN 4-STAGE FUNNEL] {$nurtureResult['action_log']}");
+}
+
+// ----------------------------------------------------
 // C. 3-STAGE SMART FOLLOW-UP SEQUENCE (48h, 5d, 9d)
 // ----------------------------------------------------
 if ($emailsSentToday < $dailyEmailLimit) {

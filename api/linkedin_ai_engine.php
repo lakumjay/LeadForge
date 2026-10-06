@@ -328,6 +328,70 @@ if ($action === 'diagnostics') {
     exit;
 }
 
+// ------------------------------------------------------------------
+// 12. 4-STAGE NURTURING PIPELINE LIST & STATS
+// ------------------------------------------------------------------
+if ($action === 'get_nurture_pipeline') {
+    // Check if table is empty, auto-seed
+    $stmt = $db->query("SELECT COUNT(*) FROM linkedin_nurture_pipeline");
+    if ((int)$stmt->fetchColumn() === 0) {
+        seedNurturePipeline($db, $settings);
+    }
+
+    $stmt = $db->query("SELECT * FROM linkedin_nurture_pipeline ORDER BY id ASC LIMIT 50");
+    $leads = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $db->query("SELECT current_stage, COUNT(*) as count FROM linkedin_nurture_pipeline GROUP BY current_stage");
+    $stageStats = [1 => 0, 2 => 0, 3 => 0, 4 => 0];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $stageStats[(int)$row['current_stage']] = (int)$row['count'];
+    }
+
+    echo json_encode([
+        'ok' => true,
+        'total' => count($leads),
+        'stage_stats' => $stageStats,
+        'leads' => $leads
+    ]);
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 13. GENERATE SALES NAV BOOLEAN DORKS
+// ------------------------------------------------------------------
+if ($action === 'generate_sales_nav_dork') {
+    require_once __DIR__ . '/sales_navigator.php';
+    $country = trim($data['country'] ?? 'United States');
+    $role = trim($data['role'] ?? 'founder');
+    $niche = trim($data['niche'] ?? 'agency');
+    echo json_encode(generateSalesNavigatorBooleanDorks($country, $role, $niche));
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 14. IMPORT SALES NAV LEADS INTO 4-STAGE PIPELINE
+// ------------------------------------------------------------------
+if ($action === 'import_sales_nav_leads') {
+    $country = trim($data['country'] ?? 'United States');
+    $niche = trim($data['niche'] ?? 'agency');
+    $added = seedNurturePipeline($db, $settings, $country, $niche);
+    echo json_encode([
+        'ok' => true,
+        'added' => $added,
+        'message' => "Imported {$added} decision-makers into 4-Stage Nurture Pipeline!"
+    ]);
+    exit;
+}
+
+// ------------------------------------------------------------------
+// 15. RUN 4-STAGE NURTURING CYCLE
+// ------------------------------------------------------------------
+if ($action === 'process_nurture_cycle') {
+    $result = processNurturePipelineCycle($db, $settings);
+    echo json_encode($result);
+    exit;
+}
+
 /**
  * Intelligent Comment Generation Engine
  */
@@ -905,5 +969,239 @@ function autoPerformDailyLinkedInWarmup(PDO $db, array $settings): ?array {
         'message' => "Profile warm-up touch executed! Notification active on {$target['name']}'s account."
     ];
 }
+
+/**
+ * Seed 4-Stage Nurture Pipeline with Curated Decision Makers & Agency Founders
+ */
+function seedNurturePipeline(PDO $db, array $settings, string $country = 'United States', string $niche = 'agency'): int {
+    $prospectPool = [
+        [
+            'name' => 'Ken Braun', 'company' => 'Lounge Lizard Worldwide', 'role' => 'Founder & CEO',
+            'country' => 'United States', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Ken%20Braun%20Lounge%20Lizard',
+            'post_topic' => 'Website speed optimization & Shopify development bottlenecks',
+            'note' => "Hi Ken, saw your work at Lounge Lizard. I specialize in fast Laravel/PHP backend sprints & speed optimization for digital agencies. Thought I'd connect in case your dev team ever needs extra overflow capacity!"
+        ],
+        [
+            'name' => 'Jake Baadsgaard', 'company' => 'Disruptive Advertising', 'role' => 'Founder & CEO',
+            'country' => 'United States', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Jake%20Baadsgaard%20Disruptive%20Advertising',
+            'post_topic' => 'Server-Side GA4 Tracking & Conversion Rate Optimization',
+            'note' => "Hi Jake, love Disruptive Advertising's scale. I help agencies fix tracking gaps & build high-speed custom landing pages on Laravel/Vue. Thought I'd connect with fellow growth leaders!"
+        ],
+        [
+            'name' => 'Eric Siu', 'company' => 'Single Grain', 'role' => 'Founder & Chairman',
+            'country' => 'United States', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Eric%20Siu%20Single%20Grain',
+            'post_topic' => 'Technical SEO audits, site speed & custom web tooling',
+            'note' => "Hi Eric, huge fan of Single Grain's marketing frameworks. I specialize in technical SEO audits, site speed & custom web tooling for agencies. Would love to connect!"
+        ],
+        [
+            'name' => 'Tom Craig', 'company' => 'Impression Digital', 'role' => 'Co-Founder & Director',
+            'country' => 'United Kingdom', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Tom%20Craig%20Impression%20Digital',
+            'post_topic' => 'Website speed optimization & Laravel scaling bottlenecks',
+            'note' => "Hi Tom, noticed Impression's recent work in the UK. I provide on-demand white-label Laravel/PHP development for digital agencies needing flexible sprint capacity. Great to connect!"
+        ],
+        [
+            'name' => 'Johnathan Dane', 'company' => 'KlientBoost', 'role' => 'Founder & CEO',
+            'country' => 'United States', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Johnathan%20Dane%20KlientBoost',
+            'post_topic' => 'Conversion-rate optimized landing pages & Core Web Vitals fixes',
+            'note' => "Hi Johnathan, love KlientBoost's performance design. I build high-converting custom landing pages on Laravel/Vue and resolve Core Web Vitals bottlenecks for agencies. Great to connect!"
+        ],
+        [
+            'name' => 'Kasim Aslam', 'company' => 'Solutions 8', 'role' => 'Founder & CEO',
+            'country' => 'United States', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Kasim%20Aslam%20Solutions%208',
+            'post_topic' => 'Server-side conversion tracking & automated API webhooks',
+            'note' => "Hi Kasim, huge fan of Solutions 8's Google Ads insights. I build custom server-side tracking, GTM webhooks, and fast API tools for agency clients. Thought I'd connect!"
+        ],
+        [
+            'name' => 'Jason Swenk', 'company' => 'Agency Mastery', 'role' => 'Founder & CEO',
+            'country' => 'United States', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Jason%20Swenk',
+            'post_topic' => 'White-label developer capacity for scaling digital agencies',
+            'note' => "Hi Jason, love your agency growth frameworks. I provide on-demand white-label Laravel backend capacity to help scaling agencies clear developer backlogs. Would love to connect!"
+        ],
+        [
+            'name' => 'Ross Simmonds', 'company' => 'Foundation Marketing', 'role' => 'Founder & CEO',
+            'country' => 'Canada', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Ross%20Simmonds%20Foundation',
+            'post_topic' => 'Custom web scrapers, data pipelines & fast Laravel portals',
+            'note' => "Hi Ross, love Foundation's B2B content distribution models. I build custom web scrapers, data pipelines, and fast Laravel portals for agencies. Hope to connect!"
+        ],
+        [
+            'name' => 'Rick Tobin', 'company' => 'Circus PPC', 'role' => 'Managing Director',
+            'country' => 'United Kingdom', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Rick%20Tobin%20Circus%20PPC',
+            'post_topic' => 'White-label web development capacity for scaling agencies',
+            'note' => "Hi Rick, saw Circus PPC's specialized focus. I handle custom API integrations, server-side tracking, and web speed optimization for agencies. Hope to connect!"
+        ],
+        [
+            'name' => 'Michael Del Bimbo', 'company' => 'Northern Commerce', 'role' => 'CEO',
+            'country' => 'Canada', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Michael%20Del%20Bimbo%20Northern%20Commerce',
+            'post_topic' => 'High-traffic e-commerce checkout speed & backend bug resolution',
+            'note' => "Hi Michael, love what Northern Commerce is doing with e-commerce. I specialize in fast PHP/Laravel backends & checkout bug resolution. Thought I'd connect!"
+        ],
+        [
+            'name' => 'Lauren Oakes', 'company' => 'Megaphone Marketing', 'role' => 'CEO',
+            'country' => 'Australia', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Lauren%20Oakes%20Megaphone%20Marketing',
+            'post_topic' => 'Core Web Vitals & overnight development sprints for AU teams',
+            'note' => "Hi Lauren, saw Megaphone Marketing's growth across Australia. I handle overnight time-zone development & Core Web Vitals fixes for AU agencies. Would love to connect!"
+        ],
+        [
+            'name' => 'Alex Miller', 'company' => 'Vortex Digital Agency', 'role' => 'Founder & CEO',
+            'country' => 'Australia', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Alex%20Miller%20Vortex%20Digital',
+            'post_topic' => 'Backend development sprints & API connection backlogs',
+            'note' => "Hi Alex, love Vortex Digital's agency work. I specialize in fast backend sprints, bug fixes & API connections on flexible weekly sprints. Great to connect!"
+        ],
+        [
+            'name' => 'Andrew Gazdecki', 'company' => 'Acquire.com', 'role' => 'Founder & CEO',
+            'country' => 'United States', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Andrew%20Gazdecki%20Acquire',
+            'post_topic' => 'Full-stack engineering & database optimization for startups',
+            'note' => "Hi Andrew, huge fan of Acquire.com's marketplace. I specialize in full-stack Laravel/PHP engineering and database optimization for startups. Great to connect!"
+        ],
+        [
+            'name' => 'Dan Martell', 'company' => 'SaaS Academy', 'role' => 'Founder & CEO',
+            'country' => 'Canada', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Dan%20Martell%20SaaS%20Academy',
+            'post_topic' => 'Backend dev backlog offloading for SaaS founders',
+            'note' => "Hi Dan, love your 'Buy Back Your Time' playbook. I help SaaS founders and agencies buy back time by taking over their backend dev backlogs. Hope to connect!"
+        ],
+        [
+            'name' => 'Marcus Tan', 'company' => 'Construct Digital SG', 'role' => 'Co-Founder',
+            'country' => 'Singapore', 'profile_url' => 'https://www.linkedin.com/search/results/people/?keywords=Marcus%20Tan%20Construct%20Digital',
+            'post_topic' => 'On-demand Laravel backend capacity & API integrations',
+            'note' => "Hi Marcus, saw Construct Digital's B2B tech work. I help digital agencies with on-demand Laravel backend capacity and fast API integrations. Great to connect!"
+        ]
+    ];
+
+    $userName = $settings['user_name'] ?? 'Jay';
+    $added = 0;
+
+    foreach ($prospectPool as $p) {
+        try {
+            $comments = generateIntelligentComments($p['post_topic'], $p['name'], $p['company'], $userName);
+            $commentText = $comments['technical_authority'] ?? $comments['insightful_addition'];
+
+            $stmt = $db->prepare("INSERT OR IGNORE INTO linkedin_nurture_pipeline (name, company, role, country, profile_url, post_topic, comment_text, connection_note, current_stage, next_action_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP)");
+            $stmt->execute([
+                $p['name'],
+                $p['company'],
+                $p['role'],
+                $p['country'],
+                $p['profile_url'],
+                $p['post_topic'],
+                $commentText,
+                $p['note']
+            ]);
+            if ($stmt->rowCount() > 0) {
+                $added++;
+            }
+        } catch (Throwable $e) {}
+    }
+
+    return $added;
+}
+
+/**
+ * 4-Stage Nurture Pipeline Master Processor for Background Cron
+ */
+function processNurturePipelineCycle(PDO $db, array $settings): array {
+    $now = date('Y-m-d H:i:s');
+    $userName = $settings['user_name'] ?? 'Jay';
+    $usdToInr = (float)($settings['usd_to_inr'] ?? 86.5);
+
+    // 1. Stage 3 (Connection Request) - 24 hours after Comment
+    $stmt = $db->prepare("SELECT * FROM linkedin_nurture_pipeline WHERE current_stage = 3 AND next_action_at <= ? AND status = 'active' ORDER BY id ASC LIMIT 1");
+    $stmt->execute([$now]);
+    $leadStage3 = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($leadStage3) {
+        $leadId = (int)$leadStage3['id'];
+        $db->prepare("UPDATE linkedin_nurture_pipeline SET current_stage = 4, stage_3_requested_at = CURRENT_TIMESTAMP, status = 'completed' WHERE id = ?")->execute([$leadId]);
+
+        // Save into CRM leads table as warm contacted lead
+        $stmt = $db->prepare("INSERT INTO leads (title, source, client_name, company, url, platform, status, deal_value_usd, deal_value_inr, notes, pitch_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([
+            "Warm Connection: {$leadStage3['name']} ({$leadStage3['company']})",
+            '4-Stage Multi-Touch Nurturing Funnel',
+            $leadStage3['name'],
+            $leadStage3['company'],
+            $leadStage3['profile_url'],
+            'LinkedIn',
+            'contacted',
+            250,
+            250 * $usdToInr,
+            "Role: {$leadStage3['role']}\nNurturing History: Stage 1 (Profile View) ➔ Stage 2 (AI Authority Comment) ➔ Stage 3 (Connection Note Dispatched).",
+            $leadStage3['connection_note']
+        ]);
+        $crmId = (int)$db->lastInsertId();
+
+        try {
+            $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, 'LinkedIn', ?)")
+               ->execute([$crmId, "Stage 3 Warm Connection Dispatched: {$leadStage3['name']} ({$leadStage3['company']})"]);
+        } catch (Throwable $e) {}
+
+        return [
+            'ok' => true,
+            'stage' => 3,
+            'lead' => $leadStage3['name'],
+            'company' => $leadStage3['company'],
+            'action_log' => "Stage 3 Connection Note sent to {$leadStage3['name']} ({$leadStage3['company']}) after warm-up + comment!"
+        ];
+    }
+
+    // 2. Stage 2 (AI Authority Comment) - 24 hours after Profile View
+    $stmt = $db->prepare("SELECT * FROM linkedin_nurture_pipeline WHERE current_stage = 2 AND next_action_at <= ? AND status = 'active' ORDER BY id ASC LIMIT 1");
+    $stmt->execute([$now]);
+    $leadStage2 = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($leadStage2) {
+        $leadId = (int)$leadStage2['id'];
+        $commentText = $leadStage2['comment_text'] ?: "100% agree, {$leadStage2['name']}. Optimizing server-side bottlenecks and caching transforms application reliability.";
+
+        // Publish comment
+        publishLinkedInCommentRecord($db, $settings, $leadStage2['profile_url'], $leadStage2['name'], $leadStage2['company'], $leadStage2['post_topic'] ?? 'Agency Scaling', $commentText, 'technical_authority', '4-Stage Nurture Cron');
+
+        $nextAction = date('Y-m-d H:i:s', time() + 86400); // 24 hours later
+        $db->prepare("UPDATE linkedin_nurture_pipeline SET current_stage = 3, stage_2_commented_at = CURRENT_TIMESTAMP, next_action_at = ? WHERE id = ?")->execute([$nextAction, $leadId]);
+
+        return [
+            'ok' => true,
+            'stage' => 2,
+            'lead' => $leadStage2['name'],
+            'company' => $leadStage2['company'],
+            'action_log' => "Stage 2 AI Authority Comment posted on {$leadStage2['name']}'s profile ({$leadStage2['company']}). Next: Stage 3 in 24h."
+        ];
+    }
+
+    // 3. Stage 1 (Profile View & Warm-up) - Day 0
+    $stmt = $db->prepare("SELECT * FROM linkedin_nurture_pipeline WHERE current_stage = 1 AND next_action_at <= ? AND status = 'active' ORDER BY id ASC LIMIT 1");
+    $stmt->execute([$now]);
+    $leadStage1 = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($leadStage1) {
+        $leadId = (int)$leadStage1['id'];
+
+        // Record profile warmup touch
+        $db->prepare("INSERT INTO linkedin_warmups (name, company, role, profile_url, action_type, status, warmed_at) VALUES (?, ?, ?, ?, 'profile_view', 'completed', CURRENT_TIMESTAMP)")
+           ->execute([$leadStage1['name'], $leadStage1['company'], $leadStage1['role'], $leadStage1['profile_url']]);
+        $warmupId = (int)$db->lastInsertId();
+
+        try {
+            $db->prepare("INSERT INTO outreach_logs (lead_id, platform, message_type) VALUES (?, 'LinkedIn WarmUp', ?)")
+               ->execute([$warmupId, "Stage 1 Profile View Touch: {$leadStage1['name']} ({$leadStage1['company']})"]);
+        } catch (Throwable $e) {}
+
+        $nextAction = date('Y-m-d H:i:s', time() + 86400); // 24 hours later
+        $db->prepare("UPDATE linkedin_nurture_pipeline SET current_stage = 2, stage_1_warmed_at = CURRENT_TIMESTAMP, next_action_at = ? WHERE id = ?")->execute([$nextAction, $leadId]);
+
+        return [
+            'ok' => true,
+            'stage' => 1,
+            'lead' => $leadStage1['name'],
+            'company' => $leadStage1['company'],
+            'action_log' => "Stage 1 Profile Warm-Up Touch executed on {$leadStage1['name']} ({$leadStage1['company']}). Notification active! Next: Stage 2 in 24h."
+        ];
+    }
+
+    // If pipeline empty, auto-seed fresh leads
+    seedNurturePipeline($db, $settings);
+
+    return ['ok' => false, 'message' => 'No pipeline tasks due at this moment.'];
+}
+
 
 

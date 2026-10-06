@@ -174,3 +174,68 @@ function processFounderProspect(array $prospect, PDO $db, array $settings, float
         'message' => $smtpMessage
     ];
 }
+
+/**
+ * High-Precision Boolean Dork Generator (Bypasses $100/mo Sales Navigator)
+ */
+function generateSalesNavigatorBooleanDorks(string $country = 'United States', string $role = 'all', string $niche = 'agency'): array {
+    $countryKeywords = [
+        'United States' => '("United States" OR "USA" OR "New York" OR "California" OR "Austin" OR "Chicago" OR "Miami")',
+        'United Kingdom' => '("United Kingdom" OR "UK" OR "London" OR "Manchester" OR "Birmingham")',
+        'Australia' => '("Australia" OR "Sydney" OR "Melbourne" OR "Brisbane")',
+        'Canada' => '("Canada" OR "Toronto" OR "Vancouver" OR "Montreal")',
+        'Germany' => '("Germany" OR "Berlin" OR "Munich" OR "Hamburg")',
+        'Netherlands' => '("Netherlands" OR "Amsterdam" OR "Rotterdam")',
+        'Singapore' => '("Singapore")',
+        'Global' => '("United States" OR "United Kingdom" OR "Australia" OR "Canada" OR "Germany")'
+    ];
+
+    $roleQuery = match(strtolower($role)) {
+        'cto' => '("CTO" OR "Chief Technology Officer" OR "VP Engineering" OR "Technical Director" OR "Head of Engineering")',
+        'founder' => '("Founder" OR "Co-Founder" OR "CEO" OR "Managing Director" OR "Owner")',
+        'product' => '("Head of Product" OR "VP Product" OR "Product Lead")',
+        default => '("Founder" OR "CEO" OR "Co-Founder" OR "CTO" OR "Managing Director")'
+    };
+
+    $nicheQuery = match(strtolower($niche)) {
+        'agency' => '("Digital Agency" OR "Marketing Agency" OR "Web Development Agency" OR "Performance Agency" OR "PPC Agency")',
+        'saas' => '("SaaS" OR "Software" OR "Tech Startup" OR "B2B SaaS" OR "Cloud Platform")',
+        'ecommerce' => '("Shopify Plus" OR "E-Commerce" OR "Direct to Consumer" OR "WooCommerce")',
+        'laravel' => '("Laravel" OR "PHP" OR "Web Application" OR "Full Stack")',
+        default => '("Digital Agency" OR "Web Development" OR "SaaS" OR "E-Commerce")'
+    };
+
+    $locQuery = $countryKeywords[$country] ?? $countryKeywords['Global'];
+
+    $googleDork = "site:linkedin.com/in/ {$roleQuery} AND {$nicheQuery} AND {$locQuery} -inurl:dir -inurl:job";
+    $googleUrl = "https://www.google.com/search?q=" . urlencode($googleDork);
+    $linkedinKeywords = trim("{$role} {$niche} {$country}");
+    $linkedinUrl = "https://www.linkedin.com/search/results/people/?keywords=" . urlencode($linkedinKeywords);
+
+    return [
+        'ok' => true,
+        'country' => $country,
+        'role' => $role,
+        'niche' => $niche,
+        'dork_string' => $googleDork,
+        'google_url' => $googleUrl,
+        'linkedin_url' => $linkedinUrl
+    ];
+}
+
+if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'sales_navigator.php') {
+    if (!headers_sent()) {
+        header('Content-Type: application/json; charset=utf-8');
+    }
+    $rawInput = file_get_contents('php://input');
+    $data = json_decode($rawInput, true) ?: $_REQUEST;
+    $action = $data['action'] ?? 'dork';
+
+    if ($action === 'dork') {
+        $country = $data['country'] ?? 'United States';
+        $role = $data['role'] ?? 'all';
+        $niche = $data['niche'] ?? 'agency';
+        echo json_encode(generateSalesNavigatorBooleanDorks($country, $role, $niche));
+        exit;
+    }
+}

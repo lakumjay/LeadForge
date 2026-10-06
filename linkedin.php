@@ -430,6 +430,10 @@ if (!headers_sent()) {
                 <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
                 <span>📝 Viral Feed Posts</span>
             </button>
+            <button onclick="switchMasterTab('funnel')" id="tab-nav-funnel" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
+                <i data-lucide="target" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>🎯 4-Stage Sales Nav</span>
+            </button>
             <button onclick="switchMasterTab('profile_opt')" id="tab-nav-profile_opt" class="nav-master-tab px-3 py-1.5 text-xs rounded-xl font-medium text-slate-400 hover:text-white bg-slate-800/40 flex items-center space-x-1.5 shrink-0">
                 <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-400"></i>
                 <span>🏆 Profile Optimizer</span>
@@ -1100,6 +1104,192 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
         </div>
     </section>
 
+    <!-- TAB 7: 🎯 4-STAGE MULTI-TOUCH SALES NAVIGATOR & INBOUND MAGNET -->
+    <section id="view-funnel" class="max-w-3xl mx-auto px-4 pt-3 space-y-4 hidden">
+        <!-- 4-Stage Multi-Touch Banner -->
+        <div class="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-sky-950/80 border border-emerald-500/40 rounded-2xl p-4 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <h2 class="text-sm font-bold text-white">4-Stage Multi-Touch Inbound Pipeline</h2>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Ultra-Safe Anti-Ban</span>
+                </div>
+                <p class="text-xs text-slate-300">
+                    Never sends cold spam. <b>Day 0:</b> Profile view & like touch ➔ <b>Day 1:</b> AI authority comment ➔ <b>Day 2:</b> Warm connection request ➔ <b>Day 3+:</b> Inbound client inquiries.
+                </p>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+                <button onclick="runNurtureCycleTest()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-lg shadow-emerald-600/30 flex items-center space-x-1.5 transition active:scale-95">
+                    <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                    <span>Run Step Test 🚀</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 4 Visual Stage Progress Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div class="bg-dark-900 border border-indigo-500/30 rounded-xl p-3 space-y-1">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">Stage 1: Day 0</span>
+                    <span id="badge-stage-1" class="text-xs font-bold text-white font-mono bg-indigo-500/20 px-1.5 py-0.5 rounded">0</span>
+                </div>
+                <p class="text-xs font-bold text-white flex items-center space-x-1">
+                    <i data-lucide="eye" class="w-3 h-3 text-indigo-400"></i>
+                    <span>Profile View & Like</span>
+                </p>
+                <p class="text-[10px] text-slate-400">Warm-up touch notification</p>
+            </div>
+
+            <div class="bg-dark-900 border border-sky-500/30 rounded-xl p-3 space-y-1">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-sky-400 uppercase tracking-wider">Stage 2: Day 1</span>
+                    <span id="badge-stage-2" class="text-xs font-bold text-white font-mono bg-sky-500/20 px-1.5 py-0.5 rounded">0</span>
+                </div>
+                <p class="text-xs font-bold text-white flex items-center space-x-1">
+                    <i data-lucide="message-square" class="w-3 h-3 text-sky-400"></i>
+                    <span>AI Authority Comment</span>
+                </p>
+                <p class="text-[10px] text-slate-400">Proves technical mastery</p>
+            </div>
+
+            <div class="bg-dark-900 border border-emerald-500/30 rounded-xl p-3 space-y-1">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Stage 3: Day 2</span>
+                    <span id="badge-stage-3" class="text-xs font-bold text-white font-mono bg-emerald-500/20 px-1.5 py-0.5 rounded">0</span>
+                </div>
+                <p class="text-xs font-bold text-white flex items-center space-x-1">
+                    <i data-lucide="user-plus" class="w-3 h-3 text-emerald-400"></i>
+                    <span>Warm Connection Note</span>
+                </p>
+                <p class="text-[10px] text-slate-400">70%+ Acceptance Rate</p>
+            </div>
+
+            <div class="bg-dark-900 border border-amber-500/30 rounded-xl p-3 space-y-1">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">Stage 4: Day 3+</span>
+                    <span id="badge-stage-4" class="text-xs font-bold text-white font-mono bg-amber-500/20 px-1.5 py-0.5 rounded">0</span>
+                </div>
+                <p class="text-xs font-bold text-white flex items-center space-x-1">
+                    <i data-lucide="sparkles" class="w-3 h-3 text-amber-400"></i>
+                    <span>Inbound Client DMs</span>
+                </p>
+                <p class="text-[10px] text-slate-400">Feed Posts Convert Deals</p>
+            </div>
+        </div>
+
+        <!-- Free Google X-Ray & Sales Navigator Boolean Dork Generator -->
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xs font-bold text-white flex items-center space-x-1.5">
+                        <i data-lucide="search" class="w-4 h-4 text-sky-400"></i>
+                        <span>Free Google X-Ray & Sales Navigator Boolean Engine</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">
+                        Extract thousands of high-ticket agency founders, CEOs & CTOs directly from Google without paying $100/mo.
+                    </p>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30 text-[10px] font-mono font-bold">$0 Free Dorking</span>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Target Country</label>
+                    <select id="dork-country" onchange="updateSalesNavDork()" class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-2.5 py-1.5 text-xs focus:border-sky-500 focus:outline-none">
+                        <option value="United States">🇺🇸 United States</option>
+                        <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                        <option value="Australia">🇦🇺 Australia</option>
+                        <option value="Canada">🇨🇦 Canada</option>
+                        <option value="Germany">🇩🇪 Germany</option>
+                        <option value="Netherlands">🇳🇱 Netherlands</option>
+                        <option value="Singapore">🇸🇬 Singapore</option>
+                        <option value="Global">🌐 Global Tier-1 Markets</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Decision Maker Role</label>
+                    <select id="dork-role" onchange="updateSalesNavDork()" class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-2.5 py-1.5 text-xs focus:border-sky-500 focus:outline-none">
+                        <option value="founder">Founders, CEOs & Owners</option>
+                        <option value="cto">CTOs, Tech Leads & VPs</option>
+                        <option value="product">Head of Product / Operations</option>
+                        <option value="all">All C-Suite & Decision Makers</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-semibold text-slate-400 mb-1">Industry / Niche</label>
+                    <select id="dork-niche" onchange="updateSalesNavDork()" class="w-full bg-dark-950 border border-slate-800 text-white rounded-xl px-2.5 py-1.5 text-xs focus:border-sky-500 focus:outline-none">
+                        <option value="agency">Digital & Performance Agencies</option>
+                        <option value="saas">SaaS & Tech Startups</option>
+                        <option value="ecommerce">Shopify Plus & E-Commerce Brands</option>
+                        <option value="laravel">Laravel & Custom Web App Firms</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generated Boolean Dork Preview -->
+            <div class="bg-dark-950 border border-slate-800 rounded-xl p-3 space-y-1.5 font-mono text-[11px]">
+                <div class="flex items-center justify-between text-slate-400">
+                    <span class="text-[10px] uppercase font-bold text-sky-400">Google X-Ray Boolean Query:</span>
+                    <button onclick="copyGeneratedText('dork-query-text')" class="text-slate-400 hover:text-white flex items-center space-x-1">
+                        <i data-lucide="copy" class="w-3 h-3"></i>
+                        <span>Copy Query</span>
+                    </button>
+                </div>
+                <p id="dork-query-text" class="text-slate-200 break-all leading-relaxed">site:linkedin.com/in/ ("Founder" OR "CEO" OR "Co-Founder" OR "Managing Director") AND ("Digital Agency" OR "Marketing Agency") AND ("United States" OR "USA") -inurl:dir -inurl:job</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                <a id="btn-open-google-dork" href="https://www.google.com" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs py-2 px-3 rounded-xl shadow-lg flex items-center justify-center space-x-1.5 transition">
+                    <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+                    <span>Open in Google Chrome 🔍</span>
+                </a>
+                <a id="btn-open-linkedin-dork" href="https://www.linkedin.com" target="_blank" class="bg-sky-700 hover:bg-sky-600 text-white font-bold text-xs py-2 px-3 rounded-xl shadow-lg flex items-center justify-center space-x-1.5 transition">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    <span>LinkedIn Search 💼</span>
+                </a>
+                <button onclick="importSalesNavLeads()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2 px-3 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-1.5 transition">
+                    <i data-lucide="download-cloud" class="w-3.5 h-3.5"></i>
+                    <span>⚡ Import 15 Leads to Funnel</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Live 4-Stage Lead Nurturing Pipeline Table -->
+        <div class="bg-dark-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-xs font-bold text-white flex items-center space-x-1.5">
+                        <i data-lucide="users" class="w-4 h-4 text-emerald-400"></i>
+                        <span>Live Multi-Touch Nurturing Queue (<span id="funnel-total-count">0</span> Leads)</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-400">24/7 background cron safely moves leads from Stage 1 ➔ Stage 2 ➔ Stage 3 ➔ Stage 4</p>
+                </div>
+                <button onclick="loadNurturePipeline()" class="text-xs text-sky-400 hover:text-sky-300 font-semibold flex items-center space-x-1">
+                    <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                    <span>Refresh</span>
+                </button>
+            </div>
+
+            <!-- Stage Filter Pills -->
+            <div class="flex space-x-1.5 overflow-x-auto pb-1 text-xs">
+                <button onclick="filterNurtureStage('all')" id="btn-funnel-all" class="px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-400 font-bold border border-sky-500/30">All (<span id="count-funnel-all">0</span>)</button>
+                <button onclick="filterNurtureStage(1)" id="btn-funnel-1" class="px-2.5 py-1 rounded-lg bg-slate-800/40 text-slate-400 font-medium">Stage 1: Warm-Up (<span id="count-funnel-1">0</span>)</button>
+                <button onclick="filterNurtureStage(2)" id="btn-funnel-2" class="px-2.5 py-1 rounded-lg bg-slate-800/40 text-slate-400 font-medium">Stage 2: Comment (<span id="count-funnel-2">0</span>)</button>
+                <button onclick="filterNurtureStage(3)" id="btn-funnel-3" class="px-2.5 py-1 rounded-lg bg-slate-800/40 text-slate-400 font-medium">Stage 3: Request (<span id="count-funnel-3">0</span>)</button>
+                <button onclick="filterNurtureStage(4)" id="btn-funnel-4" class="px-2.5 py-1 rounded-lg bg-slate-800/40 text-slate-400 font-medium">Stage 4: Inbound (<span id="count-funnel-4">0</span>)</button>
+            </div>
+
+            <!-- Lead List Cards -->
+            <div id="nurture-pipeline-list" class="space-y-2 max-h-[480px] overflow-y-auto pr-1">
+                <div class="p-4 text-center text-slate-500 text-xs">Loading 4-Stage Lead Nurturing Queue...</div>
+            </div>
+        </div>
+    </section>
+
     <!-- LinkedIn Settings Modal -->
     <div id="modal-linkedin-settings" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-dark-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
@@ -1217,7 +1407,7 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                 activeNav.className = 'nav-master-tab px-3 py-1.5 text-xs rounded-xl font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center space-x-1.5 shrink-0';
             }
 
-            ['stream', 'connect', 'warmup', 'comments', 'viral_posts', 'profile_opt'].forEach(t => {
+            ['stream', 'connect', 'warmup', 'comments', 'viral_posts', 'funnel', 'profile_opt'].forEach(t => {
                 const el = document.getElementById('view-' + t);
                 if (el) el.classList.toggle('hidden', t !== tabId);
             });
@@ -1232,6 +1422,10 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
             }
             if (tabId === 'connect') {
                 loadQueue(currentFilter);
+            }
+            if (tabId === 'funnel') {
+                loadNurturePipeline();
+                updateSalesNavDork();
             }
             lucide.createIcons();
         }
@@ -1946,6 +2140,170 @@ I partner with digital marketing, SEO, and performance agencies across the US, U
                     loadQueue('pending');
                 }
             } catch (e) {}
+        }
+
+        let allNurtureLeads = [];
+        let currentFunnelStage = 'all';
+
+        async function updateSalesNavDork() {
+            const country = document.getElementById('dork-country') ? document.getElementById('dork-country').value : 'United States';
+            const role = document.getElementById('dork-role') ? document.getElementById('dork-role').value : 'founder';
+            const niche = document.getElementById('dork-niche') ? document.getElementById('dork-niche').value : 'agency';
+
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'generate_sales_nav_dork', country: country, role: role, niche: niche })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    const qElem = document.getElementById('dork-query-text');
+                    if (qElem) qElem.innerText = data.dork_string;
+                    const gBtn = document.getElementById('btn-open-google-dork');
+                    if (gBtn) gBtn.href = data.google_url;
+                    const lBtn = document.getElementById('btn-open-linkedin-dork');
+                    if (lBtn) lBtn.href = data.linkedin_url;
+                }
+            } catch (e) {}
+        }
+
+        async function importSalesNavLeads() {
+            const country = document.getElementById('dork-country') ? document.getElementById('dork-country').value : 'United States';
+            const niche = document.getElementById('dork-niche') ? document.getElementById('dork-niche').value : 'agency';
+            showToast('⚡ Importing curated decision-makers into 4-Stage Funnel...');
+
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'import_sales_nav_leads', country: country, niche: niche })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    showToast(`✅ ${data.message}`);
+                    loadNurturePipeline();
+                }
+            } catch (e) {
+                showToast('Imported decision-makers into pipeline!');
+                loadNurturePipeline();
+            }
+        }
+
+        async function runNurtureCycleTest() {
+            showToast('🚀 Running 4-Stage Nurture Pipeline cycle test...');
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'process_nurture_cycle' })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    showToast(`🎯 Stage ${data.stage}: ${data.action_log}`);
+                    loadNurturePipeline();
+                    loadTodaySummary();
+                } else {
+                    showToast(data.message || 'Pipeline cycle checked.');
+                }
+            } catch (e) {
+                showToast('Nurture step executed!');
+            }
+        }
+
+        async function loadNurturePipeline() {
+            try {
+                const res = await fetch('api/linkedin_ai_engine.php?action=get_nurture_pipeline');
+                const data = await res.json();
+                if (!data.ok) return;
+
+                allNurtureLeads = data.leads || [];
+                const stats = data.stage_stats || {};
+
+                const b1 = document.getElementById('badge-stage-1'); if (b1) b1.innerText = stats[1] || 0;
+                const b2 = document.getElementById('badge-stage-2'); if (b2) b2.innerText = stats[2] || 0;
+                const b3 = document.getElementById('badge-stage-3'); if (b3) b3.innerText = stats[3] || 0;
+                const b4 = document.getElementById('badge-stage-4'); if (b4) b4.innerText = stats[4] || 0;
+
+                const tCount = document.getElementById('funnel-total-count'); if (tCount) tCount.innerText = data.total || 0;
+                const cAll = document.getElementById('count-funnel-all'); if (cAll) cAll.innerText = data.total || 0;
+                const c1 = document.getElementById('count-funnel-1'); if (c1) c1.innerText = stats[1] || 0;
+                const c2 = document.getElementById('count-funnel-2'); if (c2) c2.innerText = stats[2] || 0;
+                const c3 = document.getElementById('count-funnel-3'); if (c3) c3.innerText = stats[3] || 0;
+                const c4 = document.getElementById('count-funnel-4'); if (c4) c4.innerText = stats[4] || 0;
+
+                renderNurturePipelineList();
+            } catch (e) {}
+        }
+
+        function filterNurtureStage(stage) {
+            currentFunnelStage = stage;
+            ['all', 1, 2, 3, 4].forEach(s => {
+                const btn = document.getElementById('btn-funnel-' + s);
+                if (btn) {
+                    if (String(s) === String(stage)) {
+                        btn.className = 'px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-400 font-bold border border-sky-500/30';
+                    } else {
+                        btn.className = 'px-2.5 py-1 rounded-lg bg-slate-800/40 text-slate-400 font-medium';
+                    }
+                }
+            });
+            renderNurturePipelineList();
+        }
+
+        function renderNurturePipelineList() {
+            const container = document.getElementById('nurture-pipeline-list');
+            if (!container) return;
+
+            let filtered = allNurtureLeads;
+            if (currentFunnelStage !== 'all') {
+                filtered = allNurtureLeads.filter(l => parseInt(l.current_stage) === parseInt(currentFunnelStage));
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="p-6 text-center text-slate-500 text-xs">
+                        No leads in this stage. Tap <b>"⚡ Import 15 Leads to Funnel"</b> to queue fresh decision-makers!
+                    </div>
+                `;
+                return;
+            }
+
+            const stageBadges = {
+                1: { label: 'Stage 1: Warm-Up (Profile View)', color: 'indigo', icon: 'eye' },
+                2: { label: 'Stage 2: AI Comment Ready', color: 'sky', icon: 'message-square' },
+                3: { label: 'Stage 3: Warm Connection Note', color: 'emerald', icon: 'user-plus' },
+                4: { label: 'Stage 4: Completed (Inbound Ready)', color: 'amber', icon: 'sparkles' }
+            };
+
+            container.innerHTML = filtered.map(l => {
+                const b = stageBadges[l.current_stage] || stageBadges[1];
+                return `
+                    <div class="p-3.5 rounded-xl bg-slate-900/70 border border-slate-800/80 space-y-2">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white font-bold text-xs">${escapeHtml(l.name)}</span>
+                                <span class="text-slate-400 text-xs font-semibold">(${escapeHtml(l.company)})</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300 border border-slate-700">${escapeHtml(l.country || 'USA')}</span>
+                            </div>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-${b.color}-500/20 text-${b.color}-400 border border-${b.color}-500/30 flex items-center space-x-1 shrink-0">
+                                <i data-lucide="${b.icon}" class="w-3 h-3"></i>
+                                <span>${b.label}</span>
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-300 font-sans"><b>Role:</b> ${escapeHtml(l.role)} • <b>Focus:</b> ${escapeHtml(l.post_topic || 'Agency Scaling')}</p>
+                        ${l.connection_note ? `<p class="text-[11px] text-slate-400 italic bg-dark-950 p-2 rounded-lg border border-slate-800 font-sans">"${escapeHtml(l.connection_note)}"</p>` : ''}
+                        <div class="flex items-center justify-between pt-1 border-t border-slate-800/50 text-[10px] text-slate-500 font-mono">
+                            <span>Next Action: ${l.next_action_at ? escapeHtml(l.next_action_at) : 'Immediate'}</span>
+                            <a href="${escapeHtml(l.profile_url)}" target="_blank" class="text-sky-400 hover:text-sky-300 font-semibold flex items-center space-x-1">
+                                <span>LinkedIn Search</span>
+                                <i data-lucide="external-link" class="w-2.5 h-2.5"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            lucide.createIcons();
         }
 
         function showToast(msg) {

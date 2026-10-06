@@ -167,6 +167,28 @@ class Database {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )");
 
+        // 4-Stage Multi-Touch Nurturing Pipeline Table (Profile View -> AI Comment -> 24h Delay -> Connection Note -> Inbound)
+        $db->exec("CREATE TABLE IF NOT EXISTS linkedin_nurture_pipeline (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            company TEXT NOT NULL,
+            role TEXT DEFAULT 'Founder / CEO',
+            country TEXT DEFAULT 'United States',
+            profile_url TEXT UNIQUE,
+            post_url TEXT,
+            post_topic TEXT,
+            comment_text TEXT,
+            connection_note TEXT,
+            current_stage INTEGER DEFAULT 1,
+            stage_1_warmed_at DATETIME,
+            stage_2_commented_at DATETIME,
+            stage_3_requested_at DATETIME,
+            stage_4_connected_at DATETIME,
+            next_action_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            status TEXT DEFAULT 'active',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )");
+
         // Ultra-Fast Indexes for Instant Lead Querying & Filtering
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_status ON leads (status);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_leads_platform ON leads (platform);");
@@ -178,6 +200,8 @@ class Database {
         $db->exec("CREATE INDEX IF NOT EXISTS idx_sent_history_domain ON sent_history (recipient_domain);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_warmups_warmed ON linkedin_warmups (warmed_at);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_warmups_profile ON linkedin_warmups (profile_url);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_nurture_stage ON linkedin_nurture_pipeline (current_stage, next_action_at);");
+        $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_nurture_url ON linkedin_nurture_pipeline (profile_url);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_queue_status ON linkedin_queue (status);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_linkedin_queue_url ON linkedin_queue (linkedin_url);");
         $db->exec("CREATE INDEX IF NOT EXISTS idx_audit_cache_created ON audit_cache (created_at);");
