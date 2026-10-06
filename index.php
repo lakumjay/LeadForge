@@ -295,13 +295,16 @@
                 <div class="flex items-center space-x-2 w-full md:w-auto justify-end flex-wrap gap-2">
                     <!-- Multi-Service Filters -->
                     <select id="radar-filter" onchange="loadRadarJobs()" class="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                        <option value="all">🔥 All Services (Web, SEO, Google Ads)</option>
-                        <option value="laravel">🐘 Laravel &amp; PHP Dev</option>
+                        <option value="all">🔥 All High-Intent Signals (Web, AI, SEO, Ads)</option>
+                        <option value="twitter">🐦 Twitter / X Live Intent Requests</option>
+                        <option value="linkedin">👔 LinkedIn Founder Client Posts</option>
+                        <option value="upwork">🌐 Upwork Intent Bypass (0% Comp)</option>
+                        <option value="ai">🤖 AI &amp; Web Integration Bounties</option>
+                        <option value="laravel">🐘 Laravel &amp; PHP Backend</option>
                         <option value="seo">📈 Technical SEO &amp; Rankings</option>
                         <option value="ads">🎯 Google Ads &amp; GA4 Tracking</option>
-                        <option value="bugfix">🐛 Quick Bug Fixes</option>
-                        <option value="urgent">🚨 Urgent Bounties (&lt; 10 mins)</option>
-                        <option value="reddit">👾 Reddit Direct (No Login)</option>
+                        <option value="bugfix">🐛 Quick Bug Fixes (&lt; 2h Sprints)</option>
+                        <option value="reddit">👾 Reddit Direct (r/forhire)</option>
                     </select>
 
                     <button onclick="loadRadarJobs(true)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-2 rounded-lg border border-slate-700 flex items-center space-x-1.5 transition">

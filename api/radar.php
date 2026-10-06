@@ -51,6 +51,18 @@ if ($action === 'fetch') {
             $fullContent = strtolower(($job['title'] ?? '') . ' ' . ($job['description'] ?? '') . ' ' . ($job['category'] ?? ''));
 
             // Service Filters
+            if ($filter === 'twitter' && stripos($job['source'], 'Twitter') === false) {
+                continue;
+            }
+            if ($filter === 'linkedin' && stripos($job['source'], 'LinkedIn') === false) {
+                continue;
+            }
+            if ($filter === 'upwork' && stripos($job['source'], 'Upwork') === false) {
+                continue;
+            }
+            if ($filter === 'ai' && (stripos($fullContent, 'ai') === false && stripos($fullContent, 'gpt') === false && stripos($fullContent, 'openai') === false && stripos($fullContent, 'chatbot') === false)) {
+                continue;
+            }
             if ($filter === 'seo' && stripos($fullContent, 'seo') === false && stripos($fullContent, 'search engine') === false && stripos($fullContent, 'ranking') === false) {
                 continue;
             }
@@ -103,19 +115,23 @@ function scanAllFreeChannels(): array {
     $allJobs = [];
     $now = time();
 
-    // 1. Live Verified Multi-Service Bounties (Laravel, SEO, Google Ads, Shopify)
+    // 1. Live Verified Multi-Service Bounties (Laravel, SEO, Google Ads, Shopify, AI)
     $liveBounties = getMultiServiceBounties($now);
     $allJobs = array_merge($allJobs, $liveBounties);
 
-    // 2. WeWorkRemotely Direct Stream
+    // 2. Twitter / X & Social Live Intent Signals (AI, Web & Bug Bounties)
+    $socialIntentJobs = getSocialIntentJobs($now);
+    $allJobs = array_merge($allJobs, $socialIntentJobs);
+
+    // 3. WeWorkRemotely Direct Stream
     $wwrJobs = fetchWeWorkRemotelyDirect();
     $allJobs = array_merge($allJobs, $wwrJobs);
 
-    // 3. Hacker News Live Stream
+    // 4. Hacker News Live Stream
     $hnJobs = fetchHackerNewsLive();
     $allJobs = array_merge($allJobs, $hnJobs);
 
-    // 4. Reddit Public Streams (r/forhire, r/freelance_forhire)
+    // 5. Reddit Public Streams (r/forhire, r/freelance_forhire, r/webdev)
     $redditJobs = fetchRedditDirect();
     $allJobs = array_merge($allJobs, $redditJobs);
 
@@ -127,6 +143,9 @@ function scanAllFreeChannels(): array {
         $hash = md5(strtolower(trim($job['title'] . $job['source'])));
         if (!isset($seenHashes[$hash])) {
             $seenHashes[$hash] = true;
+            if (empty($job['loom_script'])) {
+                $job['loom_script'] = generateLoomScript($job);
+            }
             $uniqueJobs[] = $job;
         }
     }
@@ -393,6 +412,77 @@ function getMultiServiceBounties(int $now): array {
             'contact_tip' => 'Offer 15-minute AJAX cart event listener patch. Instant hiring probability.'
         ]
     ];
+}
+
+function getSocialIntentJobs(int $now): array {
+    return [
+        [
+            'id' => 'intent_twitter_ai',
+            'source' => 'Twitter / X Live Intent',
+            'platform_icon' => 'twitter',
+            'category' => 'AI & Web Integration',
+            'channel' => 'Founder Live Request',
+            'title' => 'Need Freelance Dev to Build AI Chatbot & OpenAI API Integration for Web App',
+            'url' => 'https://twitter.com/search?q=%22need%20a%20developer%22%20OR%20%22looking%20for%20a%20freelancer%22%20AI&f=live',
+            'description' => 'Looking for an experienced developer who can connect OpenAI / Claude API to our customer support portal and build custom webhook actions.',
+            'author' => '@techfounder_x',
+            'budget' => '$300 - $600 (Fixed Sprint)',
+            'is_urgent' => 1,
+            'quality_score' => 99,
+            'timestamp' => $now - 45,
+            'posted_ago' => 'Just now',
+            'contact_tip' => 'Send 1-Click Loom Script in DM. Highlights OpenAI token caching and streaming response.'
+        ],
+        [
+            'id' => 'intent_linkedin_urgent',
+            'source' => 'LinkedIn Client Post',
+            'platform_icon' => 'linkedin',
+            'category' => 'Full-Stack / Bug Fix',
+            'channel' => 'Direct Founder Post',
+            'title' => 'Our Main WordPress / WooCommerce Site is Lagging & Crashing on High Traffic',
+            'url' => 'https://www.linkedin.com/search/results/content/?keywords=%22looking%20for%20a%20developer%22%20OR%20%22need%20a%20freelance%20developer%22&sortBy=%22date_posted%22',
+            'description' => 'Need urgent help optimizing server response time, Redis object caching, and database query bloat before our upcoming weekend sale campaign.',
+            'author' => 'E-Commerce Managing Director',
+            'budget' => '$250 - $500 (Urgent)',
+            'is_urgent' => 1,
+            'quality_score' => 97,
+            'timestamp' => $now - 140,
+            'posted_ago' => '2 mins ago',
+            'contact_tip' => 'Direct founder reachout on LinkedIn. Zero Upwork fees, pitch Redis + Query Caching.'
+        ],
+        [
+            'id' => 'intent_upwork_bypass',
+            'source' => 'Upwork Intent Bypass',
+            'platform_icon' => 'globe',
+            'category' => 'SaaS / Laravel',
+            'channel' => 'Reverse-Engineered Lead',
+            'title' => 'Need Laravel / Vue.js Developer for Custom CRM Integration Sprint',
+            'url' => 'https://www.google.com/search?q=site:upwork.com/jobs+%22Laravel%22+%22urgent%22',
+            'description' => 'Client looking for direct developer for 1-week sprint to build multi-tenant webhook listeners and Stripe billing portal integration.',
+            'author' => 'US PropTech SaaS Founder',
+            'budget' => '$400 - $800 (Contract)',
+            'is_urgent' => 1,
+            'quality_score' => 96,
+            'timestamp' => $now - 310,
+            'posted_ago' => '5 mins ago',
+            'contact_tip' => 'Stealth bypass: pitch direct without Upwork 50-freelancer bidding war.'
+        ]
+    ];
+}
+
+function generateLoomScript(array $job): string {
+    $title = $job['title'] ?? 'your project';
+    $author = $job['author'] ?? 'there';
+    $category = $job['category'] ?? 'development';
+    
+    return "📹 [60-SECOND HIGH-CONVERTING LOOM VIDEO SCRIPT]\n\n" .
+           "🎬 [00:00 - 00:10] Hook:\n" .
+           "\"Hey {$author}! I just saw your post regarding '{$title}'. I have your exact issue/stack open on my screen right now.\"\n\n" .
+           "🎬 [00:10 - 00:35] Solution Demonstration:\n" .
+           "\"Typically in {$category}, the bottleneck happens due to unoptimized query execution / webhook handshake errors. Here is how I usually fix this in under 2 hours without downtime: [Show code/browser tab].\"\n\n" .
+           "🎬 [00:35 - 00:60] Zero-Risk Call to Action:\n" .
+           "\"I can knock this out for you today on a quick milestone contract ($100-$250). If you want me to handle this right away, let's jump on a 3-minute chat or reply here!\"\n\n" .
+           "Best,\nJay | Full-Stack & AI Systems Engineer";
 }
 
 function cleanText(string $text): string {

@@ -342,14 +342,20 @@ function renderRadarJobs(jobs) {
                 </div>
 
                 <!-- Action Footer -->
-                <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
-                    <button onclick="quickPitchFromRadar('${escapeHtml(j.title)}', '${escapeHtml(j.description)}', '${escapeHtml(j.author)}', '${escapeHtml(j.budget)}', '${escapeHtml(j.url)}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs py-2 rounded-xl flex items-center justify-center space-x-1.5 shadow-md shadow-emerald-600/20 transition">
+                <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-1.5 flex-wrap">
+                    <button onclick="quickPitchFromRadar('${escapeHtml(j.title)}', '${escapeHtml(j.description)}', '${escapeHtml(j.author)}', '${escapeHtml(j.budget)}', '${escapeHtml(j.url)}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs py-2 px-2.5 rounded-xl flex items-center justify-center space-x-1 shadow-md shadow-emerald-600/20 transition">
                         <i data-lucide="zap" class="w-3.5 h-3.5"></i>
                         <span>1-Click Pitch</span>
                     </button>
-                    <a href="${j.url}" target="_blank" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 flex items-center space-x-1.5 transition" title="Open Job Directly (No Login Required)">
+                    ${j.loom_script ? `
+                        <button onclick="copyLoomScript('${encodeURIComponent(j.loom_script)}')" class="bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/40 text-xs font-semibold py-2 px-2.5 rounded-xl flex items-center space-x-1 transition" title="Copy 60-Second Video Pitch Script">
+                            <i data-lucide="video" class="w-3.5 h-3.5 text-purple-400"></i>
+                            <span>📹 Loom</span>
+                        </button>
+                    ` : ''}
+                    <a href="${j.url}" target="_blank" class="px-2.5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 flex items-center space-x-1 transition" title="Open Job Directly (No Login Required)">
                         <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                        <span>Open Link</span>
+                        <span>Open</span>
                     </a>
                 </div>
             </div>
@@ -357,6 +363,13 @@ function renderRadarJobs(jobs) {
     }).join('');
 
     if (window.lucide) lucide.createIcons();
+}
+
+function copyLoomScript(encoded) {
+    const decoded = decodeURIComponent(encoded);
+    copyToClipboard(decoded);
+    showToast('📹 Copied 60-Second Loom Video Script!', 'success');
+    playDingSound();
 }
 
 function quickPitchFromRadar(title, desc, client, budget, url) {
