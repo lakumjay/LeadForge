@@ -7,4 +7,6 @@ data/autopilot_status.json
 data/leadforge.sqlite*
 data/cron.lock
 data/outreach.lock
+data/settings.json
+data/*.json
 .DS_Store

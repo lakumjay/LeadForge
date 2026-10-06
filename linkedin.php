@@ -774,12 +774,27 @@ Want me to run a free 2-minute PageSpeed & technical flaw audit on your website?
             </div>
 
             <div class="space-y-3">
-                <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-3">
-                    <label class="block text-xs font-bold text-emerald-400 mb-1">🍪 LinkedIn Session Cookie (li_at) — Recommended (1-Time Paste)</label>
-                    <input type="password" id="input-li-at" placeholder="AQED..." class="w-full bg-dark-950 border border-emerald-500/40 text-white rounded-xl px-3 py-2 text-xs focus:border-emerald-400 focus:outline-none font-mono">
-                    <p class="text-[10px] text-slate-300 mt-1">
-                        <b>How to get:</b> Log into LinkedIn on Chrome ➔ Press <code>F12</code> ➔ Application ➔ Cookies ➔ Copy <code>li_at</code> value. Never expires!
+                <div class="bg-gradient-to-r from-sky-900/40 via-blue-900/30 to-slate-900 border border-sky-500/30 rounded-xl p-3.5 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse"></span>
+                            <span class="text-xs font-bold text-white">Official 1-Click LinkedIn Authorization</span>
+                        </div>
+                        <span class="text-[10px] text-sky-400 font-mono">60-Day Token</span>
+                    </div>
+                    <p class="text-[11px] text-slate-300">
+                        Connects your LinkedIn account directly via official developer API with zero bot blocking.
                     </p>
+                    <a href="api/linkedin_oauth_callback.php?action=connect" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-sky-600/30 flex items-center justify-center space-x-2 transition active:scale-95">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        <span>🚀 1-Click Connect Official LinkedIn</span>
+                    </a>
+                </div>
+
+                <div class="relative flex py-1 items-center">
+                    <div class="flex-grow border-t border-slate-800"></div>
+                    <span class="flex-shrink mx-2 text-[10px] text-slate-500 uppercase font-bold tracking-wider">or manual credentials</span>
+                    <div class="flex-grow border-t border-slate-800"></div>
                 </div>
 
                 <div>
